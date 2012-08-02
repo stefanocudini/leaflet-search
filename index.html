@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/leaflet/leaflet.css" />
 <style>
 .leaflet-control-search {
-
+	position:relative;
 	height:22px;
 	width:94px;
 	background:#fff;
@@ -39,6 +39,22 @@
 	border:0px solid #ccc;
 	border-radius:.25em;
 }
+.leaflet-control-search .search-tooltip {
+	display:none;
+	postion:absolute;
+	top:0;
+	left:0;
+	float:left;
+	
+	min-height:44px;
+	min-width:80px;
+	
+	background: #eee;
+	border-radius:.25em;
+	padding:6px;
+	background-color: rgba(0, 0, 0, 0.25);
+	z-index:1010;
+}
 </style>
 </head>
 
@@ -60,19 +76,25 @@ var coords = [
 ];
 
 var map = new L.Map('map', {center: new L.LatLng(coords[0].loc[0], coords[0].loc[1]), zoom: 9});
+
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
 
-map.addControl(new L.Control.Search({text: 'Cerca...'}));
+var searchLayer = new L.LayerGroup();
 
+map.addLayer(searchLayer);
+
+//after markers has insered into searchLayer, inizialize search control
+map.addControl(new L.Control.Search({layer: searchLayer, text: 'Cerca...'}));
 
 for(i in coords)
 {
 	var pos = new L.LatLng(coords[i].loc[0], coords[i].loc[1]),
 		tit = coords[i].title;
-		
+
 	var marker = new L.Marker(pos, {title: tit } );
-	map.addLayer(marker);
+	searchLayer.addLayer(marker);
 }
+
 
 </script>
 

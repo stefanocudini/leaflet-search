@@ -8,9 +8,16 @@
 L.Control.Search = L.Control.extend({
 
 	options: {
+		layer: new L.LayerGroup(),//layer where search elements
 		position: "topleft",
 		text: "Search..."
 	},
+
+	initialize: function(options) {
+		L.Util.setOptions(this, options);
+		this._records = [];//list of searched values
+		this._tooltip = '';
+	},	
 
 	onAdd: function (map) {
 		var container,
@@ -19,7 +26,10 @@ L.Control.Search = L.Control.extend({
 		container = L.DomUtil.create('div', containerClass);
 		
 		this._createInput(this.options.text, 'search-input', container, map);
-		this._createButton(this.options.text, 'search-button', container, map, this._tootip);
+		this._createButton(this.options.text, 'search-button', container, map);
+		this._tooltip = this._createTooltip('search-tooltip', container, map);
+		
+		map.on("layeradd layerremove", this._updateSearchList, this);
 		
 		return container;
 	},
@@ -30,29 +40,41 @@ L.Control.Search = L.Control.extend({
 		input.size = text.length-2;
 		input.placeholder = text;
 
-//		L.DomEvent
-//			.addListener(input, 'click', L.DomEvent.stopPropagation)
-//			.addListener(input, 'click', L.DomEvent.preventDefault)
-//			.addListener(input, 'click', fn, context);
-//		
 		return input;
 	},
 	
-	_createButton: function (text, className, container, context, fn) {
+	_createButton: function (text, className, container, context) {
 		var button = L.DomUtil.create('a', className, container);
 		button.href = '#';
 		button.title = text;
 
-//		L.DomEvent
-//			.addListener(button, 'click', L.DomEvent.stopPropagation)
-//			.addListener(button, 'click', L.DomEvent.preventDefault)
-//			.addListener(button, 'click', fn, context);
-//		
+		L.DomEvent
+			.addListener(button, 'click', L.DomEvent.stopPropagation)
+			.addListener(button, 'click', L.DomEvent.preventDefault)
+			.addListener(button, 'click', this.showTooltip, context);
+
 		return button;
 	},
 	
-	_tooltip: function () {
-		console.log('apri tooltip');
+	_createTooltip: function(className, container, context) {
+		var tooltip = L.DomUtil.create('div', className, container);
+		//events
+		return tooltip;
+	},
+	
+	showTooltip: function () {
+
+		console.log(['showTooltip',this._tooltip] );
+		//this._tooltip.style.display = 'block';
+	},
+	
+	_updateSearchList: function() {//update search list
+		
+		console.log(['_updateSearchList', this.options.layer] );
+//		this._records aggiorn
+//group.eachLayer(function (layer) {
+
+//});
 	}
 //	_update_href: function() {
 //		var params = L.Util.getParamString(this._params);
