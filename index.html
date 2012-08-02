@@ -6,9 +6,7 @@
 <link rel="stylesheet" href="/leaflet/leaflet.css" />
 <style>
 .leaflet-control-search {
-	position:absolute;
-	top:300px;
-	left:0;
+
 	height:22px;
 	width:94px;
 	background:#fff;
@@ -17,16 +15,28 @@
 	-webkit-border-radius: 7px;
 	border-radius: 7px;
 	margin:10px;
-	padding: 6px;
-	background:url('icons.png') no-repeat 0 0;
+	padding:6px;
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1000;
 }
-.leaflet-control-search .search {
-	width:90px;
-	background:#fff;
-	color:#1978cf;
-	border:1px solid #666;
+.leaflet-control-search .search-input {
+	background: #eee;
+	border:2px solid #666;
+	border-radius:.4em;
+	line-height:20px;
+	height:19px;
+	padding:0;
+	margin:0;
+	display:block;
+	float:left;
+}
+.leaflet-control-search .search-button {
+	display:block;
+	float:right;
+	width:22px;
+	height:22px;	
+	background: url('search-icon.png') no-repeat 0 0 #eee;
+	border:0px solid #ccc;
 	border-radius:.25em;
 }
 </style>
@@ -34,10 +44,10 @@
 
 <body>
 
-<div style="width:600px; height:400px;border:2px solid red" id="map"></div>
+<div style="width:600px; height:400px" id="map"></div>
 
 <script src="/leaflet/leaflet.js"></script>
-<!--script src="leaflet-search.js"></script-->
+<script src="leaflet-search.js"></script>
 
 <script>
 //sample positions
@@ -52,14 +62,13 @@ var coords = [
 var map = new L.Map('map', {center: new L.LatLng(coords[0].loc[0], coords[0].loc[1]), zoom: 9});
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
 
-//map.addControl(new L.Control.Search({text: 'Cerca...'}));
+map.addControl(new L.Control.Search({text: 'Cerca...'}));
 
 
 for(i in coords)
 {
 	var pos = new L.LatLng(coords[i].loc[0], coords[i].loc[1]),
 		tit = coords[i].title;
-console.log(pos);
 		
 	var marker = new L.Marker(pos, {title: tit } );
 	map.addLayer(marker);

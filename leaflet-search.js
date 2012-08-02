@@ -6,47 +6,54 @@
 */
 
 L.Control.Search = L.Control.extend({
-	includes: L.Mixin.Events, 
 
 	options: {
 		position: "topleft",
 		text: "Search..."
 	},
 
-	initialize: function(options) {
-		L.Util.setOptions(this, options);
-		this._params = {};
-		this.on("update", this._set_center, this);
-		for (var i in this) {
-			if (typeof(i) === "string" && i.indexOf('initialize_') == 0)
-				this[i]();
-		}
+	onAdd: function (map) {
+		var container,
+			containerClass = 'leaflet-control-search';
+		
+		container = L.DomUtil.create('div', containerClass);
+		
+		this._createInput(this.options.text, 'search-input', container, map);
+		this._createButton(this.options.text, 'search-button', container, map, this._tootip);
+		
+		return container;
 	},
 
-	onAdd: function(map) {
-		this._container = L.DomUtil.create('div', 'leaflet-control-search');
-		L.DomEvent.disableClickPropagation(this._container);
-		this._map = map;
-		this._input = L.DomUtil.create('input', null, this._container);
-		this._input.value = this.options.text;
+	_createInput: function (text, className, container, context) {
+		var input = L.DomUtil.create('input', className, container);
+		input.type = 'text';
+		input.size = text.length-2;
+		input.placeholder = text;
 
-		map.on('moveend', this._update_center, this);
-		this.fire("update", {params: this._params})
-		this._update_center();
-
-		if (this.options.useAnchor && 'onhashchange' in window) {
-			var _this = this, fn = window.onhashchange;
-			window.onhashchange = function() {
-				_this._set_urlvars();
-				if (fn) return fn();
-			}
-		}
-
-		this.fire('add', {map: map});
-
-		return this._container;
+//		L.DomEvent
+//			.addListener(input, 'click', L.DomEvent.stopPropagation)
+//			.addListener(input, 'click', L.DomEvent.preventDefault)
+//			.addListener(input, 'click', fn, context);
+//		
+		return input;
 	},
+	
+	_createButton: function (text, className, container, context, fn) {
+		var button = L.DomUtil.create('a', className, container);
+		button.href = '#';
+		button.title = text;
 
+//		L.DomEvent
+//			.addListener(button, 'click', L.DomEvent.stopPropagation)
+//			.addListener(button, 'click', L.DomEvent.preventDefault)
+//			.addListener(button, 'click', fn, context);
+//		
+		return button;
+	},
+	
+	_tooltip: function () {
+		console.log('apri tooltip');
+	}
 //	_update_href: function() {
 //		var params = L.Util.getParamString(this._params);
 //		var sep = '?';
