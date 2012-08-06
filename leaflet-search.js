@@ -1,17 +1,20 @@
 
 /*
-<div class="leaflet-control-search">
-	<input class="search" type="text" size="10" placeholder="Search..." />
-</div>
-*/
+ * Leaflet Search Plugin 1.0.0
+ * https://github.com/stefanocudini/leaflet-search
+ *
+ * Copyright 2012, Stefano Cudini - stefano.cudini@gmail.com
+ * Licensed under the MIT license.
+ */
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		layer: new L.LayerGroup(),//layer where search elements
 		position: "topleft",
-		text: "Search...",
+		layer: new L.LayerGroup(),	//layer where search elements
+		text: "Search...",	//placeholder value
+		propFilter: 'title',	//property of elements filtered by _findElements()
 		initial: true
 	},
 
@@ -44,7 +47,7 @@ L.Control.Search = L.Control.extend({
 	hideTooltip: function() {
 		this._input.blur();	
 		this._input.value ='';	
-		this._input.size = 5;
+		this._input.size = 6;
 		this._tooltip.style.display = 'none';
 	},
 	
@@ -74,7 +77,7 @@ L.Control.Search = L.Control.extend({
 	_createInput: function (text, className, container) {
 		var input = L.DomUtil.create('input', className, container);
 		input.type = 'text';
-		input.size = 5,
+		input.size = 6,
 		input.value = '';
 		input.placeholder = text;
 		
@@ -114,7 +117,7 @@ L.Control.Search = L.Control.extend({
 	
 		var text = this._input.value;
 
-		this._input.size = text.length<5 ? 5 : text.length;
+		this._input.size = text.length<6 ? 6 : text.length;
 	
 		var I = this.options.initial ? '^' : '',//initial with text
 			reg = new RegExp(I + text,'i'),
@@ -123,12 +126,13 @@ L.Control.Search = L.Control.extend({
 
 		for(id in markers)
 		{
-			var marker = markers[id];
+			var marker = markers[id],
+				found = reg.test(marker.options[this.options.propFilter]);
 			
-			if(text.length==0 || (marker.options && marker.options.title && reg.test(marker.options.title)) )
+			if(text.length==0 || (marker.options && marker.options.title && found) )
 				vals.push( [marker.options.title, marker.getLatLng()] );
 		};
-		this.showTooltip();	
+		this.showTooltip();
 		this._fillTooltip(vals);
 	
 	}

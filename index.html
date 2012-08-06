@@ -4,73 +4,40 @@
 <title></title> 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <link rel="stylesheet" href="/leaflet/leaflet.css" />
+<link rel="stylesheet" href="leaflet-search.css" />
 <style>
-.leaflet-control-search {
-	position:relative;
-	height:22px;
-	float:left;
+#map {
+	width:600px;
+	height:400px;
+}
+#copy {
+	position:fixed;
+	top:-.85em;
+	right:20%;
+	color:#00c;
 	background:#fff;
-	color:#1978cf;
-	-moz-border-radius: 7px;
-	-webkit-border-radius: 7px;
-	border-radius: 7px;
-	margin:10px;
-	padding:6px;
-	background-color: rgba(0, 0, 0, 0.25);
-	z-index:1000;
-}
-.leaflet-control-search .search-input {
-	background: #eee;
-	border:1px solid #666;
-	border-radius:.4em;
-	line-height:20px;
-	height:19px;
-	padding:0;
-	margin:0 .5em 0 0;
-	display:block;
-	float:left;
-}
-.leaflet-control-search .search-button {
-	display:block;
-	float:right;
-	width:22px;
-	height:22px;	
-	background: url('search-icon.png') no-repeat 0 0 #eee;
-	border:0px solid #ccc;
-	border-radius:.25em;
-}
-.leaflet-control-search .search-tooltip {
-	display:none;
-	position:absolute;
-	top:34px;
-	left:0;
-	float:left;
-	min-height:44px;
-	min-width:80px;
-	
-	background: #eee;
-	border-radius:.125em;
-	padding: 0 4px 4px 4px;
-	background-color: rgba(0, 0, 0, 0.25);
-	z-index:1010;
-}
-.leaflet-control-search .search-record {
-	margin:.125em;
-	padding:0 .125em;
-	display:block;
-	background: #eee;
-	border-radius:.125em;
-	text-decoration:none;	
-}
-.leaflet-control-search .search-record:hover {
-	background: #fff;
+	border-radius:.5em;
+	box-shadow: 0 0 6px #888;	
+	padding:1em .5em .25em .5em;
+	z-index:4000;
+	font-size:small;
+	filter: alpha(opacity=70);
+	-khtml-opacity: .7;
+	-moz-opacity: .7;
+	opacity: .7;		
 }
 </style>
 </head>
 
 <body>
+<h3>Leaflet-Search Plugin, Simple Example</h3>
 
-<div style="width:600px; height:400px" id="map"></div>
+<iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=stefanocudini&repo=leaflet-search&type=fork&count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
+
+<div id="map"></div>
+
+<div id="copy">powered by <a target="_blank" href="http://facebook.com/stef.cud">Stefano Cudini</a></div>
 
 <script src="/leaflet/leaflet.js"></script>
 <script src="leaflet-search.js"></script>
@@ -96,8 +63,7 @@ var searchLayer = new L.LayerGroup();
 
 map.addLayer(searchLayer);
 
-//after markers has insered into searchLayer, inizialize search control
-map.addControl(new L.Control.Search({layer: searchLayer, text: 'Cerca...'}));
+map.addControl(new L.Control.Search({layer: searchLayer}));
 
 
 for(i in coords)
