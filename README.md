@@ -4,7 +4,7 @@ Leaflet.Control.Search
 What ?
 ------
 
-Simple plugin for Leaflet that search marker by attribute
+Simple Leaflet Control that search marker by attribute
 
 Tested in Leaflet 0.4.2
 
