@@ -8,7 +8,7 @@
 .leaflet-control-search {
 	position:relative;
 	height:22px;
-	width:94px;
+	float:left;
 	background:#fff;
 	color:#1978cf;
 	-moz-border-radius: 7px;
@@ -26,7 +26,7 @@
 	line-height:20px;
 	height:19px;
 	padding:0;
-	margin:0;
+	margin:0 .5em 0 0;
 	display:block;
 	float:left;
 }
@@ -59,7 +59,8 @@
 	padding:0 .125em;
 	display:block;
 	background: #eee;
-	border-radius:.125em;	
+	border-radius:.125em;
+	text-decoration:none;	
 }
 .leaflet-control-search .search-record:hover {
 	background: #fff;
@@ -73,7 +74,6 @@
 
 <script src="/leaflet/leaflet.js"></script>
 <script src="leaflet-search.js"></script>
-
 <script>
 //sample positions
 var coords = [
@@ -81,7 +81,11 @@ var coords = [
 	{loc:[41.807149,13.162994], title:'blue'},
 	{loc:[41.546175,13.673590], title:'yellow'},
 	{loc:[41.794008,12.583884], title:'green'},
-	{loc:[41.239190,13.042145], title:'black'}
+	{loc:[41.239190,13.032145], title:'black'},
+	{loc:[41.219190,13.062145], title:'cyan'},
+	{loc:[41.319190,13.162145], title:'gray'},	
+	{loc:[41.679190,13.122145], title:'darkred'},
+	{loc:[41.344190,13.242145], title:'darkblue'}
 ];
 
 var map = new L.Map('map', {center: new L.LatLng(coords[0].loc[0], coords[0].loc[1]), zoom: 9});
@@ -92,11 +96,8 @@ var searchLayer = new L.LayerGroup();
 
 map.addLayer(searchLayer);
 
-map.addControl(new L.Control.Distance());
-
 //after markers has insered into searchLayer, inizialize search control
 map.addControl(new L.Control.Search({layer: searchLayer, text: 'Cerca...'}));
-
 
 
 for(i in coords)

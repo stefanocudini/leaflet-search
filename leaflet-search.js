@@ -27,9 +27,9 @@ L.Control.Search = L.Control.extend({
 		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 
-		this._tooltip = this._createTooltip('search-tooltip', this._container, this);
-		this._input = this._createInput(this.options.text, 'search-input', this._container, this);
-		this._createButton(this.options.text, 'search-button', this._container, this);
+		this._tooltip = this._createTooltip('search-tooltip', this._container);
+		this._input = this._createInput(this.options.text, 'search-input', this._container);
+		this._createButton(this.options.text, 'search-button', this._container);
 		
 		//map.on("layeradd layerremove", this._updateSearchList, this);
 		
@@ -42,23 +42,26 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	hideTooltip: function() {
-		this._input.blur();		
+		this._input.blur();	
+		this._input.value ='';	
+		this._input.size = 5;
 		this._tooltip.style.display = 'none';
 	},
 	
 	_createRecord: function(text, latlng, container) {//make record(tag a) insert into tooltip
-			var a = L.DomUtil.create('a', 'search-record', container);
-				a.href='#',
-				a.innerHTML = text;
-		function pan() {
-			console.log(arguments);
-			//this._map.panTo(latlng);
-		}
+		var rec = L.DomUtil.create('a', 'search-record', container);
+			rec.href='#',
+			rec.innerHTML = text;
+
+			//console.log(this._map);
+			
 		L.DomEvent
-			.addListener(a, 'click', L.DomEvent.stopPropagation)
-			.addListener(a, 'click', L.DomEvent.preventDefault)
-			.addListener(a, 'click', pan, this);
-		return a;
+			.disableClickPropagation(rec)
+			.addListener(rec, 'click', function(e) {
+				this._map.panTo(latlng);
+			},this);
+
+		return rec;
 	},
 	
 	_fillTooltip: function(items) {//array values
@@ -67,38 +70,35 @@ L.Control.Search = L.Control.extend({
 		for(i in items)
 			this._createRecord(items[i][0], items[i][1], this._tooltip);
 	},
-		
-	_createInput: function (text, className, container, context) {
+	
+	_createInput: function (text, className, container) {
 		var input = L.DomUtil.create('input', className, container);
 		input.type = 'text';
-		input.size = text.length-2;
-		//input.value = text;
+		input.size = 5,
+		input.value = '';
 		input.placeholder = text;
 
 		L.DomEvent
-			.addListener(input, 'click', L.DomEvent.stopPropagation)
-			.addListener(input, 'click', L.DomEvent.preventDefault)
-			//.addListener(input, 'click', this.showTooltip, context)
-			.addListener(input, 'blur', this.hideTooltip, context)
-			.addListener(input, 'click', this._findElements, context)
-			.addListener(input, 'keyup', this._findElements, context);
+			.disableClickPropagation(input)
+			.addListener(input, 'click', this._findElements,this)
+			.addListener(input, 'keyup', this._findElements,this);
 
 		return input;
 	},
 	
-	_createButton: function (text, className, container, context) {
+	_createButton: function (text, className, container) {
 		var button = L.DomUtil.create('a', className, container);
 		button.href = '#';
 		button.title = text;
 
 		L.DomEvent
-			.addListener(button, 'click', L.DomEvent.stopPropagation)
-			.addListener(button, 'click', L.DomEvent.preventDefault);
+			.disableClickPropagation(button)
+			.addListener(button, 'click', this._findElements,this);
 
 		return button;
 	},
 	
-	_createTooltip: function(className, container, context) {
+	_createTooltip: function(className, container) {
 		var tooltip = L.DomUtil.create('div', className, container);
 		//bind events
 		return tooltip;
@@ -107,6 +107,8 @@ L.Control.Search = L.Control.extend({
 	_findElements: function() {
 	
 		var text = this._input.value;
+
+		this._input.size = text.length<5 ? 5 : text.length;
 	
 		var I = this.options.initial ? '^' : '',//initial with text
 			reg = new RegExp(I + text,'i'),
@@ -120,9 +122,9 @@ L.Control.Search = L.Control.extend({
 			if(text.length==0 || (marker.options && marker.options.title && reg.test(marker.options.title)) )
 				vals.push( [marker.options.title, marker.getLatLng()] );
 		};
-		
+		this.showTooltip();	
 		this._fillTooltip(vals);
-		this.showTooltip();
+	
 	}
 
 });
