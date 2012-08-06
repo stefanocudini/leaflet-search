@@ -6,39 +6,82 @@
 */
 
 L.Control.Search = L.Control.extend({
-
+	includes: L.Mixin.Events, 
+	
 	options: {
 		layer: new L.LayerGroup(),//layer where search elements
 		position: "topleft",
-		text: "Search..."
+		text: "Search...",
+		initial: true
 	},
 
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
-		this._records = [];//list of searched values
+		this._records = this.options.layer._layers;//list of searched elements(markers)
 		this._tooltip = '';
-	},	
-
-	onAdd: function (map) {
-		var container,
-			containerClass = 'leaflet-control-search';
-		
-		container = L.DomUtil.create('div', containerClass);
-		
-		this._createInput(this.options.text, 'search-input', container, map);
-		this._createButton(this.options.text, 'search-button', container, map);
-		this._tooltip = this._createTooltip('search-tooltip', container, map);
-		
-		map.on("layeradd layerremove", this._updateSearchList, this);
-		
-		return container;
 	},
 
+	onAdd: function (map) {
+
+		this._map = map;
+		
+		this._container = L.DomUtil.create('div', 'leaflet-control-search');
+
+		this._tooltip = this._createTooltip('search-tooltip', this._container, this);
+		this._input = this._createInput(this.options.text, 'search-input', this._container, this);
+		this._createButton(this.options.text, 'search-button', this._container, this);
+		
+		//map.on("layeradd layerremove", this._updateSearchList, this);
+		
+		return this._container;
+	},
+	
+	showTooltip: function() {//must be before of _createButton
+		this._input.focus();
+		this._tooltip.style.display = 'block';
+	},
+	
+	hideTooltip: function() {
+		this._input.blur();		
+		this._tooltip.style.display = 'none';
+	},
+	
+	_createRecord: function(text, latlng, container) {//make record(tag a) insert into tooltip
+			var a = L.DomUtil.create('a', 'search-record', container);
+				a.href='#',
+				a.innerHTML = text;
+		function pan() {
+			console.log(arguments);
+			//this._map.panTo(latlng);
+		}
+		L.DomEvent
+			.addListener(a, 'click', L.DomEvent.stopPropagation)
+			.addListener(a, 'click', L.DomEvent.preventDefault)
+			.addListener(a, 'click', pan, this);
+		return a;
+	},
+	
+	_fillTooltip: function(items) {//array values
+		if(items.length==0) return false;
+		this._tooltip.innerHTML = '';
+		for(i in items)
+			this._createRecord(items[i][0], items[i][1], this._tooltip);
+	},
+		
 	_createInput: function (text, className, container, context) {
 		var input = L.DomUtil.create('input', className, container);
 		input.type = 'text';
 		input.size = text.length-2;
+		//input.value = text;
 		input.placeholder = text;
+
+		L.DomEvent
+			.addListener(input, 'click', L.DomEvent.stopPropagation)
+			.addListener(input, 'click', L.DomEvent.preventDefault)
+			//.addListener(input, 'click', this.showTooltip, context)
+			.addListener(input, 'blur', this.hideTooltip, context)
+			.addListener(input, 'click', this._findElements, context)
+			.addListener(input, 'keyup', this._findElements, context);
 
 		return input;
 	},
@@ -50,64 +93,37 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.addListener(button, 'click', L.DomEvent.stopPropagation)
-			.addListener(button, 'click', L.DomEvent.preventDefault)
-			.addListener(button, 'click', this.showTooltip, context);
+			.addListener(button, 'click', L.DomEvent.preventDefault);
 
 		return button;
 	},
 	
 	_createTooltip: function(className, container, context) {
 		var tooltip = L.DomUtil.create('div', className, container);
-		//events
+		//bind events
 		return tooltip;
 	},
 	
-	showTooltip: function () {
-
-		console.log(['showTooltip',this._tooltip] );
-		//this._tooltip.style.display = 'block';
-	},
+	_findElements: function() {
 	
-	_updateSearchList: function() {//update search list
+		var text = this._input.value;
+	
+		var I = this.options.initial ? '^' : '',//initial with text
+			reg = new RegExp(I + text,'i'),
+			markers = this._records,//all elements
+			vals = [];//matched vals for fill tooltip
+
+		for(id in markers)
+		{
+			var marker = markers[id];
+			
+			if(text.length==0 || (marker.options && marker.options.title && reg.test(marker.options.title)) )
+				vals.push( [marker.options.title, marker.getLatLng()] );
+		};
 		
-		console.log(['_updateSearchList', this.options.layer] );
-//		this._records aggiorn
-//group.eachLayer(function (layer) {
-
-//});
+		this._fillTooltip(vals);
+		this.showTooltip();
 	}
-//	_update_href: function() {
-//		var params = L.Util.getParamString(this._params);
-//		var sep = '?';
-//		if (this.options.useAnchor) sep = '#';
-//		var url = this._url_base + sep + params.slice(1);
-//		if (this._href) this._href.setAttribute('href', url);
-//		if (this.options.useLocation)
-//			location.replace('#' + params.slice(1));
-//		return url;
-//	},
 
-//	_update: function(obj, source) {
-//		//console.info("Update", obj, this._params);
-//		for(var i in obj) {
-//			if (!obj.hasOwnProperty(i)) continue;
-//			if (obj[i] != null && obj[i] != undefined)
-//				this._params[i] = obj[i]
-//			else
-//				delete this._params[i];
-//		}
-
-//		this._update_href();
-//	},
-
-//	_set_center: function(e)
-//	{
-//		//console.info("Update center", e);
-//		var params = e.params;
-//		if (params.zoom == undefined ||
-//		    params.lat == undefined ||
-//		    params.lon == undefined) return;
-//		this._map.setView(new L.LatLng(params.lat, params.lon), params.zoom);
-//	}
 });
 

@@ -4,6 +4,7 @@
 <title></title> 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <link rel="stylesheet" href="/leaflet/leaflet.css" />
+<link rel="stylesheet" href="/maps/leaflet-plugins/css/distance.css" />
 <style>
 .leaflet-control-search {
 	position:relative;
@@ -21,7 +22,7 @@
 }
 .leaflet-control-search .search-input {
 	background: #eee;
-	border:2px solid #666;
+	border:1px solid #666;
 	border-radius:.4em;
 	line-height:20px;
 	height:19px;
@@ -41,19 +42,28 @@
 }
 .leaflet-control-search .search-tooltip {
 	display:none;
-	postion:absolute;
-	top:0;
+	position:absolute;
+	top:34px;
 	left:0;
 	float:left;
-	
 	min-height:44px;
 	min-width:80px;
 	
 	background: #eee;
-	border-radius:.25em;
-	padding:6px;
+	border-radius:.125em;
+	padding: 0 4px 4px 4px;
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1010;
+}
+.leaflet-control-search .search-record {
+	margin:.125em;
+	padding:0 .125em;
+	display:block;
+	background: #eee;
+	border-radius:.125em;	
+}
+.leaflet-control-search .search-record:hover {
+	background: #fff;
 }
 </style>
 </head>
@@ -64,6 +74,7 @@
 
 <script src="/leaflet/leaflet.js"></script>
 <script src="leaflet-search.js"></script>
+<script src="/maps/leaflet-plugins/control/Distance.js"></script>
 
 <script>
 //sample positions
@@ -83,8 +94,12 @@ var searchLayer = new L.LayerGroup();
 
 map.addLayer(searchLayer);
 
+map.addControl(new L.Control.Distance());
+
 //after markers has insered into searchLayer, inizialize search control
 map.addControl(new L.Control.Search({layer: searchLayer, text: 'Cerca...'}));
+
+
 
 for(i in coords)
 {
