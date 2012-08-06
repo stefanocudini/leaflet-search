@@ -14,7 +14,9 @@ How ?
 Adding the search control to the map:
 
 ```
-map.addControl(new L.Control.Search());
+
+map.addControl(new L.Control.Search({layer: searchLayer}));
+//searchLayer contains searched markers
 
 ```
 View leaflet-search.css for insert styles to your css
