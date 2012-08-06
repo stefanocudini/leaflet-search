@@ -77,11 +77,17 @@ L.Control.Search = L.Control.extend({
 		input.size = 5,
 		input.value = '';
 		input.placeholder = text;
-
+		
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'click', this._findElements,this)
-			.addListener(input, 'keyup', this._findElements,this);
+			.addListener(input, 'keyup', this._findElements,this)
+			.addListener(input, 'blur', function() {
+				var that = this;
+				setTimeout(function() {
+					that.hideTooltip();
+				},200);
+			},this);
 
 		return input;
 	},
