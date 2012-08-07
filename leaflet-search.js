@@ -52,6 +52,24 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.style.display = 'none';
 	},
 	
+	showInput: function() {//must be before of _createButton
+		this._input.focus();
+		this._input.style.display = 'block';
+	},
+	
+	hideInput: function() {
+		this._input.blur();	
+		this._input.value ='';
+		this._input.size = this._inputSize;
+		this._input.style.display = 'none';
+	},
+	_switchInput: function() {
+		if(this._input.style.display == 'none')
+			this.showInput();
+		else
+			this.hideInput();
+	},
+	
 	_createRecord: function(text, latlng, container) {//make record(tag a) insert into tooltip
 		var rec = L.DomUtil.create('a', 'search-record', container);
 			rec.href='#',
@@ -81,6 +99,8 @@ L.Control.Search = L.Control.extend({
 		input.size = this._inputSize,
 		input.value = '';
 		input.placeholder = text;
+		input.style.display = 'none';
+		
 		
 		L.DomEvent
 			.disableClickPropagation(input)
@@ -90,6 +110,7 @@ L.Control.Search = L.Control.extend({
 				var that = this;
 				setTimeout(function() {
 					that.hideTooltip();
+					that.hideInput();
 				},200);
 			},this);
 
@@ -103,7 +124,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', this._findElements,this);
+			.addListener(button, 'click', this._switchInput,this);
 
 		return button;
 	},
