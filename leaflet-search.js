@@ -22,6 +22,7 @@ L.Control.Search = L.Control.extend({
 		L.Util.setOptions(this, options);
 		this._records = this.options.layer._layers;//list of searched elements(markers)
 		this._tooltip = '';
+		this._inputSize = this.options.text.length;
 	},
 
 	onAdd: function (map) {
@@ -47,7 +48,7 @@ L.Control.Search = L.Control.extend({
 	hideTooltip: function() {
 		this._input.blur();	
 		this._input.value ='';	
-		this._input.size = 6;
+		this._input.size = this._inputSize;
 		this._tooltip.style.display = 'none';
 	},
 	
@@ -77,7 +78,7 @@ L.Control.Search = L.Control.extend({
 	_createInput: function (text, className, container) {
 		var input = L.DomUtil.create('input', className, container);
 		input.type = 'text';
-		input.size = 6,
+		input.size = this._inputSize,
 		input.value = '';
 		input.placeholder = text;
 		
@@ -117,7 +118,7 @@ L.Control.Search = L.Control.extend({
 	
 		var text = this._input.value;
 
-		this._input.size = text.length<6 ? 6 : text.length;
+		this._input.size = text.length<this._inputSize ? this._inputSize : text.length;
 	
 		var I = this.options.initial ? '^' : '',//initial with text
 			reg = new RegExp(I + text,'i'),
