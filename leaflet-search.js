@@ -53,8 +53,8 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	showInput: function() {//must be before of _createButton
-		this._input.focus();
 		this._input.style.display = 'block';
+		this._input.focus();
 	},
 	
 	hideInput: function() {
