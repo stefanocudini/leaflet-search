@@ -9,6 +9,11 @@
 #map {
 	width:600px;
 	height:400px;
+	margin-right:1em;
+	float:left;
+}
+#titles {
+	list-style:none;
 }
 #copy {
 	position:fixed;
@@ -30,7 +35,7 @@
 </head>
 
 <body>
-<h3>Leaflet-Search Control, Simple Example</h3>
+<h3>Leaflet-Search Control</h3>
 
 <a href="https://github.com/stefanocudini/leaflet-search">github.com/stefanocudini/leaflet-search</a>
 <br />
@@ -38,7 +43,12 @@
   allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
 <br />
 
+
+<h4>Simple Example: <em>search markers title</em></h4>
 <div id="map"></div>
+
+<em>Markers title list:</em><br />
+<ul id="titles"></ul>
 
 <div id="copy">powered by <a target="_blank" href="http://facebook.com/stef.cud">Stefano Cudini</a></div>
 
@@ -76,7 +86,13 @@ for(i in coords)
 
 	var marker = new L.Marker(pos, {title: tit } );
 	searchLayer.addLayer(marker);
+
+	//ul titles list
+	var ul = L.DomUtil.get('titles');
+	var li = L.DomUtil.create('li', '',ul);
+	li.innerHTML = tit;
 }
+
 
 
 </script>

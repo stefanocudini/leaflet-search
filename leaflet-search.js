@@ -56,7 +56,7 @@ L.Control.Search = L.Control.extend({
 			rec.href='#',
 			rec.innerHTML = text;
 
-			//console.log(this._map);
+		//console.log(this._map);
 			
 		L.DomEvent
 			.disableClickPropagation(rec)
@@ -83,7 +83,7 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomEvent
 			.disableClickPropagation(input)
-			.addListener(input, 'click', this._findElements,this)
+			//.addListener(input, 'click', this._findElements,this)
 			.addListener(input, 'keyup', this._findElements,this)
 			.addListener(input, 'blur', function() {
 				var that = this;
