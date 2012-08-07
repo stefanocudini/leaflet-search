@@ -24,6 +24,8 @@ View leaflet-search.css for insert styles to your css
 Where ?
 ------
 
-Source code : https://github.com/stefanocudini/leaflet-search
+Source code:
+https://github.com/stefanocudini/leaflet-search
+https://bitbucket.org/zakis_/leaflet-search
 
-Demo : http://easyblog.it/maps/leaflet-search/
+Demo: http://easyblog.it/maps/leaflet-search/
