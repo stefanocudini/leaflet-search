@@ -13,6 +13,7 @@ L.Control.Search = L.Control.extend({
 		position: 'topleft',
 		layer: new L.LayerGroup(),	//layer where search elements, default: empty layer
 		text: 'Search...',	//placeholder value
+		textErr: 'Location not found',
 		propFilter: 'title',	//property of elements filtered
 		initial: true
 	},
@@ -136,9 +137,9 @@ L.Control.Search = L.Control.extend({
 		return L.DomUtil.create('div', className, container);
 	},
 	
-//	alertSearch: function(text) {
-//		return L.DomUtil.create('div', className, container);
-//	},
+	alertSearch: function(text) {
+		alert(text);
+	},
 	
 	_findLocation: function() {	//go to location found
 		
@@ -148,16 +149,19 @@ L.Control.Search = L.Control.extend({
 		}
 		else
 		{
-			if(this._input.value)
+			if(this._input.value=='')
+				this.hideInput();
+			else
 			{
 				var latlng = this._recordsCache[this._input.value];
 				if(latlng)
+				{
 					this._map.panTo(latlng);
+					this.hideInput();
+				}
 				else
-					alert('location not found');
-			}
-		
-			this.hideInput();
+					this.alertSearch( this.options.textErr );
+			}			
 		}
 	},
 		
