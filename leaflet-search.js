@@ -226,11 +226,8 @@ L.Control.Search = L.Control.extend({
 		{
 			for(text in records)
 			{
-				var latlng = records[text],
-					found = reg.test(text);
-
-				if(found)//filter
-					results.push([text,latlng]);
+				if(reg.test(text))//filter
+					results.push( [text, records[text] ]);// [key,value]
 			}
 		}
 		this._fillTooltip(results);
