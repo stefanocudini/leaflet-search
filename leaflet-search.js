@@ -26,9 +26,10 @@ L.Control.Search = L.Control.extend({
 	onAdd: function (map) {
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
-		this._tooltip = this._createTooltip('search-tooltip', this._container);
-		this._input = this._createInput(this.options.text, 'search-input', this._container);
-		this._createButton(this.options.text, 'search-button', this._container);
+		this._input = this._createInput(this.options.text, 'search-input');
+		this._createButton(this.options.text, 'search-button');
+		this._alert = this._createAlert('search-alert');
+		this._tooltip = this._createTooltip('search-tooltip');		
 		return this._container;
 	},
 
@@ -58,7 +59,7 @@ L.Control.Search = L.Control.extend({
 		this._input.size = this._inputMinSize;
 		this._input.style.display = 'none';
 	},
-	
+
 //	_switchInput: function() {
 //		if(this._input.style.display == 'none')
 //			this.showInput();
@@ -66,8 +67,8 @@ L.Control.Search = L.Control.extend({
 //			this.hideInput();
 //	},
 	
-	_createRecord: function(text, latlng, container) {//make record(tag a) insert into tooltip
-		var rec = L.DomUtil.create('a', 'search-record', container);
+	_createTip: function(text, latlng) {//make record(tag a) insert into tooltip
+		var rec = L.DomUtil.create('a', 'search-tip', this._tooltip);
 			rec.href = '#',
 			rec.innerHTML = text;
 
@@ -88,15 +89,15 @@ L.Control.Search = L.Control.extend({
 		if(items.length)
 		{
 			for(i in items)
-				this._createRecord(items[i][0], items[i][1], this._tooltip);
+				this._createTip(items[i][0], items[i][1]);
 			this.showTooltip();
 		}
 		else
 			this.hideTooltip();
 	},
 	
-	_createInput: function (text, className, container) {
-		var input = L.DomUtil.create('input', className, container);
+	_createInput: function (text, className) {
+		var input = L.DomUtil.create('input', className, this._container);
 		input.type = 'text';
 		input.size = this._inputMinSize,
 		input.value = '';
@@ -106,7 +107,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._inputAutoresize, this)	
-			.addListener(input, 'keyup', this._filterRecords, this)
+			.addListener(input, 'keyup', this._filterRecords, this);
 //			.addListener(input, 'blur', function() {
 //				var that = this;
 //				setTimeout(function() {
@@ -121,8 +122,8 @@ L.Control.Search = L.Control.extend({
 		this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 	
-	_createButton: function (text, className, container) {
-		var button = L.DomUtil.create('a', className, container);
+	_createButton: function (text, className) {
+		var button = L.DomUtil.create('a', className, this._container);
 		button.href = '#';
 		button.title = text;
 
@@ -133,12 +134,25 @@ L.Control.Search = L.Control.extend({
 		return button;
 	},
 	
-	_createTooltip: function(className, container) {
-		return L.DomUtil.create('div', className, container);
+	_createTooltip: function(className) {
+		return L.DomUtil.create('div', className, this._container);
 	},
 	
+	_createAlert: function(className) {
+		var alert = L.DomUtil.create('div', className, this._container);
+		alert.innerHTML = this.options.textErr;//'&nbsp;';
+		alert.style.display = 'none';
+		return alert;
+	},
+
 	alertSearch: function(text) {
-		alert(text);
+		this._alert.style.display = 'block';
+		this._alert.innerHTML = text;
+		var that = this;
+		clearTimeout(this.alertT);
+		this.alertT = setTimeout(function() {
+			that._alert.style.display = 'none';
+		},2000);
 	},
 	
 	_findLocation: function() {	//go to location found
