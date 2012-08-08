@@ -140,12 +140,13 @@ L.Control.Search = L.Control.extend({
 	
 	_createAlert: function(className) {
 		var alert = L.DomUtil.create('div', className, this._container);
-		alert.innerHTML = this.options.textErr;//'&nbsp;';
+		alert.innerHTML = '&nbsp;';
 		alert.style.display = 'none';
 		return alert;
 	},
 
 	alertSearch: function(text) {
+		this.hideTooltip();
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
 		var that = this;
