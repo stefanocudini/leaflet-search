@@ -21,6 +21,7 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
+		this.timersTime = 2000;//delay for autoclosing
 	},
 
 	onAdd: function (map) {
@@ -57,6 +58,7 @@ L.Control.Search = L.Control.extend({
 		this._input.blur();	
 		this._input.value ='';
 		this._input.size = this._inputMinSize;
+		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
 	},
 
@@ -79,6 +81,7 @@ L.Control.Search = L.Control.extend({
 				this._input.value = text;
 				this._input.focus();
 				this.hideTooltip();
+				clearTimeout(this.timerMinimize);//block this._input blur!
 			},this);
 
 		return rec;
@@ -107,14 +110,13 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._inputAutoresize, this)	
-			.addListener(input, 'keyup', this._filterRecords, this);
-//			.addListener(input, 'blur', function() {
-//				var that = this;
-//				setTimeout(function() {
-//					that.hideTooltip();
-//					that.hideInput();
-//				},200);
-//			},this);
+			.addListener(input, 'keyup', this._filterRecords, this)
+			.addListener(input, 'blur', function() {
+				var that = this;
+				this.timerMinimize = setTimeout(function() {
+					that.hideInput();
+				}, this.timersTime);
+			},this);
 		return input;
 	},
 	
@@ -129,8 +131,11 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', this._findLocation, this);
-
+			.addListener(button, 'click', function() {			
+				this._findLocation();
+				clearTimeout(this.timerMinimize);//block this._input blur!
+			}, this);
+				
 		return button;
 	},
 	
@@ -150,10 +155,10 @@ L.Control.Search = L.Control.extend({
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
 		var that = this;
-		clearTimeout(this.alertT);
-		this.alertT = setTimeout(function() {
+		clearTimeout(this.timerAlert);
+		this.timerAlert = setTimeout(function() {
 			that._alert.style.display = 'none';
-		},2000);
+		},this.timersTime);
 	},
 	
 	_findLocation: function() {	//go to location found
@@ -196,7 +201,7 @@ L.Control.Search = L.Control.extend({
 	
 	_filterRecords: function(e) {	//filter this._recordsCache with this._input.value
 
-		if(e.keyCode==27)
+		if(e.keyCode==27)//Esc clicked
 			this.hideInput();
 
 		if(!this._recordsCache)		//initialize records
