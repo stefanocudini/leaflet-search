@@ -194,7 +194,10 @@ L.Control.Search = L.Control.extend({
 		return vals;
 	},
 	
-	_filterRecords: function() {	//filter this._recordsCache with this._input.value
+	_filterRecords: function(e) {	//filter this._recordsCache with this._input.value
+
+		if(e.keyCode==27)
+			this.hideInput();
 
 		if(!this._recordsCache)		//initialize records
 			this._recordsCache = this._updateRecords();//create table text,latlng
