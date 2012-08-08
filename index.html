@@ -98,6 +98,7 @@ for(i in coords)
 		tit = coords[i].title;
 
 	var marker = new L.Marker(pos, {title: tit } );
+	marker._leaflet_id = tit;
 	searchLayer.addLayer(marker);
 
 	//ul titles list

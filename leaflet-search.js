@@ -23,7 +23,7 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
-		this.timersTime = 2000;//delay for autoclosing
+		this.timersTime = 1200;//delay for autoclosing
 	},
 
 	onAdd: function (map) {
@@ -191,19 +191,23 @@ L.Control.Search = L.Control.extend({
 			}
 		}
 	},
-		
+
 	_updateRecords: function() {	//fill this._recordsCache with all values: text,latlng
-			
+		
+		this._recordsCache = {};
+		
 		var markers = this.options.layer._layers,
-			propFilter = this.options.propFilter,
-			vals = {};
+			propFilter = this.options.propFilter;
 
 		this.options.layer.eachLayer(function(marker) {
-			var text = marker.options[propFilter] || '';
-			vals[text]= marker.getLatLng();
+		//console.log(marker);
+			var id = marker._leaflet_id,
+				text = marker.options.hasOwnProperty(propFilter) && marker.options[propFilter] || '';
+			if(text)
+				this._recordsCache[text]= marker.getLatLng();
 		},this);
 
-		return vals;
+		return this._recordsCache;
 	},
 	
 	_filterRecords: function(e) {	//filter this._recordsCache with this._input.value
@@ -212,9 +216,11 @@ L.Control.Search = L.Control.extend({
 			this.hideInput();
 		else if(e.keyCode==13)//Enter
 			this._findLocation();
-			
-		if(!this._recordsCache)		//initialize records
-			this._recordsCache = this._updateRecords();//create table text,latlng
+		
+		//TODO ajax request for fill this._recordsCache
+
+		if(!this._recordsCache)		//initialize records			
+			this._updateRecords();//create table key,value
 
 		var inputText = this._input.value,
 			I = this.options.initial ? '^' : '',  //search for initial text

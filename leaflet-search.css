@@ -58,8 +58,9 @@
 	border-radius:.25em;
 	text-decoration:none;	
 }
-.leaflet-control-search .search-tip:hover {
-	background: #fff;
+.leaflet-control-search .search-tip:hover,
+.leaflet-control-search .search-button:hover {
+	background-color: #fff;
 }
 .leaflet-control-search .search-alert {
 	clear:both;
