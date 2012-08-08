@@ -20,7 +20,7 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);		
 		//this._recordsCache = this._updateRecords();//create table text,latlng
-		this._inputSize = this.options.text.length;
+		this._inputMinSize = this.options.text.length;
 	},
 
 	onAdd: function (map) {
@@ -55,7 +55,7 @@ L.Control.Search = L.Control.extend({
 		this.hideTooltip();
 		this._input.blur();	
 		this._input.value ='';
-		this._input.size = this._inputSize;
+		this._input.size = this._inputMinSize;
 		this._input.style.display = 'none';
 	},
 	
@@ -68,9 +68,9 @@ L.Control.Search = L.Control.extend({
 	
 	_createRecord: function(text, latlng, container) {//make record(tag a) insert into tooltip
 		var rec = L.DomUtil.create('a', 'search-record', container);
-			rec.href='#',
+			rec.href = '#',
 			rec.innerHTML = text;
-		
+
 		L.DomEvent
 			.disableClickPropagation(rec)
 			.addListener(rec, 'click', function(e) {
@@ -84,23 +84,28 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_fillTooltip: function(items) {//fill tooltip with links
-		if(items.length==0) return false;
 		this._tooltip.innerHTML = '';
-		for(i in items)
-			this._createRecord(items[i][0], items[i][1], this._tooltip);
-		this.showTooltip();
+		if(items.length)
+		{
+			for(i in items)
+				this._createRecord(items[i][0], items[i][1], this._tooltip);
+			this.showTooltip();
+		}
+		else
+			this.hideTooltip();
 	},
 	
 	_createInput: function (text, className, container) {
 		var input = L.DomUtil.create('input', className, container);
 		input.type = 'text';
-		input.size = this._inputSize,
+		input.size = this._inputMinSize,
 		input.value = '';
 		input.placeholder = text;
 		input.style.display = 'none';
 		
 		L.DomEvent
 			.disableClickPropagation(input)
+			.addListener(input, 'keyup', this._inputAutoresize, this)	
 			.addListener(input, 'keyup', this._filterRecords, this)
 //			.addListener(input, 'blur', function() {
 //				var that = this;
@@ -109,8 +114,11 @@ L.Control.Search = L.Control.extend({
 //					that.hideInput();
 //				},200);
 //			},this);
-
 		return input;
+	},
+	
+	_inputAutoresize: function() {	//autoresize this._input
+		this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 	
 	_createButton: function (text, className, container) {
@@ -132,7 +140,7 @@ L.Control.Search = L.Control.extend({
 	_createTooltip: function(className, container) {
 		return L.DomUtil.create('div', className, container);
 	},
-	
+		
 	_updateRecords: function() {	//fill this._recordsCache with all values: text,latlng
 		var markers = this.options.layer._layers,
 			propFilter = this.options.propFilter,
@@ -152,16 +160,18 @@ L.Control.Search = L.Control.extend({
 			I = this.options.initial ? '^' : '',  //search for initial text
 			reg = new RegExp(I + inputText,'i'),
 			records = this._recordsCache,
-			results = [];
+			results = [];		
 
-		this._input.size = inputText.length<this._inputSize ? this._inputSize : inputText.length;
-		//autoresize this._input			
-		
-		for(text in records)
+		if(inputText.length)
 		{
-			var latlng = records[text];
-			if(reg.test(text))//filter
-				results.push([text,latlng]);
+			for(text in records)
+			{
+				var latlng = records[text],
+					found = reg.test(text);
+
+				if(found)//filter
+					results.push([text,latlng]);
+			}
 		}
 		this._fillTooltip(results);
 	}
