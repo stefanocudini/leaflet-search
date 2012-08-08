@@ -42,8 +42,8 @@
 	min-width:80px;
 	
 	background: #eee;
-	border-radius:.125em;
-	padding: 0 4px 4px 4px;
+	border-radius:7px;
+	padding: 4px;
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1010;
 }

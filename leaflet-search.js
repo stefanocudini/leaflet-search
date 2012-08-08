@@ -1,4 +1,3 @@
-
 /*
  * Leaflet Search Plugin 1.0.0
  * https://github.com/stefanocudini/leaflet-search
@@ -11,44 +10,39 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		position: "topleft",
-		layer: new L.LayerGroup(),	//layer where search elements
-		text: "Search...",	//placeholder value
-		propFilter: 'title',	//property of elements filtered by _findElements()
+		position: 'topleft',
+		layer: new L.LayerGroup(),	//layer where search elements, default: empty layer
+		text: 'Search...',	//placeholder value
+		propFilter: 'title',	//property of elements filtered by _filterRecords()
 		initial: true
 	},
 
 	initialize: function(options) {
-		L.Util.setOptions(this, options);
-		this._records = this.options.layer._layers;//list of searched elements(markers)
-		this._tooltip = '';
+		L.Util.setOptions(this, options);		
+		//this._recordsCache = this._updateRecords();//create table text,latlng
 		this._inputSize = this.options.text.length;
 	},
 
 	onAdd: function (map) {
-
 		this._map = map;
-		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
-
 		this._tooltip = this._createTooltip('search-tooltip', this._container);
 		this._input = this._createInput(this.options.text, 'search-input', this._container);
 		this._createButton(this.options.text, 'search-button', this._container);
-		
-		//map.on("layeradd layerremove", this._updateSearchList, this);
-		
 		return this._container;
 	},
-	
+
+//	onRemove: function(map) {
+//TODO
+//	},
+
 	showTooltip: function() {//must be before of _createButton
 		this._input.focus();
 		this._tooltip.style.display = 'block';
 	},
 	
 	hideTooltip: function() {
-		this._input.blur();	
-		this._input.value ='';	
-		this._input.size = this._inputSize;
+//		this._input.blur();
 		this._tooltip.style.display = 'none';
 	},
 	
@@ -58,11 +52,13 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	hideInput: function() {
+		this.hideTooltip();
 		this._input.blur();	
 		this._input.value ='';
 		this._input.size = this._inputSize;
 		this._input.style.display = 'none';
 	},
+	
 	_switchInput: function() {
 		if(this._input.style.display == 'none')
 			this.showInput();
@@ -74,23 +70,25 @@ L.Control.Search = L.Control.extend({
 		var rec = L.DomUtil.create('a', 'search-record', container);
 			rec.href='#',
 			rec.innerHTML = text;
-
-		//console.log(this._map);
-			
+		
 		L.DomEvent
 			.disableClickPropagation(rec)
 			.addListener(rec, 'click', function(e) {
-				this._map.panTo(latlng);
+				//this._map.panTo(latlng);
+				this._input.value = text;
+				this._input.focus();
+				this.hideTooltip();
 			},this);
 
 		return rec;
 	},
 	
-	_fillTooltip: function(items) {//array values
+	_fillTooltip: function(items) {//fill tooltip with links
 		if(items.length==0) return false;
 		this._tooltip.innerHTML = '';
 		for(i in items)
 			this._createRecord(items[i][0], items[i][1], this._tooltip);
+		this.showTooltip();
 	},
 	
 	_createInput: function (text, className, container) {
@@ -101,18 +99,16 @@ L.Control.Search = L.Control.extend({
 		input.placeholder = text;
 		input.style.display = 'none';
 		
-		
 		L.DomEvent
 			.disableClickPropagation(input)
-			//.addListener(input, 'click', this._findElements,this)
-			.addListener(input, 'keyup', this._findElements,this)
-			.addListener(input, 'blur', function() {
-				var that = this;
-				setTimeout(function() {
-					that.hideTooltip();
-					that.hideInput();
-				},200);
-			},this);
+			.addListener(input, 'keyup', this._filterRecords, this)
+//			.addListener(input, 'blur', function() {
+//				var that = this;
+//				setTimeout(function() {
+//					that.hideTooltip();
+//					that.hideInput();
+//				},200);
+//			},this);
 
 		return input;
 	},
@@ -124,39 +120,50 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', this._switchInput,this);
+			.addListener(button, 'click', function() {
+				if(!this._recordsCache)		//initialize records
+					this._recordsCache = this._updateRecords();//create table text,latlng
+				this._switchInput();
+			}, this);
 
 		return button;
 	},
 	
 	_createTooltip: function(className, container) {
-		var tooltip = L.DomUtil.create('div', className, container);
-		//bind events
-		return tooltip;
+		return L.DomUtil.create('div', className, container);
 	},
 	
-	_findElements: function() {
-	
-		var text = this._input.value;
+	_updateRecords: function() {	//fill this._recordsCache with all values: text,latlng
+		var markers = this.options.layer._layers,
+			propFilter = this.options.propFilter,
+			vals = {};
 
-		this._input.size = text.length<this._inputSize ? this._inputSize : text.length;
-	
-		var I = this.options.initial ? '^' : '',//initial with text
-			reg = new RegExp(I + text,'i'),
-			markers = this._records,//all elements
-			vals = [];//matched vals for fill tooltip
+		this.options.layer.eachLayer(function(marker) {
+			var text = marker.options[propFilter] || '';
+			vals[text]= marker.getLatLng();
+		},this);
 
-		for(id in markers)
+		return vals;
+	},
+	
+	_filterRecords: function() {	//filter this._recordsCache with this._input.value
+		
+		var inputText = this._input.value,
+			I = this.options.initial ? '^' : '',  //search for initial text
+			reg = new RegExp(I + inputText,'i'),
+			records = this._recordsCache,
+			results = [];
+
+		this._input.size = inputText.length<this._inputSize ? this._inputSize : inputText.length;
+		//autoresize this._input			
+		
+		for(text in records)
 		{
-			var marker = markers[id],
-				found = reg.test(marker.options[this.options.propFilter]);
-			
-			if(text.length==0 || (marker.options && marker.options.title && found) )
-				vals.push( [marker.options.title, marker.getLatLng()] );
-		};
-		this.showTooltip();
-		this._fillTooltip(vals);
-	
+			var latlng = records[text];
+			if(reg.test(text))//filter
+				results.push([text,latlng]);
+		}
+		this._fillTooltip(results);
 	}
 
 });
