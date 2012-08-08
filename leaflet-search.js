@@ -13,13 +13,12 @@ L.Control.Search = L.Control.extend({
 		position: 'topleft',
 		layer: new L.LayerGroup(),	//layer where search elements, default: empty layer
 		text: 'Search...',	//placeholder value
-		propFilter: 'title',	//property of elements filtered by _filterRecords()
+		propFilter: 'title',	//property of elements filtered
 		initial: true
 	},
 
 	initialize: function(options) {
-		L.Util.setOptions(this, options);		
-		//this._recordsCache = this._updateRecords();//create table text,latlng
+		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
 	},
 
@@ -32,9 +31,9 @@ L.Control.Search = L.Control.extend({
 		return this._container;
 	},
 
-//	onRemove: function(map) {
-//TODO
-//	},
+	onRemove: function(map) {
+		delete this._recordsCache;//free memory
+	},
 
 	showTooltip: function() {//must be before of _createButton
 		this._input.focus();
@@ -59,12 +58,12 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 	},
 	
-	_switchInput: function() {
-		if(this._input.style.display == 'none')
-			this.showInput();
-		else
-			this.hideInput();
-	},
+//	_switchInput: function() {
+//		if(this._input.style.display == 'none')
+//			this.showInput();
+//		else
+//			this.hideInput();
+//	},
 	
 	_createRecord: function(text, latlng, container) {//make record(tag a) insert into tooltip
 		var rec = L.DomUtil.create('a', 'search-record', container);
@@ -128,11 +127,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', function() {
-				if(!this._recordsCache)		//initialize records
-					this._recordsCache = this._updateRecords();//create table text,latlng
-				this._switchInput();
-			}, this);
+			.addListener(button, 'click', this._findLocation, this);
 
 		return button;
 	},
@@ -140,8 +135,34 @@ L.Control.Search = L.Control.extend({
 	_createTooltip: function(className, container) {
 		return L.DomUtil.create('div', className, container);
 	},
+	
+//	alertSearch: function(text) {
+//		return L.DomUtil.create('div', className, container);
+//	},
+	
+	_findLocation: function() {	//go to location found
+		
+		if(this._input.style.display == 'none')
+		{
+			this.showInput();
+		}
+		else
+		{
+			if(this._input.value)
+			{
+				var latlng = this._recordsCache[this._input.value];
+				if(latlng)
+					this._map.panTo(latlng);
+				else
+					alert('location not found');
+			}
+		
+			this.hideInput();
+		}
+	},
 		
 	_updateRecords: function() {	//fill this._recordsCache with all values: text,latlng
+			
 		var markers = this.options.layer._layers,
 			propFilter = this.options.propFilter,
 			vals = {};
@@ -155,7 +176,10 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_filterRecords: function() {	//filter this._recordsCache with this._input.value
-		
+
+		if(!this._recordsCache)		//initialize records
+			this._recordsCache = this._updateRecords();//create table text,latlng
+
 		var inputText = this._input.value,
 			I = this.options.initial ? '^' : '',  //search for initial text
 			reg = new RegExp(I + inputText,'i'),
