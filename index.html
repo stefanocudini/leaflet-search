@@ -81,7 +81,7 @@ var searchLayer = new L.LayerGroup();
 
 map.addLayer(searchLayer);
 
-map.addControl(new L.Control.Search({layer: searchLayer}));
+map.addControl(new L.Control.Search({layer: searchLayer, zoom: 10}));
 
 
 for(i in coords)

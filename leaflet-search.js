@@ -15,7 +15,8 @@ L.Control.Search = L.Control.extend({
 		text: 'Search...',	//placeholder value
 		textErr: 'Location not found',
 		propFilter: 'title',	//property of elements filtered
-		initial: true
+		initial: true,
+		zoom: false	//zoom after pan to location found, default: map.getZoom()
 	},
 
 	initialize: function(options) {
@@ -37,14 +38,23 @@ L.Control.Search = L.Control.extend({
 	onRemove: function(map) {
 		delete this._recordsCache;//free memory
 	},
-
+	
+	alertSearch: function(text) {
+		this.hideTooltip();
+		this._alert.style.display = 'block';
+		this._alert.innerHTML = text;
+		var that = this;
+		clearTimeout(this.timerAlert);
+		this.timerAlert = setTimeout(function() {
+			that._alert.style.display = 'none';
+		},this.timersTime);
+	},
+	
 	showTooltip: function() {//must be before of _createButton
-		this._input.focus();
 		this._tooltip.style.display = 'block';
 	},
 	
 	hideTooltip: function() {
-//		this._input.blur();
 		this._tooltip.style.display = 'none';
 	},
 	
@@ -77,7 +87,6 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(rec)
 			.addListener(rec, 'click', function(e) {
-				//this._map.panTo(latlng);
 				this._input.value = text;
 				this._input.focus();
 				this.hideTooltip();
@@ -149,19 +158,8 @@ L.Control.Search = L.Control.extend({
 		alert.style.display = 'none';
 		return alert;
 	},
-
-	alertSearch: function(text) {
-		this.hideTooltip();
-		this._alert.style.display = 'block';
-		this._alert.innerHTML = text;
-		var that = this;
-		clearTimeout(this.timerAlert);
-		this.timerAlert = setTimeout(function() {
-			that._alert.style.display = 'none';
-		},this.timersTime);
-	},
 	
-	_findLocation: function() {	//go to location found
+	_findLocation: function() {	//pan to location if founded
 		
 		if(this._input.style.display == 'none')
 		{
@@ -176,12 +174,14 @@ L.Control.Search = L.Control.extend({
 				var latlng = this._recordsCache[this._input.value];
 				if(latlng)
 				{
-					this._map.panTo(latlng);
+					//this._map.panTo(latlng);
+					var z = this.options.zoom || this._map.getZoom();
+					this._map.setView(latlng, z);
 					this.hideInput();
 				}
 				else
 					this.alertSearch( this.options.textErr );
-			}			
+			}
 		}
 	},
 		
@@ -201,9 +201,11 @@ L.Control.Search = L.Control.extend({
 	
 	_filterRecords: function(e) {	//filter this._recordsCache with this._input.value
 
-		if(e.keyCode==27)//Esc clicked
+		if(e.keyCode==27)//Esc
 			this.hideInput();
-
+		else if(e.keyCode==13)//Enter
+			this._findLocation();
+			
 		if(!this._recordsCache)		//initialize records
 			this._recordsCache = this._updateRecords();//create table text,latlng
 
