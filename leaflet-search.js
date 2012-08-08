@@ -88,6 +88,7 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(rec)
 			.addListener(rec, 'click', function(e) {
 				this._input.value = text;
+				this._inputAutoresize();
 				this._input.focus();
 				this.hideTooltip();
 				clearTimeout(this.timerMinimize);//block this._input blur!

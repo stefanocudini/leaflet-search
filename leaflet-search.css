@@ -14,6 +14,7 @@
 	z-index:1000;
 }
 .leaflet-control-search .search-input {
+	font-size:.85em;
 	background: #eee;
 	border:1px solid #666;
 	border-radius:.4em;
@@ -40,7 +41,7 @@
 	left:0;
 	float:left;
 	min-width:80px;
-	
+	box-shadow: 0 1px 7px #999;	
 	background: #eee;
 	border-radius:7px;
 	padding: 4px;
@@ -48,11 +49,13 @@
 	z-index:1010;
 }
 .leaflet-control-search .search-tip {
+	font-size:.85em;
+	line-height:1em;
 	margin:.125em;
-	padding:0 .125em;
+	padding:.25em;
 	display:block;
 	background: #eee;
-	border-radius:.125em;
+	border-radius:.25em;
 	text-decoration:none;	
 }
 .leaflet-control-search .search-tip:hover {
