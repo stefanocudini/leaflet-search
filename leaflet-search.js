@@ -16,6 +16,7 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',
 		propFilter: 'title',	//property of elements filtered
 		initial: true,
+		autoPan: false,  //auto panTo when click on tooltip
 		zoom: false	//zoom after pan to location found, default: map.getZoom()
 	},
 
@@ -88,10 +89,15 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(rec)
 			.addListener(rec, 'click', function(e) {
 				this._input.value = text;
-				this._inputAutoresize();
-				this._input.focus();
-				this.hideTooltip();
-				clearTimeout(this.timerMinimize);//block this._input blur!
+				if(this.options.autoPan===false)
+				{
+					this._inputAutoresize();
+					this._input.focus();
+					this.hideTooltip();
+					clearTimeout(this.timerMinimize);//block this._input blur!
+				}
+				else
+					this._findLocation();
 			},this);
 
 		return rec;

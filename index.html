@@ -85,7 +85,7 @@ var map = new L.Map('map', {center: new L.LatLng(coords[0].loc[0], coords[0].loc
 
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
 
-var searchLayer = new L.LayerGroup();
+var searchLayer = new L.LayerGroup();//layer with searched markers
 
 map.addLayer(searchLayer);
 
