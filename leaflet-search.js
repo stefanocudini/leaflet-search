@@ -59,12 +59,12 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.style.display = 'none';
 	},
 	
-	showInput: function() {//must be before of _createButton
+	maximize: function() {//must be before of _createButton
 		this._input.style.display = 'block';
 		this._input.focus();
 	},
 	
-	hideInput: function() {
+	minimize: function() {
 		this.hideTooltip();
 		this._input.blur();	
 		this._input.value ='';
@@ -73,13 +73,6 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 	},
 
-//	_switchInput: function() {
-//		if(this._input.style.display == 'none')
-//			this.showInput();
-//		else
-//			this.hideInput();
-//	},
-	
 	_createTip: function(text, latlng) {//make record(tag a) insert into tooltip
 		var rec = L.DomUtil.create('a', 'search-tip', this._tooltip);
 			rec.href = '#',
@@ -130,7 +123,7 @@ L.Control.Search = L.Control.extend({
 			.addListener(input, 'blur', function() {
 				var that = this;
 				this.timerMinimize = setTimeout(function() {
-					that.hideInput();
+					that.minimize();
 				}, this.timersTime);
 			},this);
 		return input;
@@ -170,12 +163,12 @@ L.Control.Search = L.Control.extend({
 		
 		if(this._input.style.display == 'none')
 		{
-			this.showInput();
+			this.maximize();
 		}
 		else
 		{
 			if(this._input.value=='')
-				this.hideInput();
+				this.minimize();
 			else
 			{
 				var latlng = this._recordsCache[this._input.value];
@@ -184,7 +177,7 @@ L.Control.Search = L.Control.extend({
 					//this._map.panTo(latlng);
 					var z = this.options.zoom || this._map.getZoom();
 					this._map.setView(latlng, z);
-					this.hideInput();
+					this.minimize();
 				}
 				else
 					this.alertSearch( this.options.textErr );
@@ -213,7 +206,7 @@ L.Control.Search = L.Control.extend({
 	_filterRecords: function(e) {	//filter this._recordsCache with this._input.value
 
 		if(e.keyCode==27)//Esc
-			this.hideInput();
+			this.minimize();
 		else if(e.keyCode==13)//Enter
 			this._findLocation();
 		
