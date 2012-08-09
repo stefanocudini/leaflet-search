@@ -68,22 +68,27 @@ h3,h4 {
 <script src="/leaflet/leaflet.js"></script>
 <script src="leaflet-search.js"></script>
 <script>
-//sample positions
+
+//samples data
 var coords = [
-	{"loc":[41.239190,13.032145], "title":"black"},
+	{"loc":[41.575730,13.002411], "title":"black"},
 	{"loc":[41.807149,13.162994], "title":"blue"},
 	{"loc":[41.219190,13.062145], "title":"cyan"},
 	{"loc":[41.344190,13.242145], "title":"darkblue"},	
 	{"loc":[41.679190,13.122145], "title":"darkred"},
+	{"loc":[41.349190,13.152145], "title":"darkgray"},	
 	{"loc":[41.319190,13.162145], "title":"gray"},
 	{"loc":[41.794008,12.583884], "title":"green"},	
-	{"loc":[41.575730,13.002411], "title":"red"},	
-	{"loc":[41.546175,13.673590], "title":"yellow"}
+	{"loc":[41.536175,13.573590], "title":"red"},	
+	{"loc":[41.546175,13.673590], "title":"yellow"},
+	{"loc":[41.239190,13.032145], "title":"white"}
 ];
 
-var map = new L.Map('map', {center: new L.LatLng(coords[0].loc[0], coords[0].loc[1]), zoom: 9});
+var cen = new L.latLng(coords[0].loc);//set center from first coord location
 
-map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+var map = new L.Map('map', {center: cen, zoom: 9});
+
+map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 var searchLayer = new L.LayerGroup();//layer with searched markers
 
@@ -93,9 +98,9 @@ map.addControl(new L.Control.Search({layer: searchLayer, zoom: 10}));
 
 var ul = L.DomUtil.get('titles');//ul titles list
 
-for(i in coords)
+for(i in coords)	//make markers and colors list
 {
-	var pos = new L.LatLng(coords[i].loc[0], coords[i].loc[1]),
+	var pos = new L.latLng(coords[i].loc),
 		tit = coords[i].title;
 
 	var marker = new L.Marker(pos, {title: tit } );
@@ -105,8 +110,6 @@ for(i in coords)
 
 	L.DomUtil.create('li', '', ul).innerHTML = tit;
 }
-
-
 
 </script>
 
