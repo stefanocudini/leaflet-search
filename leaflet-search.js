@@ -18,6 +18,7 @@ L.Control.Search = L.Control.extend({
 		propFilter: 'title',	//property of elements filtered
 		initial: true,
 		autoPan: false,  //auto panTo when click on tooltip
+		animPan: false,	//animation after panTo
 		zoom: false	//zoom after pan to location found, default: map.getZoom()
 	},
 
@@ -27,7 +28,7 @@ L.Control.Search = L.Control.extend({
 		this.timersTime = 1200;//delay for autoclosing
 	},
 
-	onAdd: function (map) {
+	onAdd: function (e) {
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
@@ -160,8 +161,29 @@ L.Control.Search = L.Control.extend({
 		return alert;
 	},
 	
-	_findLocation: function() {	//pan to location if founded
+	_animLocation: function(latlng) {
+		var circle = new L.CircleMarker(latlng, {radius: 40, color: '#e03', fill:false});
+		circle.addTo(map);
 		
+		var tt = 100,
+			ss = 20,
+			mr = circle._radius/ss
+			f = 0;
+
+		var ii = setInterval(function() {  //animation
+			mr += f++;
+			if(circle._radius-mr > 5)
+				circle.setRadius(circle._radius-mr);
+			else
+			{
+				map.removeLayer(circle);
+				clearInterval(ii);
+			}
+		},tt);
+	},
+	
+	_findLocation: function() {	//pan to location if founded
+
 		if(this._input.style.display == 'none')
 		{
 			this.maximize();
@@ -177,7 +199,9 @@ L.Control.Search = L.Control.extend({
 				{
 					//this._map.panTo(latlng);
 					var z = this.options.zoom || this._map.getZoom();
-					this._map.setView(latlng, z);
+					if(this.options.animPan)
+						this._animLocation(latlng);
+					this._map.setView(latlng, z);						
 					this.minimize();
 				}
 				else
