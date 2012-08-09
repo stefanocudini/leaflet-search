@@ -1,6 +1,7 @@
 /*
  * Leaflet Search Plugin 1.0.0
  * https://github.com/stefanocudini/leaflet-search
+ * https://bitbucket.org/zakis_/leaflet-search
  *
  * Copyright 2012, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
