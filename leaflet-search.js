@@ -234,12 +234,10 @@ L.Control.Search = L.Control.extend({
 			this.minimize();
 		else if(e.keyCode==13)//Enter
 			this._findLocation();
-		
-		//TODO ajax request for fill this._recordsCache
 
 		if(!this._recordsCache)		//initialize records			
 			this._updateRecords();//create table key,value
-
+		
 		var inputText = this._input.value,
 			I = this.options.initial ? '^' : '',  //search for initial text
 			reg = new RegExp(I + inputText,'i'),

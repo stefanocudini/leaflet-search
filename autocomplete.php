@@ -8,7 +8,10 @@
  * Licensed under the MIT license.
  */
 
-@header("Content-type: text/plain; charset=utf-8");
+@header("Content-type: application/json; charset=utf-8");
+
+if(!isset($_GET['q']) or empty($_GET['q']))
+	die( json_encode(array('ok'=>0, 'errmsg'=>'specify a query') ) );
 
 $data = json_decode('[
 	{"loc":[41.239190,13.032145], "title":"black"},
@@ -32,9 +35,9 @@ function searchInit($text)	//search initial text in titles
 }
 
 $fdata = array_filter($data,'searchInit');	//filter data by title
-
+$fdata = array_values($fdata);	//reset indexs
 $res = array('ok'=>1, 'results'=> $fdata);	//formatting json result
 
-echo json_encode($res);
+echo json_encode($res,true);
 
 ?>
