@@ -91,6 +91,7 @@ map.addLayer(searchLayer);
 
 map.addControl(new L.Control.Search({layer: searchLayer, zoom: 10}));
 
+var ul = L.DomUtil.get('titles');//ul titles list
 
 for(i in coords)
 {
@@ -102,10 +103,7 @@ for(i in coords)
 	marker.bindPopup('<i>title:</i> <b>'+tit+'<b>');
 	searchLayer.addLayer(marker);
 
-	//ul titles list
-	var ul = L.DomUtil.get('titles');
-	var li = L.DomUtil.create('li', '',ul);
-	li.innerHTML = tit;
+	L.DomUtil.create('li', '', ul).innerHTML = tit;
 }
 
 
