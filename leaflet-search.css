@@ -1,7 +1,6 @@
 
 .leaflet-control-search {
 	position:relative;
-
 	float:left;
 	background:#fff;
 	color:#1978cf;
@@ -65,7 +64,7 @@
 .leaflet-control-search .search-alert {
 	clear:both;
 	font-size:.75em;
-	margin-top:26px;
+	margin-bottom:7px;
 	padding:0 .25em;
 	color:#e00;
 	background-color: rgba(255, 255, 255, 0.75);

@@ -26,15 +26,16 @@ L.Control.Search = L.Control.extend({
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
 		this.timersTime = 1200;//delay for autoclosing
+		this._recordsCache = null;//key,value table! that store locations!
 	},
 
 	onAdd: function (map) {
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
+		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
-		this._alert = this._createAlert('search-alert');
-		this._tooltip = this._createTooltip('search-tooltip');		
+		this._tooltip = this._createTooltip('search-tooltip');
 		return this._container;
 	},
 
@@ -61,7 +62,7 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.style.display = 'none';
 	},
 	
-	maximize: function() {//must be before of _createButton
+	maximize: function() {
 		this._input.style.display = 'block';
 		this._input.focus();
 	},
@@ -75,7 +76,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 	},
 
-	_createTip: function(text, latlng) {//make record(tag a) insert into tooltip
+	_createTip: function(text, latlng) {	//make new choice into tooltip
 		var rec = L.DomUtil.create('a', 'search-tip', this._tooltip);
 			rec.href = '#',
 			rec.innerHTML = text;
@@ -86,7 +87,7 @@ L.Control.Search = L.Control.extend({
 				this._input.value = text;
 				if(this.options.autoPan===false)
 				{
-					this._inputAutoresize();
+					this._handleAutoresize();
 					this._input.focus();
 					this.hideTooltip();
 					clearTimeout(this.timerMinimize);//block this._input blur!
@@ -120,8 +121,8 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomEvent
 			.disableClickPropagation(input)
-			.addListener(input, 'keyup', this._inputAutoresize, this)//autoresize _input	
-			.addListener(input, 'keyup', this._filterRecords, this)
+			.addListener(input, 'keyup', this._handleAutoresize, this)
+			.addListener(input, 'keyup', this._handleKeydown, this)
 			.addListener(input, 'blur', function() {
 				var that = this;
 				this.timerMinimize = setTimeout(function() {
@@ -129,16 +130,7 @@ L.Control.Search = L.Control.extend({
 				}, this.timersTime);
 			},this);
 		return input;
-	},
-	
-	_handleKeydown: function (e) {
-	
-	},
-	
-	_inputAutoresize: function() {	//autoresize this._input
-		this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
-		//TODO add option autoresize
-	},
+	},	
 	
 	_createButton: function (text, className) {
 		var button = L.DomUtil.create('a', className, this._container);
@@ -161,6 +153,21 @@ L.Control.Search = L.Control.extend({
 		alert.innerHTML = '&nbsp;';
 		alert.style.display = 'none';
 		return alert;
+	},
+	//////end DOM creations
+
+	_handleKeydown: function (e) {
+		if(e.keyCode == 27)//Esc
+			this.minimize();
+		else if(e.keyCode == 13)//Enter
+			this._handleSubmit();//do search
+		//shortcuts!
+		this._filterRecords(this._input.value);
+	},
+	
+	_handleAutoresize: function() {	//autoresize this._input
+		this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
+		//TODO add option autoresize
 	},
 	
 	_handleSubmit: function(e) {	//search button action
@@ -246,13 +253,7 @@ L.Control.Search = L.Control.extend({
 		return this._recordsCache;
 	},
 	
-	_filterRecords: function(e) {	//filter this._recordsCache with this._input.value
-
-		if(e.keyCode==27)//Esc
-			this.minimize();
-		else if(e.keyCode==13)//Enter
-			this._handleSubmit();//do search
-		//few shortcuts!
+	_filterRecords: function(text) {	//filter this._recordsCache with this._input.value
 
 //		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
 //			console.log(json);
@@ -263,18 +264,17 @@ L.Control.Search = L.Control.extend({
 		if(!this._recordsCache)		//initialize records			
 			this._updateRecords();	//create table key,value
 		
-		var inputText = this._input.value,
-			I = this.options.initial ? '^' : '',  //search for initial text
-			reg = new RegExp(I + inputText,'i'),
+		var I = this.options.initial ? '^' : '',  //search for initial text
+			reg = new RegExp(I + text,'i'),
 			records = this._recordsCache,
-			results = [];		
+			results = [];
 
-		if(inputText.length)
+		if(text.length)
 		{
-			for(text in records)
+			for(key in records)
 			{
-				if(reg.test(text))//filter
-					results.push( [text, records[text] ]);// [key,value]
+				if(reg.test(key))//filter
+					results.push( [key, records[key] ]);// [key,value]
 			}
 		}
 		this._fillTooltip(results);
