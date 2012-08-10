@@ -64,7 +64,6 @@ L.Control.Search = L.Control.extend({
 	
 	minimize: function() {
 		this._hideTooltip();
-		this._input.blur();	
 		this._input.value ='';
 		this._input.size = this._inputMinSize;
 		this._alert.style.display = 'none';
@@ -148,28 +147,31 @@ L.Control.Search = L.Control.extend({
 
 	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache
 
+		if(text.length<1)	//TODO add tooltip min length
+		{
+			this._hideTooltip();
+			return false;
+		}
+
 		var I = this.options.initialSearch ? '^' : '',  //search for initial text
 			reg = new RegExp(I + text,'i'),
-			records = this._recordsCache,
 			results = 0;
 
 		this._tooltip.innerHTML = '';
 		
-		if(text.length)
+		for(key in this._recordsCache)
 		{
-			for(key in records)
+			if(reg.test(key))//filter
 			{
-				if(reg.test(key))//filter
-				{
-					this._createTip(key);
-					results++;
-				}
+				this._createTip(key);
+				results++;
 			}
-			if(results>0)
-				this._tooltip.style.display = 'block';
-			else
-				this._hideTooltip();
 		}
+		if(results>0)
+			this._tooltip.style.display = 'block';
+		else
+			this._hideTooltip();
+
 		return results;
 	},
 
@@ -177,7 +179,17 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.style.display = 'none';
 		this._tooltip.innerHTML = '';
 	},
-		
+	
+	_requestJsonp: function(url, cb) {
+		L.Control.Search.callJsonp = function(data) {
+			this._recordsCache = cb(data);
+		}
+		var el = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
+			delim = url.indexOf('?') >= 0 ? '&' : '?';
+		el.type = 'text/javascript';
+		el.src = "" + url + delim +"callback=L.Control.Search.callJsonp";
+	},	
+
 	_handleKeypress: function (e) {
 		switch(e.keyCode)
 		{
@@ -199,6 +211,14 @@ L.Control.Search = L.Control.extend({
 				var that = this;
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 
+//					this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
+//						console.log(json);
+//						return json.results;
+//						for(i in json.results)
+//							json.results[i]= L.latLng(json.results[i]);
+//						return json.results;
+//					});
+
 					if(!that._recordsCache)		//initialize records, first time, or always for jsonp search
 						that._updateRecords();	//fill table key,value
 				
@@ -206,7 +226,7 @@ L.Control.Search = L.Control.extend({
 
 				}, that.timeKeypress);
 		}
-	},
+	},	
 	
 	_handleAutoresize: function() {	//autoresize this._input
 		if(this.options.autoResize)
@@ -256,16 +276,6 @@ L.Control.Search = L.Control.extend({
 		}, tt);
 	},
 	
-	_requestJsonp: function(url, cb) {
-		L.Control.Search.callJsonp = function(data) {
-			return cb(data);
-		}
-		var el = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
-			delim = url.indexOf('?') >= 0 ? '&' : '?';
-		el.type = 'text/javascript';
-		el.src = "" + url + delim +"callback=L.Control.Search.callJsonp";
-	},	
-	
 	_findLocation: function(text) {	//get location in table _recordsCache and pan to location if founded
 	
 		if( this._recordsCache.hasOwnProperty(text) )
@@ -286,15 +296,6 @@ L.Control.Search = L.Control.extend({
 		
 		//cb is callback per fill records
 		this._recordsCache = {};
-
-
-//TODO delay after each keydown!!
-//		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
-//			console.log(json);
-//			return json.results;
-//			//TODO convert coord in L.LatLng object!!
-//			this._recordsCache = json.results;
-//		});
 
 		var markers = this.options.layerSearch._layers,
 			propFilter = this.options.propFilter;
