@@ -19,6 +19,7 @@ L.Control.Search = L.Control.extend({
 		initial: true,
 		autoPan: false,  //auto panTo when click on tooltip
 		animatePan: true,	//animation after panTo
+		autoResize: true,	//autoresize on input change
 		zoom: 10	//zoom after pan to location found, default: map.getZoom()
 	},
 
@@ -96,7 +97,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleAutoresize, this)
-			.addListener(input, 'keyup', this._handleKeydown, this)
+			.addListener(input, 'keyup', this._handleKeypress, this)
 			.addListener(input, 'blur', this.minimizeSlow, this)
 			.addListener(input, 'focus', this.minimizeSlowStop, this);
 			
@@ -167,7 +168,6 @@ L.Control.Search = L.Control.extend({
 			else
 				this._hideTooltip();
 		}
-
 		return results;
 	},
 
@@ -176,13 +176,13 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.innerHTML = '';
 	},
 		
-	_handleKeydown: function (e) {
+	_handleKeypress: function (e) {
 		if(e.keyCode == 27)//Esc
 			this.minimize();
 		else if(e.keyCode == 13)//Enter
 			this._handleSubmit();//do search
 		//shortcuts!
-				
+
 		if(!this._recordsCache)		//initialize records, first time, or always for jsonp search
 			this._updateRecords();	//create table key,value
 		
@@ -190,8 +190,8 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_handleAutoresize: function() {	//autoresize this._input
-		this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
-		//TODO add option autoresize
+		if(this.options.autoResize)
+			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 	
 	_handleSubmit: function(e) {	//search button action
