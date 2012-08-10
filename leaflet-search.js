@@ -20,7 +20,7 @@ L.Control.Search = L.Control.extend({
 		autoPan: false,  //auto panTo when click on tooltip
 		animatePan: true,	//animation after panTo
 		autoResize: true,	//autoresize on input change
-		zoom: 10	//zoom after pan to location found, default: map.getZoom()
+		zoom: null	//zoom after pan to location found, default: map.getZoom()
 	},
 
 	initialize: function(options) {
