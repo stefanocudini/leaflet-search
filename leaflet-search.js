@@ -18,7 +18,7 @@ L.Control.Search = L.Control.extend({
 		propFilter: 'title',	//property of elements filtered
 		initial: true,
 		autoPan: true,  //auto panTo when click on tooltip
-		animPan: true,	//animation after panTo
+		animatePan: true,	//animation after panTo
 		zoom: 10	//zoom after pan to location found, default: map.getZoom()
 	},
 
@@ -68,8 +68,50 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 	},
 	
+	_createAlert: function(className) {
+		var alert = L.DomUtil.create('div', className, this._container);
+		alert.innerHTML = '&nbsp;';
+		alert.style.display = 'none';
+		return alert;
+	},
+
+	_createInput: function (text, className) {
+		var input = L.DomUtil.create('input', className, this._container);
+		input.type = 'text';
+		input.size = this._inputMinSize,
+		input.value = '';
+		input.placeholder = text;
+		input.style.display = 'none';
+		
+		L.DomEvent
+			.disableClickPropagation(input)
+			.addListener(input, 'keyup', this._handleAutoresize, this)
+			.addListener(input, 'keyup', this._handleKeydown, this)
+			.addListener(input, 'blur', function() {
+				var that = this;
+				this.timerMinimize = setTimeout(function() {
+					that.minimize();
+				}, this.timersTime);
+			},this);
+		return input;
+	},	
+		
+	_createButton: function (text, className) {
+		var button = L.DomUtil.create('a', className, this._container);
+		button.href = '#';
+		button.title = text;
+
+		L.DomEvent
+			.disableClickPropagation(button)
+			.addListener(button, 'click', this._handleSubmit, this);
+
+		return button;
+	},
+
 	_createTooltip: function(className) {
-		return L.DomUtil.create('div', className, this._container);
+		var tool = L.DomUtil.create('div', className, this._container);
+		tool.style.display = 'none';
+		return tool;
 	},
 
 	_createTip: function(text) {	//make new choice for tooltip
@@ -96,99 +138,53 @@ L.Control.Search = L.Control.extend({
 			}, this);
 
 		return tip;
-	},
-	
-	_doAutocomplete: function(text) {	//show tooltip with filtered this._recordsCache
+	},	
+	//////end DOM creations
+
+	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache
 
 		var I = this.options.initial ? '^' : '',  //search for initial text
 			reg = new RegExp(I + text,'i'),
 			records = this._recordsCache,
-			results = [];
+			results = 0;
 
+		this._tooltip.innerHTML = '';
+		
 		if(text.length)
 		{
 			for(key in records)
 			{
 				if(reg.test(key))//filter
-					results.push(key);// [key,value]
+				{
+					this._createTip(key);
+					results++;
+				}
 			}
+			if(results>0)
+				this._tooltip.style.display = 'block';
+			else
+				this._hideTooltip();
 		}
-		this._showTooltip(results);
+
 		return results;
-	},
-	
-	_showTooltip: function(items) {
-		
-		if(items.length)
-		{
-			this._tooltip.innerHTML = '';
-			for(i in items)
-				this._createTip(items[i]);
-			this._tooltip.style.display = 'block';
-		}
-		else
-			this._hideTooltip();
 	},
 
 	_hideTooltip: function() {
 		this._tooltip.style.display = 'none';
 		this._tooltip.innerHTML = '';
 	},
-	
-	_createInput: function (text, className) {
-		var input = L.DomUtil.create('input', className, this._container);
-		input.type = 'text';
-		input.size = this._inputMinSize,
-		input.value = '';
-		input.placeholder = text;
-		input.style.display = 'none';
 		
-		L.DomEvent
-			.disableClickPropagation(input)
-			.addListener(input, 'keyup', this._handleAutoresize, this)
-			.addListener(input, 'keyup', this._handleKeydown, this)
-			.addListener(input, 'blur', function() {
-				var that = this;
-				this.timerMinimize = setTimeout(function() {
-					that.minimize();
-				}, this.timersTime);
-			},this);
-		return input;
-	},	
-	
-	_createButton: function (text, className) {
-		var button = L.DomUtil.create('a', className, this._container);
-		button.href = '#';
-		button.title = text;
-
-		L.DomEvent
-			.disableClickPropagation(button)
-			.addListener(button, 'click', this._handleSubmit, this);
-
-		return button;
-	},
-	
-	_createAlert: function(className) {
-		var alert = L.DomUtil.create('div', className, this._container);
-		alert.innerHTML = '&nbsp;';
-		alert.style.display = 'none';
-		return alert;
-	},
-	//////end DOM creations
-	
 	_handleKeydown: function (e) {
 		if(e.keyCode == 27)//Esc
 			this.minimize();
 		else if(e.keyCode == 13)//Enter
 			this._handleSubmit();//do search
 		//shortcuts!
-		
-		//TODO delay after each keyKeydown!!
-		
+				
 		if(!this._recordsCache)		//initialize records, first time, or always for jsonp search
 			this._updateRecords();	//create table key,value
 		
-		this._doAutocomplete(this._input.value);
+		this._showTooltip(this._input.value);//show tooltip with filter records by this._input.value
 	},
 	
 	_handleAutoresize: function() {	//autoresize this._input
@@ -198,11 +194,11 @@ L.Control.Search = L.Control.extend({
 	
 	_handleSubmit: function(e) {	//search button action
 	
-		if(this._input.style.display == 'none')//on first click show _input only
+		if(this._input.style.display == 'none')	//on first click show _input only
 			this.maximize();
 		else
 		{
-			if(this._input.value=='')//hide _input only
+			if(this._input.value=='')	//hide _input only
 				this.minimize();
 			else
 			{
@@ -211,11 +207,11 @@ L.Control.Search = L.Control.extend({
 				else
 					this.alertSearch( this.options.textErr );//location not found, alert!
 			}
-		}				
-		clearTimeout(this.timerMinimize);//block _input blur!
+		}
+		clearTimeout(this.timerMinimize);	//block _input blur!
 	},
 	
-	_animLocation: function(latlng) {
+	_animateLocation: function(latlng) {
 		var circle = new L.CircleMarker(latlng, {radius: 40, color: '#e03', fill: false});
 		circle.addTo(map);
 		
@@ -252,8 +248,8 @@ L.Control.Search = L.Control.extend({
 		{
 			var latlng = this._recordsCache[text],//serach in table key,value
 				z = this.options.zoom || this._map.getZoom();
-			if(this.options.animPan)
-				this._animLocation(latlng);//evidence location
+			if(this.options.animatePan)
+				this._animateLocation(latlng);//evidence location
 			this._map.setView(latlng, z);
 			return latlng;
 		}
@@ -265,6 +261,7 @@ L.Control.Search = L.Control.extend({
 		
 		this._recordsCache = {};
 
+//TODO delay after each keyKeydown!!
 //		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
 //			console.log(json);
 //			return json.results;

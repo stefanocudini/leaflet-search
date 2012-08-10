@@ -8,11 +8,13 @@
 	-webkit-border-radius: 7px;
 	border-radius: 7px;
 	margin:10px;
-	padding:6px;
+	padding:5px;
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1000;
 }
 .leaflet-control-search .search-input {
+	display:block;
+	float:left;
 	font-size:.85em;
 	background: #eee;
 	border:1px solid #666;
@@ -20,8 +22,6 @@
 	height:19px;
 	padding:0 .125em;
 	margin:0 .5em 0 0;
-	display:block;
-	float:left;
 }
 .leaflet-control-search .search-button {
 	display:block;
@@ -30,11 +30,9 @@
 	height:22px;	
 	background: url('search-icon.png') no-repeat 0 0;
 	background-color: rgba(255, 255, 255, 0.75);	
-	border:0px solid #ccc;
 	border-radius:.25em;
 }
 .leaflet-control-search .search-tooltip {
-	display:none;
 	position:absolute;
 	top:100%;
 	left:0;
@@ -64,7 +62,7 @@
 .leaflet-control-search .search-alert {
 	clear:both;
 	font-size:.75em;
-	margin-bottom:7px;
+	margin-bottom:5px;
 	padding:0 .25em;
 	color:#e00;
 	background-color: rgba(255, 255, 255, 0.75);
