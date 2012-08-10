@@ -11,16 +11,16 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		position: 'topleft',
-		layer: new L.LayerGroup(),	//layer where search elements, default: empty layer
-		text: 'Search...',	//placeholder value
-		textErr: 'Location not found',
+		layerSearch: new L.LayerGroup(),	//layer where search elements, default: empty layer		
 		propFilter: 'title',	//property of elements filtered
-		initial: true,
-		autoPan: false,  //auto panTo when click on tooltip
+		initialSearch: true,	//search text by initial
+		autoPan: true,  //auto panTo when click on tooltip
 		animatePan: true,	//animation after panTo
 		autoResize: true,	//autoresize on input change
-		zoom: null	//zoom after pan to location found, default: map.getZoom()
+		zoom: null,	//zoom after pan to location found, default: map.getZoom()
+		position: 'topleft',
+		text: 'Search...',	//placeholder value
+		textErr: 'Location not found'
 	},
 
 	initialize: function(options) {
@@ -148,7 +148,7 @@ L.Control.Search = L.Control.extend({
 
 	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache
 
-		var I = this.options.initial ? '^' : '',  //search for initial text
+		var I = this.options.initialSearch ? '^' : '',  //search for initial text
 			reg = new RegExp(I + text,'i'),
 			records = this._recordsCache,
 			results = 0;
@@ -179,16 +179,31 @@ L.Control.Search = L.Control.extend({
 	},
 		
 	_handleKeypress: function (e) {
-		if(e.keyCode == 27)//Esc
-			this.minimize();
-		else if(e.keyCode == 13)//Enter
-			this._handleSubmit();//do search
-		//shortcuts!
-
-		if(!this._recordsCache)		//initialize records, first time, or always for jsonp search
-			this._updateRecords();	//create table key,value
-		
-		this._showTooltip(this._input.value);//show tooltip with filter records by this._input.value
+		switch(e.keyCode)
+		{
+			case 27: //Esc
+				this.minimize();
+			break;
+			case 13: //Enter
+				this._handleSubmit();	//do search
+			break;
+//			case 38: //Up
+//			break;
+//			case 40: //Down
+//			break;
+//TODO scroll tips
+			case 37://Left
+			case 39://Right
+			case 16://Shift
+			case 17://Ctrl
+			//case 32://Space
+			break;
+			default://All keys
+				if(!this._recordsCache)		//initialize records, first time, or always for jsonp search
+					this._updateRecords();	//fill table key,value
+				
+				this._showTooltip(this._input.value);//show tooltip with filter records by this._input.value			
+		}
 	},
 	
 	_handleAutoresize: function() {	//autoresize this._input
@@ -258,6 +273,7 @@ L.Control.Search = L.Control.extend({
 			this._map.setView(latlng, z);
 			if(this.options.animatePan)
 				this._animateLocation(latlng);//evidence location
+			//TODO start animation after setView panning end
 			return latlng;
 		}
 		else
@@ -268,19 +284,18 @@ L.Control.Search = L.Control.extend({
 		
 		this._recordsCache = {};
 
-//TODO delay after each keyKeydown!!
+//TODO delay after each keydown!!
 //		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
 //			console.log(json);
 //			return json.results;
 //			//TODO convert coord in L.LatLng object!!
 //			this._recordsCache = json.results;
 //		});
-				
-		var markers = this.options.layer._layers,
-			propFilter = this.options.propFilter;
 
-		this.options.layer.eachLayer(function(marker) {
-		//console.log(marker);
+		var markers = this.options.layerSearch._layers,
+			propFilter = this.options.propFilter;
+		
+		this.options.layerSearch.eachLayer(function(marker) {
 			var id = marker._leaflet_id,
 				text = marker.options.hasOwnProperty(propFilter) && marker.options[propFilter] || '';
 			if(text)

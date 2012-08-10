@@ -97,7 +97,7 @@ var searchLayer = new L.LayerGroup();//layer with searched markers
 
 map.addLayer(searchLayer);
 
-map.addControl(new L.Control.Search({layer: searchLayer}));
+map.addControl(new L.Control.Search({layerSearch: searchLayer}));
 
 var ul = L.DomUtil.get('titles');//ul titles list
 
