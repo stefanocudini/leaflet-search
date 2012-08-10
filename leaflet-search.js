@@ -17,7 +17,7 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',
 		propFilter: 'title',	//property of elements filtered
 		initial: true,
-		autoPan: true,  //auto panTo when click on tooltip
+		autoPan: false,  //auto panTo when click on tooltip
 		animatePan: true,	//animation after panTo
 		zoom: 10	//zoom after pan to location found, default: map.getZoom()
 	},
@@ -31,11 +31,11 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
-		this._container = L.DomUtil.create('div', 'leaflet-control-search');
+		this._container = L.DomUtil.create('div', 'leaflet-control-search');					
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
-		this._tooltip = this._createTooltip('search-tooltip');	//make empty tooltip
+		this._tooltip = this._createTooltip('search-tooltip');
 		return this._container;
 	},
 
@@ -43,7 +43,7 @@ L.Control.Search = L.Control.extend({
 		delete this._recordsCache;//free memory
 	},
 	
-	alertSearch: function(text) {
+	showAlert: function(text) {
 		this._hideTooltip();
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
@@ -68,9 +68,19 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 	},
 	
+	minimizeSlow: function() {	//minimize after delay, used on_input blur
+		var that = this;
+		this.timerMinimize = setTimeout(function() {
+			that.minimize();
+		}, this.timersTime);
+	},
+
+	minimizeSlowStop: function() {	//
+		clearTimeout(this.timerMinimize);
+	},
+	
 	_createAlert: function(className) {
 		var alert = L.DomUtil.create('div', className, this._container);
-		alert.innerHTML = '&nbsp;';
 		alert.style.display = 'none';
 		return alert;
 	},
@@ -87,15 +97,12 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleAutoresize, this)
 			.addListener(input, 'keyup', this._handleKeydown, this)
-			.addListener(input, 'blur', function() {
-				var that = this;
-				this.timerMinimize = setTimeout(function() {
-					that.minimize();
-				}, this.timersTime);
-			},this);
+			.addListener(input, 'blur', this.minimizeSlow, this)
+			.addListener(input, 'focus', this.minimizeSlowStop, this);
+			
 		return input;
-	},	
-		
+	},
+
 	_createButton: function (text, className) {
 		var button = L.DomUtil.create('a', className, this._container);
 		button.href = '#';
@@ -103,7 +110,9 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', this._handleSubmit, this);
+			.addListener(button, 'click', this._handleSubmit, this)
+			.addListener(button, 'focus', this.minimizeSlowStop, this)
+			.addListener(button, 'blur', this.minimizeSlow, this);
 
 		return button;
 	},
@@ -133,7 +142,6 @@ L.Control.Search = L.Control.extend({
 				{
 					this._handleAutoresize();
 					this._input.focus();
-					clearTimeout(this.timerMinimize);//block this._input blur!
 				}					
 			}, this);
 
@@ -205,10 +213,10 @@ L.Control.Search = L.Control.extend({
 				if( this._findLocation(this._input.value) )	//location founded!!
 					this.minimize();
 				else
-					this.alertSearch( this.options.textErr );//location not found, alert!
+					this.showAlert( this.options.textErr );//location not found, alert!
 			}
 		}
-		clearTimeout(this.timerMinimize);	//block _input blur!
+		this.minimizeSlowStop();
 	},
 	
 	_animateLocation: function(latlng) {
