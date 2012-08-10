@@ -185,10 +185,28 @@ L.Control.Search = L.Control.extend({
 			this._recordsCache = cb(data);
 		}
 		var el = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
-			delim = url.indexOf('?') >= 0 ? '&' : '?';
+			delim = url.indexOf('?') >= 0 ? '&' : '?',
+			rnd = Math.floor(Math.random()*10000);  //random param for disable browser cache
+
 		el.type = 'text/javascript';
 		el.src = "" + url + delim +"callback=L.Control.Search.callJsonp";
-	},	
+	},
+
+	_recordsFromLayer: function(layerSearch, propFilter) {	//return table: key,value from layer
+		
+		var retRecords = {};
+		
+		layerSearch.eachLayer(function(marker) {	//iterate elemets in layer
+		//TODO filter by element type: marker|polyline|circle...
+			var key = marker.options.hasOwnProperty(propFilter) && marker.options[propFilter] || '';
+
+			if(key)
+				retRecords[key] = marker.getLatLng();
+
+		},this);
+
+		return retRecords;
+	},
 
 	_handleKeypress: function (e) {
 		switch(e.keyCode)
@@ -211,18 +229,20 @@ L.Control.Search = L.Control.extend({
 				var that = this;
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 
-//					this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
-//						console.log(json);
-//						return json.results;
-//						for(i in json.results)
-//							json.results[i]= L.latLng(json.results[i]);
-//						return json.results;
+//					this._requestJsonp('autocomplete.php?q='+this._input.value, function(jsonraw) {
+//						console.log(jsonraw);
+//						var jsonret = {};
+//						for(i in jsonraw.results)
+//							jsonret[i]= L.latLng(jsonraw.results[i]);
+//						return jsonret;
 //					});
 
-					if(!that._recordsCache)		//initialize records, first time, or always for jsonp search
-						that._updateRecords();	//fill table key,value
+				var layerSearch = that.options.layerSearch,
+					propFilter = that.options.propFilter;
+				if(!that._recordsCache)		//initialize records, first time, or always for jsonp search
+					that._recordsCache = that._recordsFromLayer(layerSearch, propFilter);	//fill table key,value from markers into layerSearch
 				
-					that._showTooltip(that._input.value);//show tooltip with filter records by this._input.value			
+				that._showTooltip(that._input.value);	//show tooltip with filter records by this._input.value			
 
 				}, that.timeKeypress);
 		}
@@ -276,7 +296,7 @@ L.Control.Search = L.Control.extend({
 		}, tt);
 	},
 	
-	_findLocation: function(text) {	//get location in table _recordsCache and pan to location if founded
+	_findLocation: function(text) {	//get location from table _recordsCache and pan to location
 	
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
@@ -290,25 +310,6 @@ L.Control.Search = L.Control.extend({
 		}
 		else
 			return false;
-	},
-
-	_updateRecords: function(cb) {	//update this._recordsCache with simple table: key,value
-		
-		//cb is callback per fill records
-		this._recordsCache = {};
-
-		var markers = this.options.layerSearch._layers,
-			propFilter = this.options.propFilter;
-		
-		this.options.layerSearch.eachLayer(function(marker) {
-		
-			var id = marker._leaflet_id,
-				text = marker.options.hasOwnProperty(propFilter) && marker.options[propFilter] || '';
-			if(text)
-				this._recordsCache[text]= marker.getLatLng();
-		},this);
-
-		return this._recordsCache;
 	}
 
 });
