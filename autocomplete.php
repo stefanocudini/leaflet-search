@@ -13,6 +13,8 @@
 if(!isset($_GET['q']) or empty($_GET['q']))
 	die( json_encode(array('ok'=>0, 'errmsg'=>'specify a query') ) );
 
+$jsonp = true;	//active jsonp support
+	
 $data = json_decode('[
 	{"loc":[41.239190,13.032145], "title":"black"},
 	{"loc":[41.807149,13.162994], "title":"blue"},
@@ -28,6 +30,8 @@ $data = json_decode('[
 $qreg = $_GET['q'];
 $reg = "/^$qreg/i";	//initial search
 
+
+
 function searchInit($text)	//search initial text in titles
 {
 	global $reg;
@@ -36,8 +40,9 @@ function searchInit($text)	//search initial text in titles
 
 $fdata = array_filter($data,'searchInit');	//filter data by title
 $fdata = array_values($fdata);	//reset indexs
-$res = array('ok'=>1, 'results'=> $fdata);	//formatting json result
 
-echo json_encode($res,true);
+$res = array('ok'=>1, 'results'=> $fdata);	//formatting json result
+$res = json_encode($res,true);
+echo ($jsonp and isset($_GET['callback'])) ? $_GET['callback']."($res)" : $res;
 
 ?>

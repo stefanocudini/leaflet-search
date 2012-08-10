@@ -28,7 +28,7 @@ L.Control.Search = L.Control.extend({
 		this.timersTime = 1200;//delay for autoclosing
 	},
 
-	onAdd: function (e) {
+	onAdd: function (map) {
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
@@ -92,7 +92,7 @@ L.Control.Search = L.Control.extend({
 					clearTimeout(this.timerMinimize);//block this._input blur!
 				}
 				else
-					this._findLocation();
+					this._findLocation(text);
 			},this);
 
 		return rec;
@@ -120,7 +120,7 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomEvent
 			.disableClickPropagation(input)
-			.addListener(input, 'keyup', this._inputAutoresize, this)	
+			.addListener(input, 'keyup', this._inputAutoresize, this)//autoresize _input	
 			.addListener(input, 'keyup', this._filterRecords, this)
 			.addListener(input, 'blur', function() {
 				var that = this;
@@ -131,8 +131,13 @@ L.Control.Search = L.Control.extend({
 		return input;
 	},
 	
+	_handleKeydown: function (e) {
+	
+	},
+	
 	_inputAutoresize: function() {	//autoresize this._input
 		this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
+		//TODO add option autoresize
 	},
 	
 	_createButton: function (text, className) {
@@ -142,11 +147,8 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', function() {			
-				this._findLocation();
-				clearTimeout(this.timerMinimize);//block this._input blur!
-			}, this);
-				
+			.addListener(button, 'click', this._handleSubmit, this);
+
 		return button;
 	},
 	
@@ -161,8 +163,27 @@ L.Control.Search = L.Control.extend({
 		return alert;
 	},
 	
+	_handleSubmit: function(e) {	//search button action
+	
+		if(this._input.style.display == 'none')//on first click show _input only
+			this.maximize();
+		else
+		{
+			if(this._input.value=='')//hide _input only
+				this.minimize();
+			else
+			{
+				if( this._findLocation(this._input.value) )	//location founded!!
+					this.minimize();
+				else
+					this.alertSearch( this.options.textErr );//location not found, alert!
+			}
+		}				
+		clearTimeout(this.timerMinimize);//block _input blur!
+	},
+	
 	_animLocation: function(latlng) {
-		var circle = new L.CircleMarker(latlng, {radius: 40, color: '#e03', fill:false});
+		var circle = new L.CircleMarker(latlng, {radius: 40, color: '#e03', fill: false});
 		circle.addTo(map);
 		
 		var tt = 100,
@@ -171,7 +192,7 @@ L.Control.Search = L.Control.extend({
 			f = 0;
 
 		var ii = setInterval(function() {  //animation
-			mr += f++;
+			mr += f++;//adding acceleration
 			if(circle._radius-mr > 5)
 				circle.setRadius(circle._radius-mr);
 			else
@@ -179,38 +200,35 @@ L.Control.Search = L.Control.extend({
 				map.removeLayer(circle);
 				clearInterval(ii);
 			}
-		},tt);
+		}, tt);
 	},
+		
+	_requestJsonp: function(url, cb) {
+		L.Control.Search.callJsonp = function(data) {
+			return cb(data);
+		}
+		var el = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
+			delim = url.indexOf('?') >= 0 ? '&' : '?';
+		el.type = 'text/javascript';
+		el.src = "" + url + delim +"callback=L.Control.Search.callJsonp";
+	},	
 	
-	_findLocation: function() {	//pan to location if founded
-
-		if(this._input.style.display == 'none')
+	_findLocation: function(text) {	//get location in table _recordsCache and pan to location if founded
+		
+		if( this._recordsCache.hasOwnProperty(text) )
 		{
-			this.maximize();
+			var latlng = this._recordsCache[text],//serach in table key,value
+				z = this.options.zoom || this._map.getZoom();
+			if(this.options.animPan)
+				this._animLocation(latlng);//evidence location
+			this._map.setView(latlng, z);
+			return latlng;
 		}
 		else
-		{
-			if(this._input.value=='')
-				this.minimize();
-			else
-			{
-				var latlng = this._recordsCache[this._input.value];
-				if(latlng)
-				{
-					//this._map.panTo(latlng);
-					var z = this.options.zoom || this._map.getZoom();
-					if(this.options.animPan)
-						this._animLocation(latlng);
-					this._map.setView(latlng, z);						
-					this.minimize();
-				}
-				else
-					this.alertSearch( this.options.textErr );
-			}
-		}
+			return false;
 	},
 
-	_updateRecords: function() {	//fill this._recordsCache with all values: text,latlng
+	_updateRecords: function() {	//update this._recordsCache with simple table: key,value
 		
 		this._recordsCache = {};
 		
@@ -233,10 +251,17 @@ L.Control.Search = L.Control.extend({
 		if(e.keyCode==27)//Esc
 			this.minimize();
 		else if(e.keyCode==13)//Enter
-			this._findLocation();
+			this._handleSubmit();//do search
+		//few shortcuts!
 
+//		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
+//			console.log(json);
+//			return json.results;
+//			this._recordsCache = json.results;
+//		});
+		
 		if(!this._recordsCache)		//initialize records			
-			this._updateRecords();//create table key,value
+			this._updateRecords();	//create table key,value
 		
 		var inputText = this._input.value,
 			I = this.options.initial ? '^' : '',  //search for initial text
@@ -253,6 +278,10 @@ L.Control.Search = L.Control.extend({
 			}
 		}
 		this._fillTooltip(results);
+	},
+	
+	_doAutocomplete: function() {
+		//TODO move part of _filterRecords here
 	}
 
 });
