@@ -36,7 +36,7 @@
 .leaflet-control-search .search-tooltip {
 	display:none;
 	position:absolute;
-	top:34px;
+	top:100%;
 	left:0;
 	float:left;
 	min-width:80px;

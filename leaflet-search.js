@@ -17,9 +17,9 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',
 		propFilter: 'title',	//property of elements filtered
 		initial: true,
-		autoPan: false,  //auto panTo when click on tooltip
-		animPan: false,	//animation after panTo
-		zoom: false	//zoom after pan to location found, default: map.getZoom()
+		autoPan: true,  //auto panTo when click on tooltip
+		animPan: true,	//animation after panTo
+		zoom: 10	//zoom after pan to location found, default: map.getZoom()
 	},
 
 	initialize: function(options) {
@@ -35,7 +35,7 @@ L.Control.Search = L.Control.extend({
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
-		this._tooltip = this._createTooltip('search-tooltip');
+		this._tooltip = this._createTooltip('search-tooltip');	//make empty tooltip
 		return this._container;
 	},
 
@@ -44,7 +44,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	alertSearch: function(text) {
-		this.hideTooltip();
+		this._hideTooltip();
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
 		var that = this;
@@ -54,61 +54,85 @@ L.Control.Search = L.Control.extend({
 		},this.timersTime);
 	},
 	
-	showTooltip: function() {//must be before of _createButton
-		this._tooltip.style.display = 'block';
-	},
-	
-	hideTooltip: function() {
-		this._tooltip.style.display = 'none';
-	},
-	
 	maximize: function() {
 		this._input.style.display = 'block';
 		this._input.focus();
 	},
 	
 	minimize: function() {
-		this.hideTooltip();
+		this._hideTooltip();
 		this._input.blur();	
 		this._input.value ='';
 		this._input.size = this._inputMinSize;
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
 	},
+	
+	_createTooltip: function(className) {
+		return L.DomUtil.create('div', className, this._container);
+	},
 
-	_createTip: function(text, latlng) {	//make new choice into tooltip
-		var rec = L.DomUtil.create('a', 'search-tip', this._tooltip);
-			rec.href = '#',
-			rec.innerHTML = text;
+	_createTip: function(text) {	//make new choice for tooltip
+		var tip = L.DomUtil.create('a', 'search-tip', this._tooltip);
+			tip.href = '#',
+			tip.innerHTML = text;
 
 		L.DomEvent
-			.disableClickPropagation(rec)
-			.addListener(rec, 'click', function(e) {
+			.disableClickPropagation(tip)
+			.addListener(tip, 'click', function(e) {
 				this._input.value = text;
-				if(this.options.autoPan===false)
+				this._hideTooltip();
+				if(this.options.autoPan)//go to location
+				{
+					this.minimize();
+					this._findLocation(text);
+				}
+				else	//only set _input value
 				{
 					this._handleAutoresize();
 					this._input.focus();
-					this.hideTooltip();
 					clearTimeout(this.timerMinimize);//block this._input blur!
-				}
-				else
-					this._findLocation(text);
-			},this);
+				}					
+			}, this);
 
-		return rec;
+		return tip;
 	},
 	
-	_fillTooltip: function(items) {//fill tooltip with links
-		this._tooltip.innerHTML = '';
+	_doAutocomplete: function(text) {	//show tooltip with filtered this._recordsCache
+
+		var I = this.options.initial ? '^' : '',  //search for initial text
+			reg = new RegExp(I + text,'i'),
+			records = this._recordsCache,
+			results = [];
+
+		if(text.length)
+		{
+			for(key in records)
+			{
+				if(reg.test(key))//filter
+					results.push(key);// [key,value]
+			}
+		}
+		this._showTooltip(results);
+		return results;
+	},
+	
+	_showTooltip: function(items) {
+		
 		if(items.length)
 		{
+			this._tooltip.innerHTML = '';
 			for(i in items)
-				this._createTip(items[i][0], items[i][1]);
-			this.showTooltip();
+				this._createTip(items[i]);
+			this._tooltip.style.display = 'block';
 		}
 		else
-			this.hideTooltip();
+			this._hideTooltip();
+	},
+
+	_hideTooltip: function() {
+		this._tooltip.style.display = 'none';
+		this._tooltip.innerHTML = '';
 	},
 	
 	_createInput: function (text, className) {
@@ -144,10 +168,6 @@ L.Control.Search = L.Control.extend({
 		return button;
 	},
 	
-	_createTooltip: function(className) {
-		return L.DomUtil.create('div', className, this._container);
-	},
-	
 	_createAlert: function(className) {
 		var alert = L.DomUtil.create('div', className, this._container);
 		alert.innerHTML = '&nbsp;';
@@ -155,14 +175,20 @@ L.Control.Search = L.Control.extend({
 		return alert;
 	},
 	//////end DOM creations
-
+	
 	_handleKeydown: function (e) {
 		if(e.keyCode == 27)//Esc
 			this.minimize();
 		else if(e.keyCode == 13)//Enter
 			this._handleSubmit();//do search
 		//shortcuts!
-		this._filterRecords(this._input.value);
+		
+		//TODO delay after each keyKeydown!!
+		
+		if(!this._recordsCache)		//initialize records, first time, or always for jsonp search
+			this._updateRecords();	//create table key,value
+		
+		this._doAutocomplete(this._input.value);
 	},
 	
 	_handleAutoresize: function() {	//autoresize this._input
@@ -238,7 +264,13 @@ L.Control.Search = L.Control.extend({
 	_updateRecords: function() {	//update this._recordsCache with simple table: key,value
 		
 		this._recordsCache = {};
-		
+
+//		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
+//			console.log(json);
+//			return json.results;
+//			this._recordsCache = json.results;
+//		});
+				
 		var markers = this.options.layer._layers,
 			propFilter = this.options.propFilter;
 
@@ -251,37 +283,6 @@ L.Control.Search = L.Control.extend({
 		},this);
 
 		return this._recordsCache;
-	},
-	
-	_filterRecords: function(text) {	//filter this._recordsCache with this._input.value
-
-//		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
-//			console.log(json);
-//			return json.results;
-//			this._recordsCache = json.results;
-//		});
-		
-		if(!this._recordsCache)		//initialize records			
-			this._updateRecords();	//create table key,value
-		
-		var I = this.options.initial ? '^' : '',  //search for initial text
-			reg = new RegExp(I + text,'i'),
-			records = this._recordsCache,
-			results = [];
-
-		if(text.length)
-		{
-			for(key in records)
-			{
-				if(reg.test(key))//filter
-					results.push( [key, records[key] ]);// [key,value]
-			}
-		}
-		this._fillTooltip(results);
-	},
-	
-	_doAutocomplete: function() {
-		//TODO move part of _filterRecords here
 	}
 
 });
