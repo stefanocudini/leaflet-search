@@ -37,6 +37,8 @@ L.Control.Search = L.Control.extend({
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
+//		var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
+//uncommnt for fast test _animateLocation
 		return this._container;
 	},
 
@@ -214,22 +216,25 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_animateLocation: function(latlng) {
-		var circle = new L.CircleMarker(latlng, {radius: 40, color: '#e03', fill: false});
-		circle.addTo(map);
-		
-		var tt = 100,
-			ss = 20,
+		var circle = new L.CircleMarker(latlng, {radius: 20, weight:3, color: '#e03', fill: false}),
+			tt = 100,
+			ss = 10,
 			mr = circle._radius/ss
 			f = 0;
+		
+		circle.addTo(this._map);
 
-		var ii = setInterval(function() {  //animation
-			mr += f++;//adding acceleration
-			if(circle._radius-mr > 5)
-				circle.setRadius(circle._radius-mr);
+		var	that = this;
+		this.timerAnimLoc = setInterval(function() {  //animation
+			f += 0.5;
+			mr += f;//adding acceleration
+			var nr = circle._radius - mr;
+			if( nr > 2)
+				circle.setRadius(nr);
 			else
 			{
-				map.removeLayer(circle);
-				clearInterval(ii);
+				that._map.removeLayer(circle);
+				clearInterval(that.timerAnimLoc);
 			}
 		}, tt);
 	},
@@ -245,14 +250,14 @@ L.Control.Search = L.Control.extend({
 	},	
 	
 	_findLocation: function(text) {	//get location in table _recordsCache and pan to location if founded
-		
+				
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
 			var latlng = this._recordsCache[text],//serach in table key,value
 				z = this.options.zoom || this._map.getZoom();
+			this._map.setView(latlng, z);
 			if(this.options.animatePan)
 				this._animateLocation(latlng);//evidence location
-			this._map.setView(latlng, z);
 			return latlng;
 		}
 		else
@@ -267,6 +272,7 @@ L.Control.Search = L.Control.extend({
 //		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
 //			console.log(json);
 //			return json.results;
+//			//TODO convert coord in L.LatLng object!!
 //			this._recordsCache = json.results;
 //		});
 				
