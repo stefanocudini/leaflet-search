@@ -75,7 +75,7 @@ L.Control.Search = L.Control.extend({
 		}, this.timersTime);
 	},
 
-	minimizeSlowStop: function() {	//
+	minimizeSlowStop: function() {
 		clearTimeout(this.timerMinimize);
 	},
 	
@@ -132,17 +132,11 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(tip)
 			.addListener(tip, 'click', function(e) {
 				this._input.value = text;
+				this._input.focus();
 				this._hideTooltip();
+				this._handleAutoresize();	
 				if(this.options.autoPan)//go to location
-				{
-					this.minimize();
-					this._findLocation(text);
-				}
-				else	//only set _input value
-				{
-					this._handleAutoresize();
-					this._input.focus();
-				}					
+					this._handleSubmit();
 			}, this);
 
 		return tip;
