@@ -11,7 +11,7 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		layerSearch: new L.LayerGroup(),	//layer where search elements, default: empty layer		
+		layerSearch: new L.LayerGroup(),	//layer where search elements, default: empty layer	
 		propFilter: 'title',	//property of elements filtered
 		initialSearch: true,	//search text by initial
 		autoPan: true,  //auto panTo when click on tooltip
@@ -26,8 +26,9 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
-		this.timersTime = 1200;//delay for autoclosing
-		this._recordsCache = null;//key,value table! that store locations!
+		this.timeAutoclose = 1200;		//delay for autoclosing alert and minimize after blur
+		this.timeKeypress = 300;	//delay after keypress into _input
+		this._recordsCache = null;	//key,value table! that store locations!
 	},
 
 	onAdd: function (map) {
@@ -47,14 +48,13 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	showAlert: function(text) {
-		this._hideTooltip();
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
 		var that = this;
 		clearTimeout(this.timerAlert);
 		this.timerAlert = setTimeout(function() {
 			that._alert.style.display = 'none';
-		},this.timersTime);
+		},this.timeAutoclose);
 	},
 	
 	maximize: function() {
@@ -71,14 +71,14 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 	},
 	
-	minimizeSlow: function() {	//minimize after delay, used on_input blur
+	autoMinimize: function() {	//minimize after delay, used on_input blur
 		var that = this;
 		this.timerMinimize = setTimeout(function() {
 			that.minimize();
-		}, this.timersTime);
+		}, this.timeAutoclose);
 	},
 
-	minimizeSlowStop: function() {
+	autoMinimizeStop: function() {
 		clearTimeout(this.timerMinimize);
 	},
 	
@@ -100,8 +100,8 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleAutoresize, this)
 			.addListener(input, 'keyup', this._handleKeypress, this)
-			.addListener(input, 'blur', this.minimizeSlow, this)
-			.addListener(input, 'focus', this.minimizeSlowStop, this);
+			.addListener(input, 'blur', this.autoMinimize, this)
+			.addListener(input, 'focus', this.autoMinimizeStop, this);
 			
 		return input;
 	},
@@ -114,8 +114,8 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(button)
 			.addListener(button, 'click', this._handleSubmit, this)
-			.addListener(button, 'focus', this.minimizeSlowStop, this)
-			.addListener(button, 'blur', this.minimizeSlow, this);
+			.addListener(button, 'focus', this.autoMinimizeStop, this)
+			.addListener(button, 'blur', this.autoMinimize, this);
 
 		return button;
 	},
@@ -187,22 +187,24 @@ L.Control.Search = L.Control.extend({
 			case 13: //Enter
 				this._handleSubmit();	//do search
 			break;
-//			case 38: //Up
-//			break;
-//			case 40: //Down
-//			break;
-//TODO scroll tips
 			case 37://Left
 			case 39://Right
 			case 16://Shift
 			case 17://Ctrl
 			//case 32://Space
 			break;
+			//TODO scroll tips, with shortcuts 38(up),40(down)
 			default://All keys
-				if(!this._recordsCache)		//initialize records, first time, or always for jsonp search
-					this._updateRecords();	//fill table key,value
+				clearTimeout(this.timerKeypress);
+				var that = this;
+				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
+
+					if(!that._recordsCache)		//initialize records, first time, or always for jsonp search
+						that._updateRecords();	//fill table key,value
 				
-				this._showTooltip(this._input.value);//show tooltip with filter records by this._input.value			
+					that._showTooltip(that._input.value);//show tooltip with filter records by this._input.value			
+
+				}, that.timeKeypress);
 		}
 	},
 	
@@ -227,7 +229,7 @@ L.Control.Search = L.Control.extend({
 					this.showAlert( this.options.textErr );//location not found, alert!
 			}
 		}
-		this.minimizeSlowStop();
+		//this.autoMinimizeStop();//maybe unuseful!
 	},
 	
 	_animateLocation: function(latlng) {
@@ -253,7 +255,7 @@ L.Control.Search = L.Control.extend({
 			}
 		}, tt);
 	},
-		
+	
 	_requestJsonp: function(url, cb) {
 		L.Control.Search.callJsonp = function(data) {
 			return cb(data);
@@ -265,7 +267,7 @@ L.Control.Search = L.Control.extend({
 	},	
 	
 	_findLocation: function(text) {	//get location in table _recordsCache and pan to location if founded
-				
+	
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
 			var latlng = this._recordsCache[text],//serach in table key,value
@@ -280,9 +282,11 @@ L.Control.Search = L.Control.extend({
 			return false;
 	},
 
-	_updateRecords: function() {	//update this._recordsCache with simple table: key,value
+	_updateRecords: function(cb) {	//update this._recordsCache with simple table: key,value
 		
+		//cb is callback per fill records
 		this._recordsCache = {};
+
 
 //TODO delay after each keydown!!
 //		this._requestJsonp('autocomplete.php?q='+this._input.value, function(json) {
@@ -296,6 +300,7 @@ L.Control.Search = L.Control.extend({
 			propFilter = this.options.propFilter;
 		
 		this.options.layerSearch.eachLayer(function(marker) {
+		
 			var id = marker._leaflet_id,
 				text = marker.options.hasOwnProperty(propFilter) && marker.options[propFilter] || '';
 			if(text)

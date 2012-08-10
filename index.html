@@ -88,19 +88,15 @@ var coords = [
 ];
 
 var cen = new L.latLng(coords[0].loc);//set center from first coord location
-
 var map = new L.Map('map', {center: cen, zoom: 9});
-
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 var searchLayer = new L.LayerGroup();//layer with searched markers
-
 map.addLayer(searchLayer);
 
 map.addControl(new L.Control.Search({layerSearch: searchLayer}));
 
 var ul = L.DomUtil.get('titles');//ul titles list
-
 for(i in coords)	//make markers and colors list
 {
 	var pos = new L.latLng(coords[i].loc),
