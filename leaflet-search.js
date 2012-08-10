@@ -11,8 +11,13 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		layerSearch: new L.LayerGroup(),	//layer where search elements, default: empty layer	
-		propFilter: 'title',	//property of elements filtered
+		searchLayer: new L.LayerGroup(),	//layer where search elements
+		searchProp: 'title',	//property trough filter elements
+		searchJsonpUrl: '',	//url for autocomplete by jsonp service
+		//example: "autocomplete.php?q={s}&callback={c}"
+		//{s} searched string, {c} callback jsonp
+		//TODO add ajax autocomplete url
+		searchCallFilter: this._filterRecords,	//callback for filtering data to _recordsCache
 		initialSearch: true,	//search text by initial
 		autoPan: true,  //auto panTo when click on tooltip
 		animatePan: true,	//animation after panTo
@@ -97,8 +102,8 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomEvent
 			.disableClickPropagation(input)
-			.addListener(input, 'keyup', this._handleAutoresize, this)
 			.addListener(input, 'keyup', this._handleKeypress, this)
+			.addListener(input, 'keyup', this._handleAutoresize, this)			
 			.addListener(input, 'blur', this.autoMinimize, this)
 			.addListener(input, 'focus', this.autoMinimizeStop, this);
 			
@@ -179,36 +184,43 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.style.display = 'none';
 		this._tooltip.innerHTML = '';
 	},
-	
-	_requestJsonp: function(url, cb) {
+
+	_requestJsonp: function(text, callFilter, callAfter, context) {
+
 		L.Control.Search.callJsonp = function(data) {
-			this._recordsCache = cb(data);
+			context._recordsCache = callFilter(data);
+			callAfter();//usually _showTooltip
 		}
 		var el = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
-			delim = url.indexOf('?') >= 0 ? '&' : '?',
-			rnd = Math.floor(Math.random()*10000);  //random param for disable browser cache
-
+			url = L.Util.template(context.options.searchJsonpUrl, {s: text, c:"L.Control.Search.callJsonp"});
+			rnd = '&_='+Math.floor(Math.random()*10000);  //random param for disable browser cache
 		el.type = 'text/javascript';
-		el.src = "" + url + delim +"callback=L.Control.Search.callJsonp";
+		el.src = url;	//TODO add rnd param
 	},
 
-	_recordsFromLayer: function(layerSearch, propFilter) {	//return table: key,value from layer
-		
-		var retRecords = {};
-		
-		layerSearch.eachLayer(function(marker) {	//iterate elemets in layer
-		//TODO filter by element type: marker|polyline|circle...
-			var key = marker.options.hasOwnProperty(propFilter) && marker.options[propFilter] || '';
+	_filterRecords: function(jsonraw) {	//default callback for filter data from jsonp/ajax to _recordsCache format(key,latlng)
+	//TODO move this function to example
+		console.log(jsonraw);
+		var jsonret = {};
+		for(i in jsonraw.results)
+			jsonret[ jsonraw.results[i].title ]= L.latLng( jsonraw.results[i].loc );
+		console.log(jsonret);
+		return jsonret;
+	},
 
+	_recordsFromLayer: function(layerSearch, propSearch) {	//return table: key,value from layer
+		var retRecords = {};
+		layerSearch.eachLayer(function(marker) {	//iterate elements in layer
+		//TODO filter by element type: marker|polyline|circle...
+			var key = marker.options.hasOwnProperty(propSearch) && marker.options[propSearch] || '';
 			if(key)
 				retRecords[key] = marker.getLatLng();
-
 		},this);
-
+		//TODO make cache for results while layerSearch not change, control on 'load' event
 		return retRecords;
 	},
 
-	_handleKeypress: function (e) {
+	_handleKeypress: function (e) {//_input keyup
 		switch(e.keyCode)
 		{
 			case 27: //Esc
@@ -229,20 +241,20 @@ L.Control.Search = L.Control.extend({
 				var that = this;
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 
-//					this._requestJsonp('autocomplete.php?q='+this._input.value, function(jsonraw) {
-//						console.log(jsonraw);
-//						var jsonret = {};
-//						for(i in jsonraw.results)
-//							jsonret[i]= L.latLng(jsonraw.results[i]);
-//						return jsonret;
-//					});
-
-				var layerSearch = that.options.layerSearch,
-					propFilter = that.options.propFilter;
-				if(!that._recordsCache)		//initialize records, first time, or always for jsonp search
-					that._recordsCache = that._recordsFromLayer(layerSearch, propFilter);	//fill table key,value from markers into layerSearch
-				
-				that._showTooltip(that._input.value);	//show tooltip with filter records by this._input.value			
+					if(that.options.searchJsonpUrl)
+					{
+						that._requestJsonp(that._input.value, function(jsonraw) {
+								return that._filterRecords(jsonraw);
+								//TODO replace with options.searchCallFilter
+							}, function() {
+								that._showTooltip(that._input.value);
+							}, that);
+					}
+					else if(that.options.searchLayer)
+					{
+						that._recordsCache = that._recordsFromLayer(that.options.searchLayer, that.options.searchProp);	//fill table key,value from markers into searchLayer				
+						that._showTooltip(that._input.value);	//show tooltip with filter records by this._input.value			
+					}
 
 				}, that.timeKeypress);
 		}
@@ -274,7 +286,7 @@ L.Control.Search = L.Control.extend({
 	
 	_animateLocation: function(latlng) {
 		var circle = new L.CircleMarker(latlng, {radius: 20, weight:3, color: '#e03', fill: false}),
-			tt = 100,
+			tt = 200,
 			ss = 10,
 			mr = circle._radius/ss
 			f = 0;

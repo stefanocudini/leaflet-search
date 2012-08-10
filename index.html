@@ -72,7 +72,7 @@ h3,h4 {
 <script src="leaflet-search.js"></script>
 <script>
 
-//samples data
+//samples data for fill map
 var coords = [
 	{"loc":[41.575730,13.002411], "title":"black"},
 	{"loc":[41.807149,13.162994], "title":"blue"},
@@ -94,7 +94,7 @@ map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 var searchLayer = new L.LayerGroup();//layer with searched markers
 map.addLayer(searchLayer);
 
-map.addControl(new L.Control.Search({layerSearch: searchLayer}));
+map.addControl(new L.Control.Search({searchLayer: searchLayer}));
 
 var ul = L.DomUtil.get('titles');//ul titles list
 for(i in coords)	//make markers and colors list
