@@ -1,0 +1,40 @@
+
+body {
+	background:#c4d0dd;
+	color:#285585;
+}
+a {
+	color:#1978cf;
+}
+a:hover {
+	color:#eef;
+}
+h3,h4 {
+	margin:0 0 .5em 0;
+}
+#map {
+	border:1px solid #1978cf;
+	width:600px;
+	height:400px;
+	margin-right:1em;
+	float:left;
+}
+#titles {
+	list-style:none;
+}
+#copy {
+	position:fixed;
+	top:-.85em;
+	right:20%;
+	color:#00c;
+	background:#fff;
+	border-radius:.5em;
+	box-shadow: 0 0 6px #888;	
+	padding:1em .5em .25em .5em;
+	z-index:4000;
+	font-size:small;
+	filter: alpha(opacity=70);
+	-khtml-opacity: .7;
+	-moz-opacity: .7;
+	opacity: .7;		
+}

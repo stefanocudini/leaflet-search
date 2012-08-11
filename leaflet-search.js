@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Plugin 1.0.0
+ * Leaflet Search Plugin 1.1.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search
  *
@@ -17,7 +17,7 @@ L.Control.Search = L.Control.extend({
 		//example: "autocomplete.php?q={s}&callback={c}"
 		//{s} searched string, {c} callback jsonp
 		//TODO add ajax autocomplete url
-		searchCallFilter: this._filterRecords,	//callback for filtering data to _recordsCache
+		//searchCallFilter: this._filterRecords,	//callback for filtering data to _recordsCache
 		initialSearch: true,	//search text by initial
 		autoPan: true,  //auto panTo when click on tooltip
 		animatePan: true,	//animation after panTo
@@ -200,11 +200,11 @@ L.Control.Search = L.Control.extend({
 
 	_filterRecords: function(jsonraw) {	//default callback for filter data from jsonp/ajax to _recordsCache format(key,latlng)
 	//TODO move this function to example
-		console.log(jsonraw);
+		//console.log(jsonraw);
 		var jsonret = {};
 		for(i in jsonraw.results)
 			jsonret[ jsonraw.results[i].title ]= L.latLng( jsonraw.results[i].loc );
-		console.log(jsonret);
+		//console.log(jsonret);
 		return jsonret;
 	},
 
