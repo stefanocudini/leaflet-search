@@ -71,9 +71,8 @@ h3,h4 {
 <script src="/leaflet/leaflet.js"></script>
 <script src="leaflet-search.js"></script>
 <script>
-
-//samples data for fill map
-var coords = [
+//sample data for fill map
+var data = [
 	{"loc":[41.575730,13.002411], "title":"black"},
 	{"loc":[41.807149,13.162994], "title":"blue"},
 	{"loc":[41.219190,13.062145], "title":"cyan"},
@@ -86,29 +85,28 @@ var coords = [
 	{"loc":[41.546175,13.673590], "title":"yellow"},
 	{"loc":[41.239190,13.032145], "title":"white"}
 ];
+</script>
 
-var cen = new L.latLng(coords[0].loc);//set center from first coord location
-var map = new L.Map('map', {center: cen, zoom: 9});
+<script>
+var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });	//set center from first location
+
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-var searchLayer = new L.LayerGroup();//layer with searched markers
+var searchLayer = new L.LayerGroup();	//layer contain searched markers
 map.addLayer(searchLayer);
 
-map.addControl(new L.Control.Search({searchLayer: searchLayer}));
+map.addControl( new L.Control.Search({searchLayer: searchLayer}) );//inizialize control
 
-var ul = L.DomUtil.get('titles');//ul titles list
-for(i in coords)	//make markers and colors list
+for(i in data)	//make markers froom sample data
 {
-	var pos = new L.latLng(coords[i].loc),
-		tit = coords[i].title;
-
-	var marker = new L.Marker(pos, {title: tit } );
-//	marker._leaflet_id = tit;
-	marker.bindPopup('<i>title:</i> <b>'+tit+'<b>');
-	searchLayer.addLayer(marker);
-
-	L.DomUtil.create('li', '', ul).innerHTML = tit;
+	var marker = new L.Marker(new L.latLng(data[i].loc), {title: data[i].title} );
+	
+	marker.bindPopup('title: <b>'+ data[i].title +'<b>').addTo(searchLayer);
 }
+
+var ul = L.DomUtil.get('titles');//make ul titles list
+for(i in data)
+	L.DomUtil.create('li', '', ul).innerHTML = data[i].title;
 
 </script>
 
