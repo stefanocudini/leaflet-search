@@ -7,7 +7,6 @@
 	-moz-border-radius: 7px;
 	-webkit-border-radius: 7px;
 	border-radius: 7px;
-	margin:10px;
 	padding:5px;
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1000;
@@ -19,16 +18,16 @@
 	background: #fff;
 	border:1px solid #666;
 	border-radius:.35em;
-	height:19px;
+	height:18px;
 	padding:0 .125em;
 	margin:0 .5em 0 0;
 }
 .leaflet-control-search .search-button {
 	display:block;
 	float:left;
-	width:22px;
-	height:22px;	
-	background: url('search-icon.png') no-repeat 0 0;
+	width:20px;
+	height:20px;	
+	background: url('search-icon.png') no-repeat -1px -1px;
 	background-color: rgba(255, 255, 255, 0.75);	
 	border-radius:.25em;
 }
