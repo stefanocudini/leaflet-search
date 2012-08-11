@@ -13,10 +13,10 @@ L.Control.Search = L.Control.extend({
 	options: {
 		searchLayer: new L.LayerGroup(),	//layer where search elements
 		searchProp: 'title',	//property trough filter elements
+		searchCall: null,	//callback for resetting _recordsCache, on _handleKeypress
 		searchJsonpUrl: '',	//url for autocomplete by jsonp service
 		//example: "autocomplete.php?q={s}&callback={c}"
 		//{s} searched string, {c} callback jsonp
-		//TODO add ajax autocomplete url
 		//searchCallFilter: this._filterRecords,	//callback for filtering data to _recordsCache
 		initialSearch: true,	//search text by initial
 		autoPan: true,  //auto panTo when click on tooltip
@@ -44,7 +44,7 @@ L.Control.Search = L.Control.extend({
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
 //		var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
-//uncommnt for fast test _animateLocation
+//uncomment for fast test of _animateLocation()
 		return this._container;
 	},
 
@@ -185,7 +185,7 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.innerHTML = '';
 	},
 
-	_requestJsonp: function(text, callFilter, callAfter, context) {
+	_recordsFromJsonp: function(text, callFilter, callAfter, context) {
 
 		L.Control.Search.callJsonp = function(data) {
 			context._recordsCache = callFilter(data);
@@ -240,20 +240,26 @@ L.Control.Search = L.Control.extend({
 				clearTimeout(this.timerKeypress);
 				var that = this;
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
-
-					if(that.options.searchJsonpUrl)
+					
+					var text = that._input.value;
+					
+					if(that.options.searchCall) {	//personal search callback(usually for ajax searching)
+						that._recordsCache = that.options.searchCall(text);
+						that._showTooltip(text);
+					}
+					else if(that.options.searchJsonpUrl)
 					{
-						that._requestJsonp(that._input.value, function(jsonraw) {
+						that._recordsFromJsonp(that._input.value, function(jsonraw) { //callFilter
 								return that._filterRecords(jsonraw);
-								//TODO replace with options.searchCallFilter
-							}, function() {
-								that._showTooltip(that._input.value);
-							}, that);
+								//TODO replace with that.options.searchCallFilter
+							}, function() {									//callAfter
+								that._showTooltip(text);
+							}, that);												//context
 					}
 					else if(that.options.searchLayer)
 					{
 						that._recordsCache = that._recordsFromLayer(that.options.searchLayer, that.options.searchProp);	//fill table key,value from markers into searchLayer				
-						that._showTooltip(that._input.value);	//show tooltip with filter records by this._input.value			
+						that._showTooltip(text);	//show tooltip with filter records by this._input.value			
 					}
 
 				}, that.timeKeypress);
