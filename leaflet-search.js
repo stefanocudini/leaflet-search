@@ -11,17 +11,15 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		searchLayer: new L.LayerGroup(),	//layer where search elements
+		searchCall: null,		//callback for resetting _recordsCache, on _handleKeypress
 		searchProp: 'title',	//property trough filter elements
-		searchCall: null,	//callback for resetting _recordsCache, on _handleKeypress
-		searchJsonpUrl: '',	//url for autocomplete by jsonp service
-		//example: "autocomplete.php?q={s}&callback={c}"
-		//{s} searched string, {c} callback jsonp
+		searchJsonpUrl: '',		//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		//searchCallFilter: this._filterRecords,	//callback for filtering data to _recordsCache
-		initialSearch: true,	//search text by initial
-		autoPan: true,  //auto panTo when click on tooltip
-		animatePan: true,	//animation after panTo
-		autoResize: true,	//autoresize on input change
+		searchLayer: null,	//layer where search elements
+		searchInitial: true,	//search text by initial
+		autoPan: true,  		//auto panTo when click on tooltip
+		autoResize: true,		//autoresize on input change
+		animatePan: true,		//animation after panTo		
 		zoom: null,	//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
 		text: 'Search...',	//placeholder value
@@ -31,6 +29,7 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
+		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and minimize after blur
 		this.timeKeypress = 300;	//delay after keypress into _input
 		this._recordsCache = null;	//key,value table! that store locations!
@@ -38,13 +37,14 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
+		this._circleLoc = (new L.CircleMarker([0,0], {radius: 20, weight:3, color: '#e03', fill: false})).addTo(this._map);
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');					
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
-//		var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
-//uncomment for fast test of _animateLocation()
+		//var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
+		//uncomment for fast test of _animateLocation()
 		return this._container;
 	},
 
@@ -73,6 +73,7 @@ L.Control.Search = L.Control.extend({
 		this._input.size = this._inputMinSize;
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
+		this._circleLoc.setLatLng([0,0]);
 	},
 	
 	autoMinimize: function() {	//minimize after delay, used on_input blur
@@ -84,6 +85,10 @@ L.Control.Search = L.Control.extend({
 
 	autoMinimizeStop: function() {
 		clearTimeout(this.timerMinimize);
+	},
+	
+	_clickFocus : function(e) {
+		e.target.focus();
 	},
 	
 	_createAlert: function(className) {
@@ -117,9 +122,9 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'click', this._handleSubmit, this)
 			.addListener(button, 'focus', this.autoMinimizeStop, this)
-			.addListener(button, 'blur', this.autoMinimize, this);
+			.addListener(button, 'blur', this.autoMinimize, this)
+			.addListener(button, 'click', this._handleSubmit, this);
 
 		return button;
 	},
@@ -158,7 +163,7 @@ L.Control.Search = L.Control.extend({
 			return false;
 		}
 
-		var I = this.options.initialSearch ? '^' : '',  //search for initial text
+		var I = this.options.searchInitial ? '^' : '',  //search for initial text
 			reg = new RegExp(I + text,'i'),
 			results = 0;
 
@@ -281,24 +286,25 @@ L.Control.Search = L.Control.extend({
 				this.minimize();
 			else
 			{
-				if( this._findLocation(this._input.value) )	//location founded!!
-					this.minimize();
-				else
+				if( this._findLocation(this._input.value)===false )	//location founded!!
 					this.showAlert( this.options.textErr );//location not found, alert!
+				//else
+				//	this.minimize();
 			}
 		}
-		//this.autoMinimizeStop();//maybe unuseful!
+		this._input.focus();	//block autoMinimize after _button blur
 	},
 	
 	_animateLocation: function(latlng) {
-		var circle = new L.CircleMarker(latlng, {radius: 20, weight:3, color: '#e03', fill: false}),
-			tt = 200,
+	
+		var circle = this._circleLoc;
+		circle.setLatLng(latlng);
+		circle.setRadius(20);
+	
+		var	tt = 200,
 			ss = 10,
-			mr = circle._radius/ss
+			mr = parseInt(circle._radius/ss),
 			f = 0;
-		
-		circle.addTo(this._map);
-
 		var	that = this;
 		this.timerAnimLoc = setInterval(function() {  //animation
 			f += 0.5;
@@ -307,10 +313,7 @@ L.Control.Search = L.Control.extend({
 			if( nr > 2)
 				circle.setRadius(nr);
 			else
-			{
-				that._map.removeLayer(circle);
 				clearInterval(that.timerAnimLoc);
-			}
 		}, tt);
 	},
 	
@@ -322,13 +325,14 @@ L.Control.Search = L.Control.extend({
 				z = this.options.zoom || this._map.getZoom();
 			this._map.setView(latlng, z);
 			if(this.options.animatePan)
-				this._animateLocation(latlng);//evidence location
+				this._animateLocation(latlng);//evidence location found
 			//TODO start animation after setView panning end
 			return latlng;
 		}
 		else
-			return false;
+			this._circleLoc.setLatLng([0,0]);//hide evidence
+		
+		return false;
 	}
 
 });
-
