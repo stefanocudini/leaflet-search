@@ -20,7 +20,7 @@ L.Control.Search = L.Control.extend({
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
 		animatePan: true,		//animation after panTo		
-		zoom: null,	//zoom after pan to location found, default: map.getZoom()
+		zoom: null,				//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
 		text: 'Search...',	//placeholder value
 		textErr: 'Location not found'
@@ -157,13 +157,11 @@ L.Control.Search = L.Control.extend({
 
 	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache
 
-		var regFilter = new RegExp("^[.]$|[|]",'g'),//remove | 
-			text = text.replace(regFilter,''),	//sanitize text
+		var regFilter = new RegExp("^[.]$|[|]",'g'),	//remove . and | 
+			text = text.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
 			results = 0;
-			
-			console.log(text);
 					
 		if(text.length<1)	//TODO add tooltip min length
 		{
@@ -249,10 +247,12 @@ L.Control.Search = L.Control.extend({
 				clearTimeout(this.timerKeypress);
 				var that = this;
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
-					
+				
 					var text = that._input.value;
-					
-					if(that.options.searchCall) {	//personal search callback(usually for ajax searching)
+
+					//TODO move this anonymous function inside new specific function for select which callback run	
+					if(that.options.searchCall)	//personal search callback(usually for ajax searching)
+					{
 						that._recordsCache = that.options.searchCall(text);
 						that._showTooltip(text);
 					}
@@ -261,9 +261,9 @@ L.Control.Search = L.Control.extend({
 						that._recordsFromJsonp(that._input.value, function(jsonraw) { //callFilter
 								return that._filterRecords(jsonraw);
 								//TODO replace with that.options.searchCallFilter
-							}, function() {									//callAfter
+							}, function() {											  //callAfter
 								that._showTooltip(text);
-							}, that);												//context
+							}, that);												  //context
 					}
 					else if(that.options.searchLayer)
 					{
@@ -281,7 +281,7 @@ L.Control.Search = L.Control.extend({
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 	
-	_handleSubmit: function(e) {	//search button action
+	_handleSubmit: function(e) {	//search button action, and enter key shortcut
 	
 		if(this._input.style.display == 'none')	//on first click show _input only
 			this.maximize();
@@ -322,20 +322,24 @@ L.Control.Search = L.Control.extend({
 		}, tt);
 	},
 	
-	_findLocation: function(text) {	//get location from table _recordsCache and pan to location
+	_findLocation: function(text) {	//get location from table _recordsCache and pan to map! ...game over!
 	
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
-			var latlng = this._recordsCache[text],//serach in table key,value
-				z = this.options.zoom || this._map.getZoom();
-			this._map.setView(latlng, z);
+			var newCenter = this._recordsCache[text];//serach in table key,value
+			
+			if(this.options.zoom)
+				this._map.setView(newCenter, this.options.zoom);
+			else
+				this._map.panTo(newCenter);
+				
 			if(this.options.animatePan)
-				this._animateLocation(latlng);//evidence location found
-			//TODO start animation after setView panning end
-			return latlng;
+				this._animateLocation(newCenter);//evidence location found
+			//TODO start animation after setView panning end, maybe on moveend
+			return newCenter;
 		}
 		else
-			this._circleLoc.setLatLng([0,0]);//hide evidence
+			this._circleLoc.setLatLng([0,0]);	//hide evidence
 		
 		return false;
 	}

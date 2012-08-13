@@ -41,21 +41,26 @@ var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });	//set
 
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-var searchLayer = new L.LayerGroup();	//layer contain searched markers
-map.addLayer(searchLayer);
+var markersLayer = new L.LayerGroup();	//layer contain searched elements
+map.addLayer(markersLayer);
 
-map.addControl( new L.Control.Search({searchLayer: searchLayer}) );//inizialize control
+////////////basic usage of control
+map.addControl( new L.Control.Search({searchLayer: markersLayer}) );//inizialize control
+////////////basic usage of control
 
-for(i in data)	//make markers from sample data
-{
-	var marker = new L.Marker(new L.latLng(data[i].loc), {title: data[i].title} );
+////////////populate map with markers from sample data
+//
+var ul = L.DomUtil.get('titles');	//Markers title list
+for(i in data) {
+	var title = data[i].title,	//value searched
+		loc = data[i].loc,		//position found
+		marker = new L.Marker(new L.latLng(loc), {title: title} );
+	marker.bindPopup('title: '+ title );
+	markersLayer.addLayer(marker);
 	
-	marker.bindPopup('title: <b>'+ data[i].title +'<b>').addTo(searchLayer);
+	L.DomUtil.create('li', '', ul).innerHTML = title;//add title in ul list
 }
 
-var ul = L.DomUtil.get('titles');//make ul titles list
-for(i in data)
-	L.DomUtil.create('li', '', ul).innerHTML = data[i].title;
 
 </script>
 
