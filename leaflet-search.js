@@ -30,7 +30,7 @@ L.Control.Search = L.Control.extend({
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
-		this.timeAutoclose = 1200;		//delay for autoclosing alert and minimize after blur
+		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
 		this.timeKeypress = 300;	//delay after keypress into _input
 		this._recordsCache = {};	//key,value table! that store locations!
 	},
@@ -62,29 +62,31 @@ L.Control.Search = L.Control.extend({
 		},this.timeAutoclose);
 	},
 	
-	maximize: function() {
+	expand: function() {		
 		this._input.style.display = 'block';
+		L.DomUtil.addClass(this._container,'exp');		
 		this._input.focus();
 	},
-	
-	minimize: function() {
+
+	collapse: function() {
 		this._hideTooltip();
 		this._input.value ='';
 		this._input.size = this._inputMinSize;
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
+		L.DomUtil.removeClass(this._container,'exp');		
 		this._circleLoc.setLatLng([0,0]);
 	},
 	
-	autoMinimize: function() {	//minimize after delay, used on_input blur
+	autoCollapse: function() {	//collapse after delay, used on_input blur
 		var that = this;
-		this.timerMinimize = setTimeout(function() {
-			that.minimize();
+		this.timerCollapse = setTimeout(function() {
+			that.collapse();
 		}, this.timeAutoclose);
 	},
 
-	autoMinimizeStop: function() {
-		clearTimeout(this.timerMinimize);
+	autoCollapseStop: function() {
+		clearTimeout(this.timerCollapse);
 	},
 	
 	_clickFocus : function(e) {
@@ -109,8 +111,8 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
 			.addListener(input, 'keyup', this._handleAutoresize, this)			
-			.addListener(input, 'blur', this.autoMinimize, this)
-			.addListener(input, 'focus', this.autoMinimizeStop, this);
+			.addListener(input, 'blur', this.autoCollapse, this)
+			.addListener(input, 'focus', this.autoCollapseStop, this);
 			
 		return input;
 	},
@@ -122,8 +124,8 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'focus', this.autoMinimizeStop, this)
-			.addListener(button, 'blur', this.autoMinimize, this)
+			.addListener(button, 'focus', this.autoCollapseStop, this)
+			.addListener(button, 'blur', this.autoCollapse, this)
 			.addListener(button, 'click', this._handleSubmit, this);
 
 		return button;
@@ -231,7 +233,7 @@ L.Control.Search = L.Control.extend({
 		switch(e.keyCode)
 		{
 			case 27: //Esc
-				this.minimize();
+				this.collapse();
 			break;
 			case 13: //Enter
 				this._handleSubmit();	//do search
@@ -284,20 +286,20 @@ L.Control.Search = L.Control.extend({
 	_handleSubmit: function(e) {	//search button action, and enter key shortcut
 	
 		if(this._input.style.display == 'none')	//on first click show _input only
-			this.maximize();
+			this.expand();
 		else
 		{
 			if(this._input.value=='')	//hide _input only
-				this.minimize();
+				this.collapse();
 			else
 			{
 				if( this._findLocation(this._input.value)===false )	//location founded!!
 					this.showAlert( this.options.textErr );//location not found, alert!
 				//else
-				//	this.minimize();
+				//	this.collapse();
 			}
 		}
-		this._input.focus();	//block autoMinimize after _button blur
+		this._input.focus();	//block autoCollapse after _button blur
 	},
 	
 	_animateLocation: function(latlng) {
@@ -333,7 +335,7 @@ L.Control.Search = L.Control.extend({
 			else
 				this._map.panTo(newCenter);
 
-			//TODO add option for delay minimize when found
+			//TODO add option for delay Collapse when found
 				
 			if(this.options.animatePan)
 				this._animateLocation(newCenter);//evidence location found

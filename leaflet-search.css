@@ -11,6 +11,9 @@
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1000;
 }
+.leaflet-control-search.exp {/*expanded*/
+	box-shadow: 0 1px 7px #999;	
+}
 .leaflet-control-search .search-input {
 	display:block;
 	float:left;
@@ -26,7 +29,7 @@
 	display:block;
 	float:left;
 	width:19px;
-	height:19px;	
+	height:20px;	
 	background: url('search-icon.png') no-repeat -1px -1px;
 	background-color: rgba(255, 255, 255, 0.75);	
 	border-radius:.25em;
