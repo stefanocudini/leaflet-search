@@ -157,21 +157,25 @@ L.Control.Search = L.Control.extend({
 
 	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache
 
+		var regFilter = new RegExp("^[.]$|[|]",'g'),//remove | 
+			text = text.replace(regFilter,''),	//sanitize text
+			I = this.options.searchInitial ? '^' : '',  //search for initial text
+			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
+			results = 0;
+			
+			console.log(text);
+					
 		if(text.length<1)	//TODO add tooltip min length
 		{
 			this._hideTooltip();
 			return false;
 		}
 
-		var I = this.options.searchInitial ? '^' : '',  //search for initial text
-			reg = new RegExp(I + text,'i'),
-			results = 0;
-
 		this._tooltip.innerHTML = '';
 		
 		for(key in this._recordsCache)
 		{
-			if(reg.test(key))//filter
+			if(regSearch.test(key))//search in records
 			{
 				this._createTip(key);
 				results++;

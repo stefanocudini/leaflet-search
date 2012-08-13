@@ -30,7 +30,7 @@ function searchByAjax(text) {	//definition of callback for syncronous ajax serch
 	
 	$.ajax({
 		url: 'search.php',	//read comments in search.php for more information usage
-		async: false,		//must be syncronous request!
+		async: false,		//must be syncronous request! or not return ajax results
 		type: 'GET',
 		data: {q : text},
 		dataType: 'json',
