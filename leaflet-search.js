@@ -32,7 +32,7 @@ L.Control.Search = L.Control.extend({
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and minimize after blur
 		this.timeKeypress = 300;	//delay after keypress into _input
-		this._recordsCache = null;	//key,value table! that store locations!
+		this._recordsCache = {};	//key,value table! that store locations!
 	},
 
 	onAdd: function (map) {
@@ -49,7 +49,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 	onRemove: function(map) {
-		delete this._recordsCache;//free memory
+		this._recordsCache = {};//free memory!...?
 	},
 	
 	showAlert: function(text) {
@@ -263,6 +263,7 @@ L.Control.Search = L.Control.extend({
 					}
 					else if(that.options.searchLayer)
 					{
+						//TODO update _recordsCache only one
 						that._recordsCache = that._recordsFromLayer(that.options.searchLayer, that.options.searchProp);	//fill table key,value from markers into searchLayer				
 						that._showTooltip(text);	//show tooltip with filter records by this._input.value			
 					}
