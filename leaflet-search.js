@@ -19,7 +19,7 @@ L.Control.Search = L.Control.extend({
 		searchInitial: true,	//search text by initial
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
-		animatePan: true,		//animation after panTo		
+		animatePan: true,		//animation after panTo
 		zoom: null,				//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
 		text: 'Search...',	//placeholder value
@@ -332,6 +332,8 @@ L.Control.Search = L.Control.extend({
 				this._map.setView(newCenter, this.options.zoom);
 			else
 				this._map.panTo(newCenter);
+
+			//TODO add option for delay minimize when found
 				
 			if(this.options.animatePan)
 				this._animateLocation(newCenter);//evidence location found
