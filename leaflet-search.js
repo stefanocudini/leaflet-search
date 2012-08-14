@@ -173,7 +173,7 @@ L.Control.Search = L.Control.extend({
 
 		this._tooltip.innerHTML = '';
 		
-		for(key in this._recordsCache)
+		for(var key in this._recordsCache)
 		{
 			if(regSearch.test(key))//search in records
 			{
@@ -211,7 +211,7 @@ L.Control.Search = L.Control.extend({
 	//TODO move this function to example
 		//console.log(jsonraw);
 		var jsonret = {};
-		for(i in jsonraw.results)
+		for(var i in jsonraw.results)
 			jsonret[ jsonraw.results[i].title ]= L.latLng( jsonraw.results[i].loc );
 		//console.log(jsonret);
 		return jsonret;
