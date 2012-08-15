@@ -18,6 +18,7 @@ L.Control.Search = L.Control.extend({
 		searchLayer: null,			//layer where search elements
 		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchInitial: true,		//search text in _recordsCache by initial
+		searchMinLen: 1,			//minimal text length for autocomplete
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
 		animatePan: true,		//animation after panTo
@@ -33,7 +34,7 @@ L.Control.Search = L.Control.extend({
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
 		this.options.searchJsonpFilter = this.options.searchJsonpFilter || this._jsonpDefaultFilter;
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
-		this.timeKeypress = 300;	//delay after keypress into _input
+		this.timeDelaySearch = 300;	//delay for searching after keypress into _input
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
@@ -160,19 +161,16 @@ L.Control.Search = L.Control.extend({
 	},	
 	//////end DOM creations
 
-	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache values
+	_showTooltip: function() {	//show tooltip with filtered this._recordsCache values
+
+		if(this._input.value.length < this.options.searchMinLen)
+			return this._hideTooltip();
 
 		var regFilter = new RegExp("^[.]$|[|]",'g'),	//remove . and | 
-			text = text.replace(regFilter,''),		//sanitize text
+			text = this._input.value.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
-			ntip = 0;
-
-		if(text.length<1)	//TODO add tooltip min length option
-		{
-			this._hideTooltip();
-			return false;
-		}
+			ntip = 0;	
 		
 		this._tooltip.innerHTML = '';
 		
@@ -238,7 +236,7 @@ L.Control.Search = L.Control.extend({
 		return retRecords;
 	},
 
-	_handleKeypress: function (e) {//_input keyup
+	_handleKeypress: function (e) {	//run _input keyup event
 		switch(e.keyCode)
 		{
 			case 27: //Esc
@@ -255,7 +253,12 @@ L.Control.Search = L.Control.extend({
 			break;
 			//TODO scroll tips, with shortcuts 38(up),40(down)
 			default://All keys
-				clearTimeout(this.timerKeypress);
+
+				clearTimeout(this.timerKeypress);	//cancel last search request
+
+				if(this._input.value.length < this.options.searchMinLen)
+					return this._hideTooltip();
+								
 				var that = this;
 				//TODO move anonymous function of setTimeout inside new function for select which callback run	
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
@@ -265,23 +268,23 @@ L.Control.Search = L.Control.extend({
 					if(that.options.searchCall)	//personal search callback(usually for ajax searching)
 					{
 						that._recordsCache = that.options.searchCall(inputText);
-						that._showTooltip(inputText);
+						that._showTooltip();
 					}
 					else if(that.options.searchJsonpUrl)
 					{
 						that._recordsFromJsonp(inputText, function(data) {	//callback run after data return
 							that._recordsCache = data;
-							that._showTooltip(inputText);
+							that._showTooltip();
 						}, that);
 					}
 					else if(that.options.searchLayer)
 					{
 						//TODO update _recordsCache only one
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
-						that._showTooltip(inputText);	//show tooltip with filter records by this._input.value			
+						that._showTooltip();	//show tooltip with filter records by this._input.value			
 					}
 
-				}, that.timeKeypress);
+				}, that.timeDelaySearch);
 		}
 	},	
 	

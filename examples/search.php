@@ -55,19 +55,7 @@ $data = json_decode('[
 	{"loc":[41.319190,13.162145], "title":"gray"},
 	{"loc":[41.794008,12.583884], "title":"green"},	
 	{"loc":[41.575730,13.002411], "title":"red"},	
-	{"loc":[41.546175,13.673590], "title":"yellow"},
-	
-	{"loc":[41.546175,13.673590], "title":"a"},
-	{"loc":[41.546175,13.673590], "title":"ab"},		
-	{"loc":[41.546175,13.673590], "title":"abc"},
-	{"loc":[41.546175,13.673590], "title":"abcd"},
-	{"loc":[41.546175,13.673590], "title":"abcde"},
-	{"loc":[41.546175,13.673590], "title":"abcdef"},
-	{"loc":[41.546175,13.673590], "title":"abcdefg"},
-	{"loc":[41.546175,13.673590], "title":"abcdefghi1"},
-	{"loc":[41.546175,13.673590], "title":"abcdefghi2"},		
-	{"loc":[41.546175,13.673590], "title":"abcdefghi3"}
-		
+	{"loc":[41.546175,13.673590], "title":"yellow"}		
 ]',true);	//simulate few database data
 //the searched field is: title
 
