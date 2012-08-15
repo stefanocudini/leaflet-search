@@ -140,8 +140,8 @@ L.Control.Search = L.Control.extend({
 		return tool;
 	},
 
-	_createTip: function(text) {	//make new choice for tooltip
-		var tip = L.DomUtil.create('a', 'search-tip', this._tooltip);
+	_createTip: function(text) {	//build new choice for tooltip menu
+		var tip = L.DomUtil.create('a', 'search-tip');
 			tip.href = '#',
 			tip.innerHTML = text;
 
@@ -160,7 +160,7 @@ L.Control.Search = L.Control.extend({
 	},	
 	//////end DOM creations
 
-	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache
+	_showTooltip: function(text) {	//show tooltip with filtered this._recordsCache values
 
 		var regFilter = new RegExp("^[.]$|[|]",'g'),	//remove . and | 
 			text = text.replace(regFilter,''),		//sanitize text
@@ -173,14 +173,14 @@ L.Control.Search = L.Control.extend({
 			this._hideTooltip();
 			return false;
 		}
-
+		
 		this._tooltip.innerHTML = '';
 		
 		for(var key in this._recordsCache)
 		{
 			if(regSearch.test(key))//search in records
 			{
-				this._createTip(key);
+				this._tooltip.appendChild( this._createTip(key) );
 				ntip++;
 			}
 		}
@@ -207,25 +207,19 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_recordsFromJsonp: function(inputText, callAfter, that) {
-	
-		//TODO use throw new Error("my message");on error
 
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			that._recordsCache = that.options.searchJsonpFilter(data);
-			callAfter();//usually _showTooltip
-			//TODO replace with that._jsonpFilter()
-			//TODOTOTODO
+			var fdata = that.options.searchJsonpFilter(data);
+			callAfter(fdata);
 		}
-		var script = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
-			
+		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
 			url = L.Util.template(that.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
 			//parsing url
-			//rnd = '&_='+Math.floor(Math.random()*10000);  //random param for disable browser cache
-			//TODO add rnd param or randomize callback name!
+			//rnd = '&_='+Math.floor(Math.random()*10000);//TODO add rnd param or randomize callback name!
 
-		script.type = 'text/javascript';
-		script.src = url;
-		//TODO return {onFinish: function(call) { that.options.searchJsonpFilter = call }};//this reset the default filter callback
+		scriptNode.type = 'text/javascript';
+		scriptNode.src = url;
+		return callAfter;
 	},
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
@@ -263,8 +257,7 @@ L.Control.Search = L.Control.extend({
 			default://All keys
 				clearTimeout(this.timerKeypress);
 				var that = this;
-
-				//TODO move anonymous function of setTimeout inside new specific function for select which callback run	
+				//TODO move anonymous function of setTimeout inside new function for select which callback run	
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 				
 					var inputText = that._input.value;
@@ -276,9 +269,10 @@ L.Control.Search = L.Control.extend({
 					}
 					else if(that.options.searchJsonpUrl)
 					{
-						that._recordsFromJsonp(inputText, function() {				  //callAfter
-								that._showTooltip(inputText);
-							}, that);												  //context
+						that._recordsFromJsonp(inputText, function(data) {	//callback run after data return
+							that._recordsCache = data;
+							that._showTooltip(inputText);
+						}, that);
 					}
 					else if(that.options.searchLayer)
 					{
@@ -360,5 +354,4 @@ L.Control.Search = L.Control.extend({
 		
 		return false;
 	}
-
 });

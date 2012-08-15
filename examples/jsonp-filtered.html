@@ -11,7 +11,7 @@
 <body>
 <h3>Leaflet-Search Control</h3>
 
-<h4>JSONP Example: <em>search locations by jsonp service, and filter data records</em></h4>
+<h4>JSONP Example: <em>search locations from filtered data of jsonp service</em></h4>
 <div id="map"></div>
 
 <script src="/leaflet/leaflet.js"></script>
@@ -30,7 +30,8 @@ function filter(rawjson) {	//callback that remap field name
 	{
 		key = rawjson.results[i].title;
 		loc = L.latLng( rawjson.results[i].loc );
-		json[ key ]= loc;
+		
+		json[ key ]= loc;	//key,value format
 	}
 	
 	return json;

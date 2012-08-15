@@ -44,10 +44,8 @@
 @header("Content-type: application/json; charset=utf-8");
 
 if(!isset($_GET['q']) or empty($_GET['q']))
-	die( json_encode(array('ok'=>0, 'errmsg'=>'specify query parameter') ) );
+	die( json_encode(array('ok'=>0, 'errmsg'=>'specify q parameter') ) );
 
-$jsonp = true;	//active jsonp support
-	
 $data = json_decode('[
 	{"loc":[41.239190,13.032145], "title":"black"},
 	{"loc":[41.807149,13.162994], "title":"blue"},
@@ -57,26 +55,42 @@ $data = json_decode('[
 	{"loc":[41.319190,13.162145], "title":"gray"},
 	{"loc":[41.794008,12.583884], "title":"green"},	
 	{"loc":[41.575730,13.002411], "title":"red"},	
-	{"loc":[41.546175,13.673590], "title":"yellow"}
+	{"loc":[41.546175,13.673590], "title":"yellow"},
+	
+	{"loc":[41.546175,13.673590], "title":"a"},
+	{"loc":[41.546175,13.673590], "title":"ab"},		
+	{"loc":[41.546175,13.673590], "title":"abc"},
+	{"loc":[41.546175,13.673590], "title":"abcd"},
+	{"loc":[41.546175,13.673590], "title":"abcde"},
+	{"loc":[41.546175,13.673590], "title":"abcdef"},
+	{"loc":[41.546175,13.673590], "title":"abcdefg"},
+	{"loc":[41.546175,13.673590], "title":"abcdefghi1"},
+	{"loc":[41.546175,13.673590], "title":"abcdefghi2"},		
+	{"loc":[41.546175,13.673590], "title":"abcdefghi3"}
+		
 ]',true);	//simulate few database data
 //the searched field is: title
-
-$qreg = $_GET['q'];
-$reg = "/^$qreg/i";	//initial search
-
 
 
 function searchInit($text)	//search initial text in titles
 {
-	global $reg;
-	return (bool)preg_match($reg, $text['title'],$m);
+	$qreg = $_GET['q'];
+	$reg = "/^$qreg/i";	//initial case insensitive searching
+	return (bool)preg_match($reg, $text['title']);
 }
 
-$fdata = array_filter($data,'searchInit');	//filter data by title
-$fdata = array_values($fdata);	//reset indexs
+$fdata = array_filter($data, 'searchInit');	//filter data
+$fdata = array_values($fdata);	//reset $fdata indexs
 
-$res = array('ok'=>1, 'results'=> $fdata);	//formatting json result
-$res = json_encode($res,true);
-echo ($jsonp and isset($_GET['callback'])) ? $_GET['callback']."($res)" : $res;
+$out = array('ok'=>1, 'results'=> $fdata);	//formatting json result
+
+$json = json_encode($out,true);
+
+usleep(500000);	//simulate connection latency
+
+echo isset($_GET['callback']) ? $_GET['callback']."($json)" : $json;
+
+
+
 
 ?>
