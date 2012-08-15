@@ -54,7 +54,7 @@ var ul = L.DomUtil.get('titles');	//Markers title list
 for(i in data) {
 	var title = data[i].title,	//value searched
 		loc = data[i].loc,		//position found
-		marker = new L.Marker(new L.latLng(loc), {title: title} );
+		marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
 	marker.bindPopup('title: '+ title );
 	markersLayer.addLayer(marker);
 	

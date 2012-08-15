@@ -59,6 +59,7 @@ $data = json_decode('[
 	{"loc":[41.575730,13.002411], "title":"red"},	
 	{"loc":[41.546175,13.673590], "title":"yellow"}
 ]',true);	//simulate few database data
+//the searched field is: title
 
 $qreg = $_GET['q'];
 $reg = "/^$qreg/i";	//initial search

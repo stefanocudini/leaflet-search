@@ -11,7 +11,7 @@
 <body>
 <h3>Leaflet-Search Control</h3>
 
-<h4>JSONP Example: <em>search locations by jsonp service</em></h4>
+<h4>JSONP Example: <em>search locations by jsonp service, and filter data records</em></h4>
 <div id="map"></div>
 
 <script src="/leaflet/leaflet.js"></script>
@@ -22,8 +22,21 @@ var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411])
 
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...'}) );
-//view source of search.php for more details
+function filter(rawjson) {	//callback that remap field name
+	var json = {},
+		key, loc;
+	
+	for(var i in rawjson.results)//view search.php source code for json format details
+	{
+		key = rawjson.results[i].title;
+		loc = L.latLng( rawjson.results[i].loc );
+		json[ key ]= loc;
+	}
+	
+	return json;
+}
+
+map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', searchJsonpFilter: filter}) );
 </script>
 
 <div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>

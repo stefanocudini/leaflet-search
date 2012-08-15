@@ -11,12 +11,13 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events, 
 	
 	options: {
-		searchCall: null,		//callback for resetting _recordsCache, on _handleKeypress
-		searchProp: 'title',	//property trough filter elements
-		searchJsonpUrl: '',		//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
-		//searchCallFilter: this._filterRecords,	//callback for filtering data to _recordsCache
-		searchLayer: null,	//layer where search elements
-		searchInitial: true,	//search text by initial
+		searchCall: null,			//callback that fill _recordsCache with key,value table
+		searchJsonpUrl: '',			//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
+		searchJsonpFilter: null,	//callback for filtering data to _recordsCache
+		//TODO add options: searchJsonpProp and searchJsonpLoc for remapping fields from jsonp
+		searchLayer: null,			//layer where search elements
+		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
+		searchInitial: true,		//search text in _recordsCache by initial
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
 		animatePan: true,		//animation after panTo
@@ -30,9 +31,10 @@ L.Control.Search = L.Control.extend({
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text.length;
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
+		this.options.searchJsonpFilter = this.options.searchJsonpFilter || this._jsonpDefaultFilter;
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
 		this.timeKeypress = 300;	//delay after keypress into _input
-		this._recordsCache = {};	//key,value table! that store locations!
+		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
 	onAdd: function (map) {
@@ -45,6 +47,7 @@ L.Control.Search = L.Control.extend({
 		this._tooltip = this._createTooltip('search-tooltip');
 		//var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
 		//uncomment for fast test of _animateLocation()
+		//TODO bind _recordsFromLayer to map events layeradd layerd remove update ecc
 		return this._container;
 	},
 
@@ -163,9 +166,9 @@ L.Control.Search = L.Control.extend({
 			text = text.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
-			results = 0;
-					
-		if(text.length<1)	//TODO add tooltip min length
+			ntip = 0;
+
+		if(text.length<1)	//TODO add tooltip min length option
 		{
 			this._hideTooltip();
 			return false;
@@ -178,15 +181,15 @@ L.Control.Search = L.Control.extend({
 			if(regSearch.test(key))//search in records
 			{
 				this._createTip(key);
-				results++;
+				ntip++;
 			}
 		}
-		if(results>0)
+		if(ntip>0)
 			this._tooltip.style.display = 'block';
 		else
 			this._hideTooltip();
 
-		return results;
+		return ntip;
 	},
 
 	_hideTooltip: function() {
@@ -194,38 +197,50 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.innerHTML = '';
 	},
 
-	_recordsFromJsonp: function(text, callFilter, callAfter, context) {
-
-		L.Control.Search.callJsonp = function(data) {
-			context._recordsCache = callFilter(data);
-			callAfter();//usually _showTooltip
-		}
-		var el = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
-			url = L.Util.template(context.options.searchJsonpUrl, {s: text, c:"L.Control.Search.callJsonp"});
-			rnd = '&_='+Math.floor(Math.random()*10000);  //random param for disable browser cache
-		el.type = 'text/javascript';
-		el.src = url;	//TODO add rnd param
-	},
-
-	_filterRecords: function(jsonraw) {	//default callback for filter data from jsonp/ajax to _recordsCache format(key,latlng)
-	//TODO move this function to example
-		//console.log(jsonraw);
+	_jsonpDefaultFilter: function(jsonraw) {	//default callback for filter data from jsonp to _recordsCache format(key,latlng)
 		var jsonret = {};
-		for(var i in jsonraw.results)
-			jsonret[ jsonraw.results[i].title ]= L.latLng( jsonraw.results[i].loc );
-		//console.log(jsonret);
+		for(var i in jsonraw)
+			jsonret[ jsonraw[i].title ]= L.latLng( jsonraw[i].loc );
+		//TODO replace .title and .loc with options: searchJsonpProp and searchJsonpLoc
+		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
+	
+	_recordsFromJsonp: function(inputText, callAfter, that) {
+	
+		//TODO use throw new Error("my message");on error
 
-	_recordsFromLayer: function(layerSearch, propSearch) {	//return table: key,value from layer
-		var retRecords = {};
-		layerSearch.eachLayer(function(marker) {	//iterate elements in layer
+		L.Control.Search.callJsonp = function(data) {	//jsonp callback
+			that._recordsCache = that.options.searchJsonpFilter(data);
+			callAfter();//usually _showTooltip
+			//TODO replace with that._jsonpFilter()
+			//TODOTOTODO
+		}
+		var script = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),
+			
+			url = L.Util.template(that.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
+			//parsing url
+			//rnd = '&_='+Math.floor(Math.random()*10000);  //random param for disable browser cache
+			//TODO add rnd param or randomize callback name!
+
+		script.type = 'text/javascript';
+		script.src = url;
+		//TODO return {onFinish: function(call) { that.options.searchJsonpFilter = call }};//this reset the default filter callback
+	},
+
+	_recordsFromLayer: function() {	//return table: key,value from layer
+		var retRecords = {},
+			layerSearch = this.options.searchLayer,
+			propSearch = this.options.searchLayerProp;
+
+		layerSearch.eachLayer(function(marker) {
 		//TODO filter by element type: marker|polyline|circle...
 			var key = marker.options.hasOwnProperty(propSearch) && marker.options[propSearch] || '';
+			//TODO check if propSearch is a string! else use: throw new Error("my message");
 			if(key)
 				retRecords[key] = marker.getLatLng();
 		},this);
-		//TODO make cache for results while layerSearch not change, control on 'load' event
+		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
 		return retRecords;
 	},
 
@@ -248,30 +263,28 @@ L.Control.Search = L.Control.extend({
 			default://All keys
 				clearTimeout(this.timerKeypress);
 				var that = this;
+
+				//TODO move anonymous function of setTimeout inside new specific function for select which callback run	
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 				
-					var text = that._input.value;
+					var inputText = that._input.value;
 
-					//TODO move this anonymous function inside new specific function for select which callback run	
 					if(that.options.searchCall)	//personal search callback(usually for ajax searching)
 					{
-						that._recordsCache = that.options.searchCall(text);
-						that._showTooltip(text);
+						that._recordsCache = that.options.searchCall(inputText);
+						that._showTooltip(inputText);
 					}
 					else if(that.options.searchJsonpUrl)
 					{
-						that._recordsFromJsonp(that._input.value, function(jsonraw) { //callFilter
-								return that._filterRecords(jsonraw);
-								//TODO replace with that.options.searchCallFilter
-							}, function() {											  //callAfter
-								that._showTooltip(text);
+						that._recordsFromJsonp(inputText, function() {				  //callAfter
+								that._showTooltip(inputText);
 							}, that);												  //context
 					}
 					else if(that.options.searchLayer)
 					{
 						//TODO update _recordsCache only one
-						that._recordsCache = that._recordsFromLayer(that.options.searchLayer, that.options.searchProp);	//fill table key,value from markers into searchLayer				
-						that._showTooltip(text);	//show tooltip with filter records by this._input.value			
+						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
+						that._showTooltip(inputText);	//show tooltip with filter records by this._input.value			
 					}
 
 				}, that.timeKeypress);
