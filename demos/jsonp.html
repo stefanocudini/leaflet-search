@@ -5,25 +5,31 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <link rel="stylesheet" href="/leaflet/leaflet.css" />
 <link rel="stylesheet" href="../leaflet-search.css" />
-<link rel="stylesheet" href="../style.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-<h3>Leaflet-Search Control</h3>
+<h3><a href="../">Leaflet-Search Control</a></h3>
 
 <h4>JSONP Example: <em>search locations by jsonp service</em></h4>
 <div id="map"></div>
 
+<div id="post-it">
+<b>Search values:</b><br />
+black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
+</div>
+
 <script src="/leaflet/leaflet.js"></script>
 <script src="../leaflet-search.js"></script>
-
 <script>
-var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 
-map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 
-map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...'}) );
-//view source of search.php for more details
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+	map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...'}) );
+	//view source of search.php for more details
+
 </script>
 
 <div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>

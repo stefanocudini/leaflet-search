@@ -3,6 +3,7 @@
  * Leaflet Search Plugin 1.1.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search 
+ * http://easyblog.it/maps/leaflet-search
  *
  * Copyright 2012, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
@@ -38,8 +39,7 @@
  	response:
 		{"ok":0,"errmsg":"specify query parameter"}
 
- 	
- */
+*/
 
 @header("Content-type: application/json; charset=utf-8");
 
@@ -56,7 +56,7 @@ $data = json_decode('[
 	{"loc":[41.794008,12.583884], "title":"green"},	
 	{"loc":[41.575730,13.002411], "title":"red"},	
 	{"loc":[41.546175,13.673590], "title":"yellow"}		
-]',true);	//simulate few database data
+]',true);	//simulate database data
 //the searched field is: title
 
 
@@ -66,17 +66,17 @@ function searchInit($text)	//search initial text in titles
 	$reg = "/^$qreg/i";	//initial case insensitive searching
 	return (bool)preg_match($reg, $text['title']);
 }
-
 $fdata = array_filter($data, 'searchInit');	//filter data
 $fdata = array_values($fdata);	//reset $fdata indexs
 
-$out = array('ok'=>1, 'results'=> $fdata);	//formatting json result
+if(isset($_GET['packed']))
+	$fdata = array('ok'=>1, 'results'=> $fdata);	//packaging data, view jsonp-filtered.html example
 
-$json = json_encode($out,true);
+$json = json_encode($fdata,true);
 
-usleep(500000);	//simulate connection latency
+#usleep(200000);	//simulate connection latency for localhost test
 
-echo isset($_GET['callback']) ? $_GET['callback']."($json)" : $json;
+echo isset($_GET['callback']) ? $_GET['callback']."($json)" : $json;	//support for jsonp request
 
 
 

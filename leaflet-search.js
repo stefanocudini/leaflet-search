@@ -2,6 +2,7 @@
  * Leaflet Search Plugin 1.1.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search
+ * http://easyblog.it/maps/leaflet-search
  *
  * Copyright 2012, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
@@ -14,7 +15,7 @@ L.Control.Search = L.Control.extend({
 		searchCall: null,			//callback that fill _recordsCache with key,value table
 		searchJsonpUrl: '',			//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		searchJsonpFilter: null,	//callback for filtering data to _recordsCache
-		//TODO add options: searchJsonpProp and searchJsonpLoc for remapping fields from jsonp
+		//TODO add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
 		searchLayer: null,			//layer where search elements
 		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchInitial: true,		//search text in _recordsCache by initial
@@ -199,7 +200,7 @@ L.Control.Search = L.Control.extend({
 		var jsonret = {};
 		for(var i in jsonraw)
 			jsonret[ jsonraw[i].title ]= L.latLng( jsonraw[i].loc );
-		//TODO replace .title and .loc with options: searchJsonpProp and searchJsonpLoc
+		//TODO replace .title and .loc with options: searchJsonpKey and searchJsonpLoc
 		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
@@ -260,24 +261,24 @@ L.Control.Search = L.Control.extend({
 					return this._hideTooltip();
 								
 				var that = this;
-				//TODO move anonymous function of setTimeout inside new function for select which callback run	
+				//TODO move anonymous function in setTimeout in new function source selector
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 				
 					var inputText = that._input.value;
 
-					if(that.options.searchCall)	//personal search callback(usually for ajax searching)
+					if(that.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 					{
 						that._recordsCache = that.options.searchCall(inputText);
 						that._showTooltip();
 					}
-					else if(that.options.searchJsonpUrl)
+					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
 					{
 						that._recordsFromJsonp(inputText, function(data) {	//callback run after data return
 							that._recordsCache = data;
 							that._showTooltip();
 						}, that);
 					}
-					else if(that.options.searchLayer)
+					else if(that.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 					{
 						//TODO update _recordsCache only one
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				

@@ -4,7 +4,7 @@ Leaflet.Control.Search
 What ?
 ------
 
-Simple Leaflet Control that search marker by attribute
+A leaflet control that search markers location by attribute, with ajax/jsonp autocomplete feature
 
 Tested in Leaflet 0.4.2
 
@@ -18,14 +18,20 @@ Adding the search control to the map:
 map.addControl(new L.Control.Search({layer: searchLayer}));
 //searchLayer contains searched markers
 
+map.addControl(new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}'}) );
+//searchJsonpUrl is jsonp service for retrieve elements locations
+
+and insert leaflet-search.css styles to your css page
+
 ```
-View leaflet-search.css for insert styles to your css
 
 Where ?
 ------
 
 Source code:
-https://github.com/stefanocudini/leaflet-search
-https://bitbucket.org/zakis_/leaflet-search
+	https://github.com/stefanocudini/leaflet-search
+	https://bitbucket.org/zakis_/leaflet-search
 
-Demo: http://easyblog.it/maps/leaflet-search/
+Demos:
+	http://easyblog.it/maps/leaflet-search/
+

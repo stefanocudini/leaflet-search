@@ -1,7 +1,8 @@
 
 body {
-	background:#c4d0dd;
+	background:#d9e1e9;
 	color:#285585;
+	font-family:Arial;
 }
 a {
 	color:#1978cf;
@@ -10,17 +11,29 @@ a:hover {
 	color:#eef;
 }
 h3,h4 {
-	margin:0 0 .5em 0;
+	margin-bottom:.25em;
 }
 #map {
-	border:1px solid #1978cf;
+	border-radius:.125em;
+	border:2px solid #1978cf;
+	box-shadow: 0 0 8px #999;
 	width:600px;
 	height:400px;
-	margin-right:1em;
 	float:left;
 }
-#titles {
-	list-style:none;
+#demos {
+	margin:0;
+}
+#post-it {
+	width:8em;
+	height:8em;
+	margin-left:2em;
+	padding:1em;
+	float:left;
+	background:#fbf5bf;
+	border-radius:.125em;
+	box-shadow: 2px 2px 6px #999;
+	color:#666;
 }
 #copy {
 	position:fixed;
