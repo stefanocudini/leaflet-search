@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Plugin 1.1.0
+ * Leaflet Search Control 1.1.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search
  * http://easyblog.it/maps/leaflet-search
@@ -25,8 +25,8 @@ L.Control.Search = L.Control.extend({
 		animatePan: true,		//animation after panTo
 		zoom: null,				//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
-		text: 'Search...',	//placeholder value
-		textErr: 'Location not found'
+		text: 'Search...',		//placeholder value
+		textErr: 'Location not found'	//error message
 	},
 
 	initialize: function(options) {

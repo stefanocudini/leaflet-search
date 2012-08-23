@@ -1,4 +1,15 @@
 
+body#home {
+	background:url('back.png') no-repeat top left #d9e1e9;
+	margin-left:160px;
+}
+p {
+	font-size:.85em;
+}
+#ff {
+	font-size:.85em;
+}
+
 body {
 	background:#d9e1e9;
 	color:#285585;
@@ -10,7 +21,7 @@ a {
 a:hover {
 	color:#eef;
 }
-h3,h4 {
+h3, h4 {
 	margin-bottom:.25em;
 }
 #map {
@@ -21,7 +32,7 @@ h3,h4 {
 	height:400px;
 	float:left;
 }
-#demos {
+ul {
 	margin:0;
 }
 #post-it {
@@ -51,3 +62,4 @@ h3,h4 {
 	-moz-opacity: .7;
 	opacity: .7;		
 }
+
