@@ -55,10 +55,13 @@ $data = json_decode('[
 	{"loc":[41.319190,13.162145], "title":"gray"},
 	{"loc":[41.794008,12.583884], "title":"green"},	
 	{"loc":[41.575730,13.002411], "title":"red"},	
-	{"loc":[41.546175,13.673590], "title":"yellow"}		
+	{"loc":[41.546175,13.673590], "title":"yellow"}
 ]',true);	//simulate database data
 //the searched field is: title
 
+if(isset($_GET['cities']))	//for ajax-bulk.html example
+	$data = json_decode( file_get_contents('cities15000.json'), true);
+//load big data store, cities15000.json (about 14000 records)
 
 function searchInit($text)	//search initial text in titles
 {
