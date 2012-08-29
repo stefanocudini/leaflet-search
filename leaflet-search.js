@@ -20,6 +20,7 @@ L.Control.Search = L.Control.extend({
 		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchInitial: true,		//search text in _recordsCache by initial
 		searchMinLen: 1,			//minimal text length for autocomplete
+		//TODO searchLimit: 100,	//limit max results show in tooltip
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
 		animatePan: true,		//animation after panTo
@@ -139,6 +140,11 @@ L.Control.Search = L.Control.extend({
 	_createTooltip: function(className) {
 		var tool = L.DomUtil.create('div', className, this._container);
 		tool.style.display = 'none';
+
+//		L.DomEvent
+//			.addListener(tool, 'blur', this.autoCollapse, this)
+//			.addListener(tool, 'focus', this.autoCollapseStop, this);
+//not work!	:-( try mouseover
 		return tool;
 	},
 

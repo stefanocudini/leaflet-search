@@ -9,7 +9,7 @@
 	border-radius: 7px;
 	padding:5px;
 	background-color: rgba(0, 0, 0, 0.25);
-	z-index:1000;
+	z-index:1000;	
 }
 .leaflet-control-search.exp {/*expanded*/
 	box-shadow: 0 1px 7px #999;	
@@ -43,9 +43,13 @@
 	box-shadow: 0 1px 7px #999;	
 	background: #eee;
 	border-radius:7px;
-	padding: 4px;
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1010;
+	border:4px solid transparent;
+/*	padding: 4px;	*/
+	max-height:8em;
+	overflow-y:auto;
+	overflow-x:hidden;	
 }
 .leaflet-control-search .search-tip {
 	font-size:.85em;
