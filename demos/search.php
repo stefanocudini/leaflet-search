@@ -19,13 +19,20 @@
  	request:
  		search.php?q=dark
  	response:
-		{"ok":1,"results":[{"loc":[41.34419,13.242145],"title":"darkblue"},{"loc":[41.67919,13.122145],"title":"darkred"}]}
+		[{"loc":[41.34419,13.242145],"title":"darkblue"},{"loc":[41.67919,13.122145],"title":"darkred"}]
 
  Example Jsonp:
  	request:
  		search.php?q=dark&callback=L.Control.Search.callJsonp
  	response:
-		L.Control.Search.callJsonp({"ok":1,"results":[{"loc":[41.34419,13.242145],"title":"darkblue"},{"loc":[41.67919,13.122145],"title":"darkred"}]})
+		L.Control.Search.callJsonp([{"loc":[41.34419,13.242145],"title":"darkblue"},{"loc":[41.67919,13.122145],"title":"darkred"}])
+
+ Example Bulk data:
+ 	request:
+ 		search.php?q=roma&cities=1
+ 	response:
+		[{"title":"Romainville","loc":[48.8854,2.43482]},{"title":"Roma","loc":[41.89474,12.4839]},{"title":"Roman","loc":[46.91667,26.91667]}]
+
 
  Example Ajax Empty Result:
  	request:
