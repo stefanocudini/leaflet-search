@@ -140,10 +140,19 @@ L.Control.Search = L.Control.extend({
 	_createTooltip: function(className) {
 		var tool = L.DomUtil.create('div', className, this._container);
 		tool.style.display = 'none';
-
-//		L.DomEvent
-//			.addListener(tool, 'blur', this.autoCollapse, this)
-//			.addListener(tool, 'focus', this.autoCollapseStop, this);
+		var _this = this;
+		
+		L.DomEvent
+			.disableClickPropagation(tool)
+			.addListener(tool, 'blur', this.autoCollapse, this)
+			.addListener(tool, 'mousewheel', function(e) {
+				_this.autoCollapseStop;
+				L.DomEvent.stopPropagation(e);
+			}, this)
+			.addListener(tool, 'mousedown', function(e) {
+				L.DomEvent.stop(e);
+				_this.autoCollapseStop;
+			}, this);
 //not work!	:-( try mouseover
 		return tool;
 	},
