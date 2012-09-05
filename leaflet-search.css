@@ -25,6 +25,9 @@
 	padding:0 .125em;
 	margin:0 .5em 0 0;
 }
+.leaflet-control-search .search-input.load {
+	background: url('loader.gif') no-repeat center right #fff;
+}
 .leaflet-control-search .search-button {
 	display:block;
 	float:left;

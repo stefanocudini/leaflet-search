@@ -174,7 +174,7 @@ L.Control.Search = L.Control.extend({
 			}, this);
 
 		return tip;
-	},	
+	},
 	//////end DOM creations
 
 	_showTooltip: function() {	//show tooltip with filtered this._recordsCache values
@@ -283,8 +283,10 @@ L.Control.Search = L.Control.extend({
 
 					if(that.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 					{
-						that._recordsCache = that.options.searchCall(inputText);
+//						L.DomUtil.addClass(that._input, 'load');
+						that._recordsCache = that.options.searchCall.apply(that, [inputText]);
 						that._showTooltip();
+//						L.DomUtil.removeClass(that._input, 'load');
 					}
 					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
 					{
