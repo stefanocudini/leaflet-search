@@ -20,6 +20,7 @@ L.Control.Search = L.Control.extend({
 		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchInitial: true,		//search text in _recordsCache by initial
 		searchMinLen: 1,			//minimal text length for autocomplete
+		searchDelay: 300,			//delay for searching after digit
 		//TODO searchLimit: 100,	//limit max results show in tooltip
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
@@ -36,7 +37,7 @@ L.Control.Search = L.Control.extend({
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
 		this.options.searchJsonpFilter = this.options.searchJsonpFilter || this._jsonpDefaultFilter;
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
-		this.timeDelaySearch = 300;	//delay for searching after keypress into _input
+		this.timeDelaySearch = this.options.searchDelay;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
