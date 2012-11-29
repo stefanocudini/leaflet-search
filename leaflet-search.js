@@ -286,7 +286,8 @@ L.Control.Search = L.Control.extend({
 					{
 //						L.DomUtil.addClass(that._input, 'load');
 						that._recordsCache = that.options.searchCall.apply(that, [inputText]);
-						that._showTooltip();
+						if(that._recordsCache)
+							that._showTooltip();
 //						L.DomUtil.removeClass(that._input, 'load');
 					}
 					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
