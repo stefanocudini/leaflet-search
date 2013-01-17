@@ -3,6 +3,7 @@
  * Leaflet Search Plugin 1.1.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search 
+ *
  * http://easyblog.it/maps/leaflet-search
  *
  * Copyright 2012, Stefano Cudini - stefano.cudini@gmail.com

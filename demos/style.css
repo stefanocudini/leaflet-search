@@ -1,8 +1,4 @@
 
-body#home {
-	background:url('back.png') no-repeat top left #d9e1e9;
-	margin-left:160px;
-}
 p {
 	font-size:.85em;
 }
@@ -14,6 +10,10 @@ body {
 	background:#d9e1e9;
 	color:#285585;
 	font-family:Arial;
+}
+body#home {
+	background:url('back.png') no-repeat top left #d9e1e9;
+	margin-left:160px;
 }
 a {
 	color:#1978cf;
