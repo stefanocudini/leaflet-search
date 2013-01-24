@@ -1,11 +1,3 @@
-
-p {
-	font-size:.85em;
-}
-#ff {
-	font-size:.85em;
-}
-
 body {
 	background:#d9e1e9;
 	color:#285585;
@@ -13,16 +5,22 @@ body {
 }
 body#home {
 	background:url('back.png') no-repeat top left #d9e1e9;
-	margin-left:160px;
+	margin-left:150px;
 }
+
 a {
 	color:#1978cf;
 }
 a:hover {
-	color:#eef;
+	color:#fff;
 }
-h3, h4 {
-	margin-bottom:.25em;
+h2, h3, h4 {
+	white-space:nowrap;
+	margin:1em 0 0 0;
+}
+#desc {
+	white-space:nowrap;
+	font-size:1em;
 }
 #map {
 	border-radius:.125em;
@@ -33,6 +31,7 @@ h3, h4 {
 	float:left;
 }
 ul {
+	font-size:.85em;
 	margin:0;
 }
 #post-it {
@@ -42,14 +41,14 @@ ul {
 	padding:1em;
 	float:left;
 	background:#fbf5bf;
-	border-radius:.125em;
+	border:1px solid #c6bb58;
 	box-shadow: 2px 2px 6px #999;
 	color:#666;
 }
 #copy {
 	position:fixed;
 	top:-.85em;
-	right:20%;
+	right:3em;
 	color:#00c;
 	background:#fff;
 	border-radius:.5em;
@@ -61,5 +60,16 @@ ul {
 	-khtml-opacity: .7;
 	-moz-opacity: .7;
 	opacity: .7;		
+}
+#content {
+	float:left;
+	margin:0 3em 3em 0;	
+}
+#refs {
+	float:left;
+	margin:0 3em 3em 0;	
+}
+#comments {
+	clear:both;
 }
 
