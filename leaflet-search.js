@@ -83,7 +83,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
 		this._circleLoc.setLatLng([0,0]);
-		// FIXME: Focus to map here so keyboard panning works.
+		// FIXME: Focus to map here so that keyboard panning works.
 	},
 	
 	autoCollapse: function() {	//collapse after delay, used on_input blur
@@ -164,7 +164,7 @@ L.Control.Search = L.Control.extend({
 			tip.href = '#',
 			tip.innerHTML = text;
 
-		$(".search-tip").data('currentSelection', 0);
+		this._tooltip.currentSelection = -1;
 
 		L.DomEvent
 			.disableClickPropagation(tip)
@@ -266,10 +266,10 @@ L.Control.Search = L.Control.extend({
 				this._handleSubmit();	//do search
 			break;
 			case 38://Up
-				this._handleSelectUp();
+				this._handleArrowSelect(-1);
 			break;
 			case 40://Down
-				this._handleSelectDown();
+				this._handleArrowSelect(1);
 			break;
 			case 37://Left
 			case 39://Right
@@ -322,33 +322,24 @@ L.Control.Search = L.Control.extend({
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 
-  // FIXME: arrow key selection should work with one suggestion.
-  // FIXME: disable mouse rollover when using arrow keys.
-  // FIXME: Parameter should be attached to .search-tooltip not .search-tip
-  // FIXME: scroll tooltip when selected item is out of view.
-	_handleSelectUp: function() {
-		if ($('.search-tip').data('currentSelection') > 0) {
-
-			$('.search-tip').removeAttr('style');
-			$('.search-tip:nth-child(' + --($('.search-tip').data().currentSelection) + ')').css({"background":"#fff","border":"sold red 2px"});
-			$('.search-input').val($(".search-tip:nth-child(" + $('.search-tip').data().currentSelection + ")").html());
-			console.log("number of children:", ($('.search-tooltip').children().length), $('.search-tip'),$('.search-tip').data('currentSelection'));
-		}
-
-	},
-
   // FIXME: change input box background to grey when going down.
-  // FIXME: currentSelection is undefined when there is only one suggestion. When there is only one item in autosuggest, arrows don't work.
-	_handleSelectDown: function() {
-    console.log($('.search-tip'), $('.search-tip').data('currentSelection'), "<", ($('.search-tooltip').children().length), "??");
-		if ($('.search-tip').data('currentSelection') <= ($('.search-tooltip').length)) {
-			$('.search-tip').removeAttr('style');
-			$('.search-tip:nth-child(' + ++($('.search-tip').data().currentSelection) + ')')
-				.css({"background":"#fff"});
-			$('.search-input').val($(".search-tip:nth-child(" + $('.search-tip').data().currentSelection + ")").html());
-			console.log("number of children:", ($('.search-tooltip').children().length), $('.search-tip'),$('.search-tip').data('currentSelection'));
-		}
+  // FIXME: scroll tooltip when going down.
+	_handleArrowSelect: function(velocity) {
 
+		for (i=0; i<this._tooltip.getElementsByTagName('a').length; i++) {
+			this._tooltip.getElementsByTagName('a')[i].style.backgroundColor='';
+		}
+		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (this._tooltip.getElementsByTagName('a').length - 1))) {
+			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
+		}
+		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) {
+			this._tooltip.currentSelection = -1;
+		}
+		else {
+			this._tooltip.currentSelection += velocity;
+			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
+			this._input.value = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].innerHTML;
+		}
 	},
 
 	_handleSubmit: function(e) {	//search button action, and enter key shortcut
