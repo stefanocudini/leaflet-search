@@ -23,13 +23,12 @@
 .leaflet-control-search .search-input {
 	display:block;
 	float:left;
-	font-size:.85em;
 	background: #fff;
 	border:1px solid #666;
-	border-radius:4px;
-	height:22px;
+	border-radius:2px;
+	height:16px;
 	padding:0 .125em;
-	margin:0 .5em 0 0;
+	margin:2px;
 }
 .leaflet-control-search .search-input.load {
 	background: url('loader.gif') no-repeat center right #fff;
@@ -39,9 +38,12 @@
 	float:left;
 	width:22px;
 	height:22px;	
-	background: url('search-icon.png') no-repeat -1px -1px;
+	background: url('search-icon.png') no-repeat 0 0;
 	background-color: rgba(255, 255, 255, 0.3);
 	border-radius:4px;
+}
+.leaflet-control-search .search-button:hover {
+	background: url('search-icon.png') no-repeat 0 -21px;
 }
 .leaflet-control-search .search-tooltip {
 	position:absolute;
