@@ -1,15 +1,21 @@
 
-.leaflet-control-search {
+.leaflet-container .leaflet-control-search {
 	position:relative;
 	float:left;
 	background:#fff;
 	color:#1978cf;
-	-moz-border-radius: 7px;
-	-webkit-border-radius: 7px;
-	border-radius: 7px;
-	padding:5px;
-	background-color: rgba(0, 0, 0, 0.25);
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+/*	padding:5px;*/
+	border: 1px solid #888;
+	/*background-color: rgba(0, 0, 0, 0.25);*/
+	background-color: rgba(255, 255, 255, 0.8);
 	z-index:1000;	
+	box-shadow: 0 0 8px rgba(0,0,0,0.4);
+
+	margin-left: 13px;
+	margin-top: 12px;
 }
 .leaflet-control-search.exp {/*expanded*/
 	box-shadow: 0 1px 7px #999;	
@@ -20,8 +26,8 @@
 	font-size:.85em;
 	background: #fff;
 	border:1px solid #666;
-	border-radius:.35em;
-	height:18px;
+	border-radius:4px;
+	height:22px;
 	padding:0 .125em;
 	margin:0 .5em 0 0;
 }
@@ -31,11 +37,11 @@
 .leaflet-control-search .search-button {
 	display:block;
 	float:left;
-	width:19px;
-	height:20px;	
+	width:22px;
+	height:22px;	
 	background: url('search-icon.png') no-repeat -1px -1px;
-	background-color: rgba(255, 255, 255, 0.75);	
-	border-radius:.25em;
+	background-color: rgba(255, 255, 255, 0.3);
+	border-radius:4px;
 }
 .leaflet-control-search .search-tooltip {
 	position:absolute;
@@ -43,12 +49,21 @@
 	left:0;
 	float:left;
 	min-width:80px;
-	box-shadow: 0 1px 7px #999;	
+	/*box-shadow: 0 1px 7px #999;	*/
+	box-shadow: 0 0 8px rgba(0,0,0,0.4);
 	background: #eee;
-	border-radius:7px;
+	/*border-radius:7px;*/
+
+	-webkit-border-radius: 5px;
+	-webkit-border-top-left-radius: 0;
+	-moz-border-radius: 5px;
+	-moz-border-radius-topleft: 0;
+	border-radius: 5px;
+	border-top-left-radius: 0;
+
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1010;
-	border:4px solid transparent;
+	/*border:4px solid transparent;*/
 /*	padding: 4px;	*/
 	max-height:8em;
 	overflow-y:auto;
@@ -56,14 +71,18 @@
 }
 .leaflet-control-search .search-tip {
 	font-size:.85em;
-	line-height:1em;
+	//line-height:1em;
 	margin:.125em;
 	padding:.25em;
 	display:block;
-	color:#333;
+	color:black;
 	background: #eee;
 	border-radius:.25em;
 	text-decoration:none;	
+	white-space:nowrap;
+
+	font-size:.85em;
+	vertical-align:center;
 }
 .leaflet-control-search .search-tip:hover,
 .leaflet-control-search .search-button:hover {

@@ -44,7 +44,7 @@ L.Control.Search = L.Control.extend({
 	onAdd: function (map) {
 		this._map = map;
 		this._circleLoc = (new L.CircleMarker([0,0], {radius: 20, weight:3, color: '#e03', fill: false})).addTo(this._map);
-		this._container = L.DomUtil.create('div', 'leaflet-control-search');					
+		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
@@ -83,6 +83,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
 		this._circleLoc.setLatLng([0,0]);
+		// FIXME: Focus to map here so that keyboard panning works.
 	},
 	
 	autoCollapse: function() {	//collapse after delay, used on_input blur
@@ -117,7 +118,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
-			.addListener(input, 'keyup', this._handleAutoresize, this)			
+			.addListener(input, 'keyup', this._handleAutoresize, this)
 			.addListener(input, 'blur', this.autoCollapse, this)
 			.addListener(input, 'focus', this.autoCollapseStop, this);
 			
@@ -162,6 +163,8 @@ L.Control.Search = L.Control.extend({
 		var tip = L.DomUtil.create('a', 'search-tip');
 			tip.href = '#',
 			tip.innerHTML = text;
+
+		this._tooltip.currentSelection = -1;
 
 		L.DomEvent
 			.disableClickPropagation(tip)
@@ -262,6 +265,12 @@ L.Control.Search = L.Control.extend({
 			case 13: //Enter
 				this._handleSubmit();	//do search
 			break;
+			case 38://Up
+				this._handleArrowSelect(-1);
+			break;
+			case 40://Down
+				this._handleArrowSelect(1);
+			break;
 			case 37://Left
 			case 39://Right
 			case 16://Shift
@@ -312,7 +321,27 @@ L.Control.Search = L.Control.extend({
 		if(this.options.autoResize)
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
-	
+
+  // FIXME: change input box background to grey when going down.
+  // FIXME: scroll tooltip when going down.
+	_handleArrowSelect: function(velocity) {
+
+		for (i=0; i<this._tooltip.getElementsByTagName('a').length; i++) {
+			this._tooltip.getElementsByTagName('a')[i].style.backgroundColor='';
+		}
+		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (this._tooltip.getElementsByTagName('a').length - 1))) {
+			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
+		}
+		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) {
+			this._tooltip.currentSelection = -1;
+		}
+		else {
+			this._tooltip.currentSelection += velocity;
+			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
+			this._input.value = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].innerHTML;
+		}
+	},
+
 	_handleSubmit: function(e) {	//search button action, and enter key shortcut
 	
 		if(this._input.style.display == 'none')	//on first click show _input only
