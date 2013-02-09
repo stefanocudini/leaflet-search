@@ -333,7 +333,7 @@ L.Control.Search = L.Control.extend({
 		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) {
 			this._tooltip.currentSelection = -1;
 		}
-		else {
+		else if (this._tooltip.style.display != 'none') {
 			this._tooltip.currentSelection += velocity;
 			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
 			this._input.value = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].innerHTML;
