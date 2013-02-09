@@ -1,10 +1,10 @@
 body {
-	background:#d9e1e9;
+	background:#b5d0d0;
 	color:#285585;
 	font-family:Arial;
 }
 body#home {
-	background:url('back.png') no-repeat top left #d9e1e9;
+	background:url('back.png') no-repeat top left #b5d0d0;
 	margin-left:150px;
 }
 

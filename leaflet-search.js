@@ -119,7 +119,7 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
 			.addListener(input, 'keyup', this._handleAutoresize, this)
-			.addListener(input, 'blur', this.autoCollapse, this)
+			//.addListener(input, 'blur', this.autoCollapse, this)
 			.addListener(input, 'focus', this.autoCollapseStop, this);
 			
 		return input;
@@ -277,7 +277,6 @@ L.Control.Search = L.Control.extend({
 			case 17://Ctrl
 			//case 32://Space
 			break;
-			//TODO scroll tips, with shortcuts 38(up),40(down)
 			default://All keys
 
 				clearTimeout(this.timerKeypress);	//cancel last search request
@@ -308,7 +307,6 @@ L.Control.Search = L.Control.extend({
 					}
 					else if(that.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 					{
-						//TODO update _recordsCache only one
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
 						that._showTooltip();	//show tooltip with filter records by this._input.value			
 					}
@@ -361,7 +359,7 @@ L.Control.Search = L.Control.extend({
 		this._input.focus();	//block autoCollapse after _button blur
 	},
 	
-	_animateLocation: function(latlng) {
+	_animateLocation: function(latlng) { //TODO rewrite more smooth!
 	
 		var circle = this._circleLoc;
 		circle.setLatLng(latlng);
