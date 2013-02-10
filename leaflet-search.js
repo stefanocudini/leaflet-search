@@ -119,7 +119,7 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
 			.addListener(input, 'keyup', this._handleAutoresize, this)
-			//.addListener(input, 'blur', this.autoCollapse, this)
+			.addListener(input, 'blur', this.autoCollapse, this)
 			.addListener(input, 'focus', this.autoCollapseStop, this);
 			
 		return input;
