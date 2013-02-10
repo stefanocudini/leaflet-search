@@ -320,23 +320,29 @@ L.Control.Search = L.Control.extend({
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 
-  // FIXME: change input box background to grey when going down.
-  // FIXME: scroll tooltip when going down.
 	_handleArrowSelect: function(velocity) {
-
-		for (i=0; i<this._tooltip.getElementsByTagName('a').length; i++) {
+		for (i=0; i<this._tooltip.getElementsByTagName('a').length; i++) { // Erase all highlighting
 			this._tooltip.getElementsByTagName('a')[i].style.backgroundColor='';
 		}
-		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (this._tooltip.getElementsByTagName('a').length - 1))) {
+		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (this._tooltip.getElementsByTagName('a').length - 1))) { // If at end of list.
 			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
 		}
-		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) {
+		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) { // Going back up to the search box.
 			this._tooltip.currentSelection = -1;
 		}
-		else {
+		else if (this._tooltip.style.display != 'none') { // regular up/down
 			this._tooltip.currentSelection += velocity;
 			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
 			this._input.value = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].innerHTML;
+
+			// scroll:
+			var tipOffsetTop = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].offsetTop;
+			if (tipOffsetTop + this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].clientHeight >= this._tooltip.scrollTop + this._tooltip.clientHeight) {
+				this._tooltip.scrollTop = tipOffsetTop - this._tooltip.clientHeight + this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].clientHeight;
+			}
+			else if (tipOffsetTop <= this._tooltip.scrollTop) {
+				this._tooltip.scrollTop = tipOffsetTop;
+			}
 		}
 	},
 
