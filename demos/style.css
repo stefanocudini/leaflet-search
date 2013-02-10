@@ -33,6 +33,10 @@ h2, h3, h4 {
 ul {
 	font-size:.85em;
 	margin:0;
+	padding:0;
+}
+li {
+	margin:0 0 2px 18px;
 }
 #post-it {
 	width:8em;
