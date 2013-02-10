@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * Leaflet Search Plugin 1.1.0
  * https://github.com/stefanocudini/leaflet-search
