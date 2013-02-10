@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.1.0
+ * Leaflet Search Control 1.2.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search
  * http://easyblog.it/maps/leaflet-search
