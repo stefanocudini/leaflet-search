@@ -283,20 +283,19 @@ L.Control.Search = L.Control.extend({
 
 				if(this._input.value.length < this.options.searchMinLen)
 					return this._hideTooltip();
-								
+				
 				var that = this;
 				//TODO move anonymous function in setTimeout in new function source selector
+				L.DomUtil.addClass(that._input, 'load');	
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 				
 					var inputText = that._input.value;
 
 					if(that.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 					{
-//						L.DomUtil.addClass(that._input, 'load');
 						that._recordsCache = that.options.searchCall.apply(that, [inputText]);
 						if(that._recordsCache)
 							that._showTooltip();
-//						L.DomUtil.removeClass(that._input, 'load');
 					}
 					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
 					{
@@ -310,7 +309,8 @@ L.Control.Search = L.Control.extend({
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
 						that._showTooltip();	//show tooltip with filter records by this._input.value			
 					}
-
+					
+					L.DomUtil.removeClass(that._input, 'load');
 				}, that.timeDelaySearch);
 		}
 	},	
