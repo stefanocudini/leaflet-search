@@ -80,9 +80,6 @@ function searchInit($text)	//search initial text in titles
 $fdata = array_filter($data, 'searchInit');	//filter data
 $fdata = array_values($fdata);	//reset $fdata indexs
 
-if(isset($_GET['packed']))
-	$fdata = array('ok'=>1, 'results'=> $fdata);	//packaging data, view jsonp-filtered.html example
-
 $json = json_encode($fdata,true);
 
 #usleep(200000);	//simulate connection latency for localhost test
