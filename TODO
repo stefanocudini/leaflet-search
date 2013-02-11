@@ -1,8 +1,6 @@
 
 Call for good developers:
 
-. using http://open.mapquestapi.com/nominatim/ in jsonp demos
-
 . implement cache for ajax seaching
 
 . add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp

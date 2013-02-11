@@ -11,12 +11,13 @@
 <body>
 <h3><a href="../">Leaflet.Control.Search</a></h3>
 
-<h4>JSONP Example: <em>search locations by jsonp service with filtered data</em></h4>
+<h4>JSONP Example: <em>search locations by third party jsonp service, with filter data</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
 <b>Search values:</b><br />
-black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
+OpenStreetMap Data offer by MapQuest Open Platform<br />
+<small><a href="http://open.mapquestapi.com/nominatim/">open.mapquestapi.com</a></small>
 </div>
 
 <script src="/leaflet/leaflet.js"></script>
@@ -24,25 +25,28 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 <script>
 
 	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
-
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	
+	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?format=json&json_callback={c}&q={s}&osm_type=N&limit=100';
+	//third party jsonp service	
 
 	function filter(rawjson) {	//callback that remap fields name
 		var json = {},
 			key, loc;
-	
-		for(var i in rawjson.results)	//view search.php source code for json format details
-		{
-			key = rawjson.results[i].title;	//search key
-			loc = L.latLng( rawjson.results[i].loc );
 		
+		//console.log(rawjson);
+	
+		for(var i in rawjson)
+		{
+			key = rawjson[i].display_name;	//search key
+			loc = L.latLng( rawjson[i].lat, rawjson[i].lon );
 			json[ key ]= loc;	//key,value format
 		}
 	
 		return json;
 	}
 
-	map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}&packed', searchJsonpFilter: filter}) );
+	map.addControl( new L.Control.Search({searchJsonpUrl: jsonpurl, searchJsonpFilter: filter}) );
 
 </script>
 
