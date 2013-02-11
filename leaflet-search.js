@@ -207,6 +207,7 @@ L.Control.Search = L.Control.extend({
 		else
 			this._hideTooltip();
 
+		this._tooltip.scrollTop = 0;
 		return ntip;
 	},
 
