@@ -321,7 +321,7 @@ L.Control.Search = L.Control.extend({
 					// only complete with inputText, NOT firstRecord
 					// FIXME: autoresize for autotype
 					// Autotype:
-					if (that.options.autotype && (e.keyCode != 8) && (e.keyCode != 46)) { // Don't autotype after deleting.
+					if (that.options.autotype && (that._tooltip.style.display != 'none') && (e.keyCode != 8) && (e.keyCode != 46)) { // Don't autotype after deleting.
 						var start = inputText.length;
 						for (var firstRecord in that._recordsCache) {console.log(that._recordsCache); break;}
 						var end = firstRecord.length;
