@@ -21,6 +21,7 @@ L.Control.Search = L.Control.extend({
 		searchInitial: true,		//search text in _recordsCache by initial
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
+		autotype: true,			// Complete input with first suggested result and select this filled-in text.
 		//TODO searchLimit: 100,	//limit max results show in tooltip
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
@@ -193,7 +194,9 @@ L.Control.Search = L.Control.extend({
 			ntip = 0;	
 		
 		this._tooltip.innerHTML = '';
-		
+
+		// FIXME: Maybe _recordsCache should be a sorted array.
+
 		for(var key in this._recordsCache)
 		{
 			if(regSearch.test(key))//search in records
@@ -310,7 +313,35 @@ L.Control.Search = L.Control.extend({
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
 						that._showTooltip();	//show tooltip with filter records by this._input.value			
 					}
-					
+
+					// FIXME: If firstRecord is undefined don't try to autotype.
+					// FIXME: Previous entry sticks, it completes to that previous entry for the next word even when it is not the same.
+					// It also seems to happen when tooltip does not appear.
+					// Maybe the autotype is autocompleting and that's why we don't see a tooltip?
+					// only complete with inputText, NOT firstRecord
+					// FIXME: autoresize for autotype
+					// Autotype:
+					if (that.options.autotype && (e.keyCode != 8) && (e.keyCode != 46)) { // Don't autotype after deleting.
+						var start = inputText.length;
+						for (var firstRecord in that._recordsCache) {console.log(that._recordsCache); break;}
+						var end = firstRecord.length;
+						that._input.value = firstRecord;
+						if (that._input.createTextRange) {
+							var selRange = that._input.createTextRange();
+							selRange.collapse(true);
+							selRange.moveStart('character', start);
+							selRange.moveEnd('character', end);
+							selRange.select();
+						}
+						else if(that._input.setSelectionRange) {
+							that._input.setSelectionRange(start, end);
+						}
+						else if(that._input.selectionStart) {
+							that._input.selectionStart = start;
+							that._input.selectionEnd = end;
+						}
+					}
+
 					L.DomUtil.removeClass(that._input, 'load');
 				}, that.timeDelaySearch);
 		}
@@ -348,7 +379,19 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_handleSubmit: function(e) {	//search button action, and enter key shortcut
-	
+
+		// deselect text:
+		var sel;
+		if ((sel = this._input.selection) && sel.empty) {
+			sel.empty();
+		}
+		else {
+			if (this._input.getSelection) {
+				this._input.getSelection().removeAllRanges();
+			}
+			this._input.selectionStart = this._input.selectionEnd;
+		}
+
 		if(this._input.style.display == 'none')	//on first click show _input only
 			this.expand();
 		else
