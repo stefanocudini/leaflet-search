@@ -1,4 +1,3 @@
-
 Call for good developers:
 
 . implement cache for ajax seaching
@@ -21,3 +20,15 @@ Call for good developers:
 
 . rewrite _animateLocation() more smooth
  
+. add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
+
+. searchLimit: 100,	//limit max results show in tooltip
+
+. bind _recordsFromLayer to map events layeradd layerd remove update ecc
+
+. filter map's by element type: marker|polyline|circle...
+
+. caching results while layerSearch not change, controlling on 'load' event
+
+. start animation after setView panning end, maybe on moveend
+
