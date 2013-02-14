@@ -4,7 +4,7 @@
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search 
  *
- * http://easyblog.it/maps/leaflet-search
+ * http://labs.easyblog.it/maps/leaflet-search
  *
  * Copyright 2012, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.

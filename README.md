@@ -33,5 +33,5 @@ Source code:
 	https://bitbucket.org/zakis_/leaflet-search
 
 Demos:
-	http://easyblog.it/maps/leaflet-search/
+	http://labs.easyblog.it/maps/leaflet-search/
 
