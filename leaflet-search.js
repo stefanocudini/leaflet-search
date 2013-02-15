@@ -263,7 +263,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_autotype: function(e,prefix) {
-		if (this.options.autotype && (this._tooltip.style.display != 'none') && (e.keyCode != 8) && (e.keyCode != 46)) { // Don't autotype after deleting.
+		if ((e.keyCode != 8) && (e.keyCode != 46) && this.options.autotype) { // Don't autotype after deleting.
 			var start = this._input.value.length;
 			var firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML; // FIXME: find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
 			var end = firstRecord.length;
