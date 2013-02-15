@@ -195,8 +195,6 @@ L.Control.Search = L.Control.extend({
 		
 		this._tooltip.innerHTML = '';
 
-		// FIXME: Maybe _recordsCache should be a sorted array.
-
 		for(var key in this._recordsCache)
 		{
 			if(regSearch.test(key))//search in records
@@ -343,9 +341,9 @@ L.Control.Search = L.Control.extend({
 		}
 	},	
 	
-	// FIXME: Don't autoresize past the size of the map.
+	// FIXME: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
-		if(this.options.autoResize)
+		if(this.options.autoResize && (this._container.offsetWidth < this._map._container.offsetWidth - 40))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 
