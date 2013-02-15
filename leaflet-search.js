@@ -84,7 +84,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
 		this._circleLoc.setLatLng([0,0]);
-		// FIXME: Focus to map here so that keyboard panning works.
+		this._map._container.focus();
 	},
 	
 	autoCollapse: function() {	//collapse after delay, used on_input blur
