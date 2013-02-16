@@ -119,7 +119,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
-			.addListener(input, 'keyup', this._handleAutoresize, this)
+			.addListener(input, 'keydown', this._handleAutoresize, this)
 			.addListener(input, 'blur', this.autoCollapse, this)
 			.addListener(input, 'focus', this.autoCollapseStop, this);
 			
@@ -343,7 +343,7 @@ L.Control.Search = L.Control.extend({
 	
 	// FIXME: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
-		if(this.options.autoResize && (this._container.offsetWidth < this._map._container.offsetWidth - 40))
+		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 
