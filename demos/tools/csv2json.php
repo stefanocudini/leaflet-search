@@ -1,6 +1,6 @@
 <?php
 /*
- * Leaflet Search Plugin 1.1.0
+ * Leaflet Search Plugin 1.2.0
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search 
  * http://labs.easyblog.it/maps/leaflet-search
@@ -19,7 +19,7 @@
 $data = array();
 $m = 30000;	//max imports
 $n = 0;	//counter
-if ($csvFile = fopen('cities15000.txt', 'r'))
+if ($csvFile = fopen('cities15000.raw.txt', 'r'))
 {
 	while ($row = fgetcsv($csvFile, 5000, "\t") and --$m)
 	{

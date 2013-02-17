@@ -64,10 +64,10 @@ $data = json_decode('[
 	{"loc":[41.794008,12.583884], "title":"green"},	
 	{"loc":[41.575730,13.002411], "title":"red"},	
 	{"loc":[41.546175,13.673590], "title":"yellow"}
-]',true);	//simulate database data
+]',true);	//SIMULATE A DATABASE data
 //the searched field is: title
 
-if(isset($_GET['cities']))	//for ajax-bulk.html example
+if(isset($_GET['cities']))	//SIMULATE A BIG DATABASE, for ajax-bulk.html example
 	$data = json_decode( file_get_contents('cities15000.json'), true);
 //load big data store, cities15000.json (about 14000 records)
 
@@ -82,9 +82,9 @@ $fdata = array_values($fdata);	//reset $fdata indexs
 
 $json = json_encode($fdata,true);
 
-#usleep(200000);	//simulate connection latency for localhost test
+#usleep(200000);	//simulate connection latency for localhost tests
 
-echo isset($_GET['callback']) ? $_GET['callback']."($json)" : $json;	//support for jsonp request
+echo isset($_GET['callback']) ? $_GET['callback']."($json)" : $json;	//support for JSONP request
 
 
 
