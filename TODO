@@ -2,6 +2,8 @@ Call for good developers:
 
 . implement cache for ajax seaching
 
+. refact _handleAutoresize method
+
 . add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
 
 . add options: searchLimit for limit max results show in tooltip
