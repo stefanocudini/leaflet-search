@@ -22,7 +22,7 @@ L.Control.Search = L.Control.extend({
 		searchInitial: true,		//search text in _recordsCache by initial
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
-		autotype: true,			// Complete input with first suggested result and select this filled-in text.
+		autotype: true,				// Complete input with first suggested result and select this filled-in text.
 		//TODO searchLimit: 100,	//limit max results show in tooltip
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
@@ -41,6 +41,7 @@ L.Control.Search = L.Control.extend({
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
 		this.timeDelaySearch = this.options.searchDelay;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
+		this.autotypetmp = this.options.autotype;	//useful for disable autotype temporarily in delete/backspace keydown
 	},
 
 	onAdd: function (map) {
@@ -184,13 +185,13 @@ L.Control.Search = L.Control.extend({
 	},
 	//////end DOM creations
 
-	_showTooltip: function(e,prefix) {	//show tooltip with filtered this._recordsCache values
+	_showTooltip: function() {	//Filter this._recordsCache with this._input.values and show tooltip
 
 		if(this._input.value.length < this.options.searchMinLen)
 			return this._hideTooltip();
 
 		var regFilter = new RegExp("^[.]$|[|]",'g'),	//remove . and | 
-			text = prefix.replace(regFilter,''),		//sanitize text
+			text = this._input.value.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
 			ntip = 0;
@@ -205,9 +206,12 @@ L.Control.Search = L.Control.extend({
 				ntip++;
 			}
 		}
-		if(ntip>0) {
+		
+		if(ntip > 0) {
 			this._tooltip.style.display = 'block';
-			this._autotype(e,prefix); // FIXME: Maybe e can eliminated.
+			if(this.autotypetmp)
+				this._autoType();
+			this.autotypetmp = this.options.autotype;//reset default value
 		}
 		else
 			this._hideTooltip();
@@ -219,6 +223,7 @@ L.Control.Search = L.Control.extend({
 	_hideTooltip: function() {
 		this._tooltip.style.display = 'none';
 		this._tooltip.innerHTML = '';
+		return 0;
 	},
 
 	_jsonpDefaultFilter: function(jsonraw) {	//default callback for filter data from jsonp to _recordsCache format(key,latlng)
@@ -230,7 +235,7 @@ L.Control.Search = L.Control.extend({
 		return jsonret;
 	},
 	
-	_recordsFromJsonp: function(inputText, callAfter, that) {
+	_recordsFromJsonp: function(inputText, callAfter, that) {  //extract searched records from remote jsonp service
 
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
 			var fdata = that.options.searchJsonpFilter(data);
@@ -262,27 +267,28 @@ L.Control.Search = L.Control.extend({
 		return retRecords;
 	},
 
-	_autotype: function(e,prefix) {
-		if ((e.keyCode != 8) && (e.keyCode != 46) && this.options.autotype) { // Don't autotype after deleting.
-			var start = this._input.value.length;
-			var firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML; // FIXME: find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
-			var end = firstRecord.length;
-			this._input.value = firstRecord;
-			this._handleAutoresize();
-			if (this._input.createTextRange) {
-				var selRange = this._input.createTextRange();
-				selRange.collapse(true);
-				selRange.moveStart('character', start);
-				selRange.moveEnd('character', end);
-				selRange.select();
-			}
-			else if(this._input.setSelectionRange) {
-				this._input.setSelectionRange(start, end);
-			}
-			else if(this._input.selectionStart) {
-				this._input.selectionStart = start;
-				this._input.selectionEnd = end;
-			}
+	_autoType: function() {
+		
+		var start = this._input.value.length,
+			firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML,	// FIXME: find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
+			end = firstRecord.length;
+			
+		this._input.value = firstRecord;
+		this._handleAutoresize();
+		
+		if (this._input.createTextRange) {
+			var selRange = this._input.createTextRange();
+			selRange.collapse(true);
+			selRange.moveStart('character', start);
+			selRange.moveEnd('character', end);
+			selRange.select();
+		}
+		else if(this._input.setSelectionRange) {
+			this._input.setSelectionRange(start, end);
+		}
+		else if(this._input.selectionStart) {
+			this._input.selectionStart = start;
+			this._input.selectionEnd = end;
 		}
 	},
 
@@ -307,6 +313,9 @@ L.Control.Search = L.Control.extend({
 			case 17://Ctrl
 			//case 32://Space
 			break;
+			case 8://backspace
+			case 46://delete
+				this.autotypetmp = false;//disable temporarily autotype
 			default://All keys
 
 				clearTimeout(this.timerKeypress);	//cancel last search request
@@ -315,7 +324,7 @@ L.Control.Search = L.Control.extend({
 					return this._hideTooltip();
 				
 				var that = this;
-				//TODO move anonymous function in setTimeout in new function source selector
+				//TODO replace anonymous function in setTimeout with commented _fillRecordsCache(), below
 				L.DomUtil.addClass(that._input, 'load');	
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 					var inputText = that._input.value;
@@ -324,24 +333,52 @@ L.Control.Search = L.Control.extend({
 					{
 						that._recordsCache = that.options.searchCall.apply(that, [inputText]);
 						if(that._recordsCache)
-							that._showTooltip(e,inputText);
+							that._showTooltip();
 					}
 					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
 					{
 						that._recordsFromJsonp(inputText, function(data) {	//callback run after data return
 							that._recordsCache = data;
-							that._showTooltip(e,inputText);
+							that._showTooltip();
 						}, that);
 					}
 					else if(that.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 					{
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
-						that._showTooltip(e,inputText);	//show tooltip with filter records by this._input.value			
+						that._showTooltip();	//show tooltip with filter records by this._input.value			
 					}
 					L.DomUtil.removeClass(that._input, 'load');
 				}, that.timeDelaySearch);
 		}
-	},	
+	},
+	
+/*	_fillRecordsCache : function() {
+
+//				L.DomUtil.addClass(that._input, 'search-input-load');
+//				L.DomUtil.removeClass(that._input, 'search-input-load');
+//FIXME: don't work within setTimeout()!!	
+		var inputText = this._input.value;
+	
+		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
+		{
+			this._recordsCache = this.options.searchCall.apply(this, [inputText]);
+			if(this._recordsCache)
+				this._showTooltip();
+		}
+		else if(this.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
+		{
+			//this._recordsFromJsonp is async request then it need callback
+			this._recordsFromJsonp(inputText, function(data) {	//callback run after data return
+				this._recordsCache = data;
+				this._showTooltip();
+			}, this);
+		}
+		else if(this.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
+		{
+			this._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
+			this._showTooltip();	//show tooltip with filter records by this._input.value			
+		}
+	},*/
 	
 	// FIXME: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
@@ -373,6 +410,7 @@ L.Control.Search = L.Control.extend({
 
 			// scroll:
 			var tipOffsetTop = searchTips[this._tooltip.currentSelection].offsetTop;
+			
 			if (tipOffsetTop + searchTips[this._tooltip.currentSelection].clientHeight >= this._tooltip.scrollTop + this._tooltip.clientHeight) {
 				this._tooltip.scrollTop = tipOffsetTop - this._tooltip.clientHeight + searchTips[this._tooltip.currentSelection].clientHeight;
 			}
