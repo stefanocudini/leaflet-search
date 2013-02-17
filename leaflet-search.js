@@ -88,6 +88,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	autoCollapse: function() {	//collapse after delay, used on_input blur
+
 		var that = this;
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
@@ -165,7 +166,7 @@ L.Control.Search = L.Control.extend({
 			tip.href = '#',
 			tip.innerHTML = text;
 
-		this._tooltip.currentSelection = -1;
+		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		L.DomEvent
 			.disableClickPropagation(tip)
@@ -191,7 +192,7 @@ L.Control.Search = L.Control.extend({
 			text = prefix.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
-			ntip = 0;	
+			ntip = 0;
 		
 		this._tooltip.innerHTML = '';
 
@@ -349,24 +350,30 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_handleArrowSelect: function(velocity) {
-		for (i=0; i<this._tooltip.getElementsByTagName('a').length; i++) { // Erase all highlighting
-			this._tooltip.getElementsByTagName('a')[i].style.backgroundColor='';
+	
+		var searchTips = this._tooltip.getElementsByTagName('a');
+		
+		for (i=0; i<searchTips.length; i++) {	// Erase all highlighting
+			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
 		}
-		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (this._tooltip.getElementsByTagName('a').length - 1))) { // If at end of list.
-			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
+		
+		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (searchTips.length - 1))) {// If at end of list.
+			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
 		}
 		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) { // Going back up to the search box.
 			this._tooltip.currentSelection = -1;
 		}
 		else if (this._tooltip.style.display != 'none') { // regular up/down
 			this._tooltip.currentSelection += velocity;
-			this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].style.backgroundColor='white';
-			this._input.value = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].innerHTML;
+			
+			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
+			
+			this._input.value = searchTips[this._tooltip.currentSelection].innerHTML;
 
 			// scroll:
-			var tipOffsetTop = this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].offsetTop;
-			if (tipOffsetTop + this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].clientHeight >= this._tooltip.scrollTop + this._tooltip.clientHeight) {
-				this._tooltip.scrollTop = tipOffsetTop - this._tooltip.clientHeight + this._tooltip.getElementsByTagName('a')[this._tooltip.currentSelection].clientHeight;
+			var tipOffsetTop = searchTips[this._tooltip.currentSelection].offsetTop;
+			if (tipOffsetTop + searchTips[this._tooltip.currentSelection].clientHeight >= this._tooltip.scrollTop + this._tooltip.clientHeight) {
+				this._tooltip.scrollTop = tipOffsetTop - this._tooltip.clientHeight + searchTips[this._tooltip.currentSelection].clientHeight;
 			}
 			else if (tipOffsetTop <= this._tooltip.scrollTop) {
 				this._tooltip.scrollTop = tipOffsetTop;
