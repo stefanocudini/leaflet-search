@@ -21,6 +21,7 @@ L.Control.Search = L.Control.extend({
 		searchInitial: true,		//search text in _recordsCache by initial
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
+		autotype: true,			// Complete input with first suggested result and select this filled-in text.
 		//TODO searchLimit: 100,	//limit max results show in tooltip
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
@@ -83,7 +84,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
 		this._circleLoc.setLatLng([0,0]);
-		// FIXME: Focus to map here so that keyboard panning works.
+		this._map._container.focus();
 	},
 	
 	autoCollapse: function() {	//collapse after delay, used on_input blur
@@ -118,7 +119,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
-			.addListener(input, 'keyup', this._handleAutoresize, this)
+			.addListener(input, 'keydown', this._handleAutoresize, this)
 			.addListener(input, 'blur', this.autoCollapse, this)
 			.addListener(input, 'focus', this.autoCollapseStop, this);
 			
@@ -181,19 +182,19 @@ L.Control.Search = L.Control.extend({
 	},
 	//////end DOM creations
 
-	_showTooltip: function() {	//show tooltip with filtered this._recordsCache values
+	_showTooltip: function(e,prefix) {	//show tooltip with filtered this._recordsCache values
 
 		if(this._input.value.length < this.options.searchMinLen)
 			return this._hideTooltip();
 
 		var regFilter = new RegExp("^[.]$|[|]",'g'),	//remove . and | 
-			text = this._input.value.replace(regFilter,''),		//sanitize text
+			text = prefix.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
 			ntip = 0;	
 		
 		this._tooltip.innerHTML = '';
-		
+
 		for(var key in this._recordsCache)
 		{
 			if(regSearch.test(key))//search in records
@@ -202,11 +203,14 @@ L.Control.Search = L.Control.extend({
 				ntip++;
 			}
 		}
-		if(ntip>0)
+		if(ntip>0) {
 			this._tooltip.style.display = 'block';
+			this._autotype(e,prefix); // FIXME: Maybe e can eliminated.
+		}
 		else
 			this._hideTooltip();
 
+		this._tooltip.scrollTop = 0;
 		return ntip;
 	},
 
@@ -256,6 +260,30 @@ L.Control.Search = L.Control.extend({
 		return retRecords;
 	},
 
+	_autotype: function(e,prefix) {
+		if ((e.keyCode != 8) && (e.keyCode != 46) && this.options.autotype) { // Don't autotype after deleting.
+			var start = this._input.value.length;
+			var firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML; // FIXME: find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
+			var end = firstRecord.length;
+			this._input.value = firstRecord;
+			this._handleAutoresize();
+			if (this._input.createTextRange) {
+				var selRange = this._input.createTextRange();
+				selRange.collapse(true);
+				selRange.moveStart('character', start);
+				selRange.moveEnd('character', end);
+				selRange.select();
+			}
+			else if(this._input.setSelectionRange) {
+				this._input.setSelectionRange(start, end);
+			}
+			else if(this._input.selectionStart) {
+				this._input.selectionStart = start;
+				this._input.selectionEnd = end;
+			}
+		}
+	},
+
 	_handleKeypress: function (e) {	//run _input keyup event
 		switch(e.keyCode)
 		{
@@ -288,35 +316,34 @@ L.Control.Search = L.Control.extend({
 				//TODO move anonymous function in setTimeout in new function source selector
 				L.DomUtil.addClass(that._input, 'load');	
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
-				
 					var inputText = that._input.value;
-
+				
 					if(that.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 					{
 						that._recordsCache = that.options.searchCall.apply(that, [inputText]);
 						if(that._recordsCache)
-							that._showTooltip();
+							that._showTooltip(e,inputText);
 					}
 					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
 					{
 						that._recordsFromJsonp(inputText, function(data) {	//callback run after data return
 							that._recordsCache = data;
-							that._showTooltip();
+							that._showTooltip(e,inputText);
 						}, that);
 					}
 					else if(that.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 					{
 						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
-						that._showTooltip();	//show tooltip with filter records by this._input.value			
+						that._showTooltip(e,inputText);	//show tooltip with filter records by this._input.value			
 					}
-					
 					L.DomUtil.removeClass(that._input, 'load');
 				}, that.timeDelaySearch);
 		}
 	},	
 	
+	// FIXME: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
-		if(this.options.autoResize)
+		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 
@@ -347,7 +374,19 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_handleSubmit: function(e) {	//search button action, and enter key shortcut
-	
+
+		// deselect text:
+		var sel;
+		if ((sel = this._input.selection) && sel.empty) {
+			sel.empty();
+		}
+		else {
+			if (this._input.getSelection) {
+				this._input.getSelection().removeAllRanges();
+			}
+			this._input.selectionStart = this._input.selectionEnd;
+		}
+
 		if(this._input.style.display == 'none')	//on first click show _input only
 			this.expand();
 		else
@@ -391,7 +430,7 @@ L.Control.Search = L.Control.extend({
 	
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
-			var newCenter = this._recordsCache[text];//serach in table key,value
+			var newCenter = this._recordsCache[text];//search in table key,value
 			
 			if(this.options.zoom)
 				this._map.setView(newCenter, this.options.zoom);

@@ -46,7 +46,7 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 		return json;
 	}
 
-	map.addControl( new L.Control.Search({searchJsonpUrl: jsonpurl, searchJsonpFilter: filter}) );
+	map.addControl( new L.Control.Search({searchJsonpUrl: jsonpurl, searchJsonpFilter: filter, autotype: false}) );
 
 </script>
 
