@@ -146,18 +146,18 @@ L.Control.Search = L.Control.extend({
 	_createTooltip: function(className) {
 		var tool = L.DomUtil.create('div', className, this._container);
 		tool.style.display = 'none';
-		var _this = this;
-		
+
+		var that = this;
 		L.DomEvent
 			.disableClickPropagation(tool)
 			.addListener(tool, 'blur', this.autoCollapse, this)
 			.addListener(tool, 'mousewheel', function(e) {
-				_this.autoCollapseStop;
+				that.autoCollapseStop;
 				L.DomEvent.stopPropagation(e);
 			}, this)
 			.addListener(tool, 'mousedown', function(e) {
 				L.DomEvent.stop(e);
-				_this.autoCollapseStop;
+				that.autoCollapseStop;
 			}, this);
 //not work!	:-( try mouseover
 		return tool;
@@ -235,14 +235,15 @@ L.Control.Search = L.Control.extend({
 		return jsonret;
 	},
 	
-	_recordsFromJsonp: function(inputText, callAfter, that) {  //extract searched records from remote jsonp service
-
+	_recordsFromJsonp: function(inputText, callAfter) {  //extract searched records from remote jsonp service
+		
+		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
 			var fdata = that.options.searchJsonpFilter(data);
 			callAfter(fdata);
 		}
 		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
-			url = L.Util.template(that.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
+			url = L.Util.template(this.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
 			//parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);//TODO add rnd param or randomize callback name!
 
@@ -257,7 +258,7 @@ L.Control.Search = L.Control.extend({
 			propSearch = this.options.searchLayerProp;
 
 		layerSearch.eachLayer(function(marker) {
-		//TODO filter by element type: marker|polyline|circle...
+		//TODO implement filter by element type: marker|polyline|circle...
 			var key = marker.options.hasOwnProperty(propSearch) && marker.options[propSearch] || '';
 			//TODO check if propSearch is a string! else use: throw new Error("my message");
 			if(key)
@@ -265,6 +266,7 @@ L.Control.Search = L.Control.extend({
 		},this);
 		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
 		return retRecords;
+		//TODO return also marker!
 	},
 
 	_autoType: function() {
@@ -318,71 +320,55 @@ L.Control.Search = L.Control.extend({
 				this.autotypetmp = false;//disable temporarily autotype
 			default://All keys
 
-				clearTimeout(this.timerKeypress);	//cancel last search request
-
 				if(this._input.value.length < this.options.searchMinLen)
 					return this._hideTooltip();
-				
+
 				var that = this;
-				//TODO replace anonymous function in setTimeout with commented _fillRecordsCache(), below
-				L.DomUtil.addClass(that._input, 'load');	
+				clearTimeout(this.timerKeypress);	//cancel last search request while type in				
 				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
-					var inputText = that._input.value;
-				
-					if(that.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
-					{
-						that._recordsCache = that.options.searchCall.apply(that, [inputText]);
-						if(that._recordsCache)
-							that._showTooltip();
-					}
-					else if(that.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
-					{
-						that._recordsFromJsonp(inputText, function(data) {	//callback run after data return
-							that._recordsCache = data;
-							that._showTooltip();
-						}, that);
-					}
-					else if(that.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
-					{
-						that._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
-						that._showTooltip();	//show tooltip with filter records by this._input.value			
-					}
-					L.DomUtil.removeClass(that._input, 'load');
-				}, that.timeDelaySearch);
+
+					that._fillRecordsCache();
+					
+				}, this.timeDelaySearch);
 		}
 	},
 	
-/*	_fillRecordsCache : function() {
+	_fillRecordsCache: function() {
 
-//				L.DomUtil.addClass(that._input, 'search-input-load');
-//				L.DomUtil.removeClass(that._input, 'search-input-load');
-//FIXME: don't work within setTimeout()!!	
 		var inputText = this._input.value;
-	
+
+		L.DomUtil.addClass(this._input, 'search-input-load');
+
 		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			this._recordsCache = this.options.searchCall.apply(this, [inputText]);
+			this._recordsCache = this.options.searchCall(inputText);
+		
 			if(this._recordsCache)
 				this._showTooltip();
+
+			L.DomUtil.removeClass(this._input, 'search-input-load');
+			//FIXME: apparently executed before searchCall!! A BIG MYSTERY!
 		}
 		else if(this.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
 		{
-			//this._recordsFromJsonp is async request then it need callback
-			this._recordsFromJsonp(inputText, function(data) {	//callback run after data return
-				this._recordsCache = data;
-				this._showTooltip();
-			}, this);
+			var that = this;
+			this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
+				that._recordsCache = data;
+				that._showTooltip();
+				L.DomUtil.removeClass(that._input, 'search-input-load');
+			});
 		}
 		else if(this.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 		{
-			this._recordsCache = that._recordsFromLayer();	//fill table key,value from markers into searchLayer				
-			this._showTooltip();	//show tooltip with filter records by this._input.value			
+			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into searchLayer				
+			this._showTooltip();	//show tooltip with filter records by this._input.value
+			L.DomUtil.removeClass(this._input, 'search-input-load');
 		}
-	},*/
+	},
 	
 	// FIXME: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
-	//TODO refact
+	//TODO refact! now is not accurate
 		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
@@ -420,7 +406,7 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 
-	_handleSubmit: function(e) {	//search button action, and enter key shortcut
+	_handleSubmit: function() {	//search button action, and enter key shortcut
 
 		// deselect text:
 		var sel;

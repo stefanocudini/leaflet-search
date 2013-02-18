@@ -1,6 +1,10 @@
 Call for good developers:
 
-. implement cache for ajax seaching
+. return also marker in _recordsFromLayer();
+
+. implement cache for ajax/jsonp seaching
+
+. caching search results while layerSearch contents not change, controlling on 'load' event
 
 . refact _handleAutoresize method
 
@@ -14,23 +18,11 @@ Call for good developers:
 
 . filter by element type on searching: marker|polyline|circle...
 
-. caching search results while layerSearch contents not change, controlling on 'load' event
-
-. add option for set delay of Collapse after found results
+. add option for set delay of Collapse after found results, timeAutoclose
 
 . start animation after setView panning end, maybe on moveend
 
 . rewrite _animateLocation() more smooth
  
 . add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
-
-. searchLimit: 100,	//limit max results show in tooltip
-
-. bind _recordsFromLayer to map events layeradd layerd remove update ecc
-
-. filter map's by element type: marker|polyline|circle...
-
-. caching results while layerSearch not change, controlling on 'load' event
-
-. start animation after setView panning end, maybe on moveend
 

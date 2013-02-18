@@ -82,7 +82,7 @@ $fdata = array_values($fdata);	//reset $fdata indexs
 
 $json = json_encode($fdata,true);
 
-#usleep(200000);	//simulate connection latency for localhost tests
+#sleep(2);	//simulate connection latency for localhost tests
 
 echo isset($_GET['callback']) ? $_GET['callback']."($json)" : $json;	//support for JSONP request
 
