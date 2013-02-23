@@ -22,7 +22,7 @@ L.Control.Search = L.Control.extend({
 		searchInitial: true,		//search text in _recordsCache by initial
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
-		autotype: true,				// Complete input with first suggested result and select this filled-in text.
+		autoType: true,				// Complete input with first suggested result and select this filled-in text.
 		//TODO searchLimit: 100,	//limit max results show in tooltip
 		autoPan: true,  		//auto panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
@@ -41,7 +41,7 @@ L.Control.Search = L.Control.extend({
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
 		this.timeDelaySearch = this.options.searchDelay;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
-		this.autotypetmp = this.options.autotype;	//useful for disable autotype temporarily in delete/backspace keydown
+		this.autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 	},
 
 	onAdd: function (map) {
@@ -209,9 +209,9 @@ L.Control.Search = L.Control.extend({
 		
 		if(ntip > 0) {
 			this._tooltip.style.display = 'block';
-			if(this.autotypetmp)
+			if(this.autoTypeTmp)
 				this._autoType();
-			this.autotypetmp = this.options.autotype;//reset default value
+			this.autoTypeTmp = this.options.autoType;//reset default value
 		}
 		else
 			this._hideTooltip();
@@ -317,7 +317,7 @@ L.Control.Search = L.Control.extend({
 			break;
 			case 8://backspace
 			case 46://delete
-				this.autotypetmp = false;//disable temporarily autotype
+				this.autoTypeTmp = false;//disable temporarily autoType
 			default://All keys
 
 				if(this._input.value.length < this.options.searchMinLen)
