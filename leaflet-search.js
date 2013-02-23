@@ -24,7 +24,7 @@ L.Control.Search = L.Control.extend({
 		searchDelay: 300,			//delay for searching after digit
 		autoType: true,				// Complete input with first suggested result and select this filled-in text.
 		//TODO searchLimit: 100,	//limit max results show in tooltip
-		autoPan: true,  		//auto panTo when click on tooltip
+		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,		//autoresize on input change
 		//TODO autoCollapse: false,	//collapse search control after result found
 		animatePan: true,		//animation after panTo
@@ -178,7 +178,7 @@ L.Control.Search = L.Control.extend({
 				this._input.focus();
 				this._hideTooltip();
 				this._handleAutoresize();	
-				if(this.options.autoPan)//go to location
+				if(this.options.tipAutoSubmit)//go to location
 					this._handleSubmit();
 			}, this);
 
