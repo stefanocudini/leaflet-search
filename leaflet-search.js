@@ -25,12 +25,12 @@ L.Control.Search = L.Control.extend({
 		autoType: true,				// Complete input with first suggested result and select this filled-in text.
 		//TODO searchLimit: 100,	//limit max results show in tooltip
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
-		autoResize: true,		//autoresize on input change
-		//TODO autoCollapse: false,	//collapse search control after result found
-		animatePan: true,		//animation after panTo
-		zoom: null,				//zoom after pan to location found, default: map.getZoom()
+		autoResize: true,			//autoresize on input change
+		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
+		animatePan: true,			//animation after panTo
+		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
-		text: 'Search...',		//placeholder value
+		text: 'Search...',			//placeholder value
 		textErr: 'Location not found'	//error message
 	},
 
@@ -246,7 +246,8 @@ L.Control.Search = L.Control.extend({
 		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
 			url = L.Util.template(this.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
 			//parsing url
-			//rnd = '&_='+Math.floor(Math.random()*10000);//TODO add rnd param or randomize callback name!
+			//rnd = '&_='+Math.floor(Math.random()*10000);
+			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 
 		scriptNode.type = 'text/javascript';
 		scriptNode.src = url;
@@ -438,16 +439,15 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			else
 			{
-				if( this._findLocation(this._input.value)===false )	//location founded!!
+				if( this._findLocation(this._input.value)===false )
 					this.showAlert( this.options.textErr );//location not found, alert!
-				//else
-				//	this.collapse();
 			}
 		}
 		this._input.focus();	//block collapseDelayed after _button blur
 	},
 	
-	_animateLocation: function(latlng) { //TODO rewrite more smooth!
+	//TODO refact _animateLocation method more smooth!
+	_animateLocation: function(latlng) {
 	
 		var circle = this._circleLoc;
 		circle.setLatLng(latlng);
@@ -469,7 +469,7 @@ L.Control.Search = L.Control.extend({
 		}, tt);
 	},
 	
-	_findLocation: function(text) {	//get location from table _recordsCache and pan to map! ...game over!
+	_findLocation: function(text) {	//get location from table _recordsCache and pan to map!
 	
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
@@ -480,7 +480,8 @@ L.Control.Search = L.Control.extend({
 			else
 				this._map.panTo(newCenter);
 
-			//TODO add option for delay Collapse when found
+			if(this.options.autoCollapse)
+				this.collapse();
 				
 			if(this.options.animatePan)
 				this._animateLocation(newCenter);//evidence location found
