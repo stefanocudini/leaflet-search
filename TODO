@@ -22,7 +22,7 @@ Call for good developers:
 
 . start animation after setView panning end, maybe on moveend
 
-. rewrite _animateLocation() more smooth
+. rewrite _animateCircle() more smooth
  
 . add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
 

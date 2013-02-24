@@ -19,7 +19,7 @@ L.Control.Search = L.Control.extend({
 		//TODO add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
 		searchLayer: null,			//layer where search elements
 		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
-		searchInitial: true,		//search text in _recordsCache by initial
+		searchInitial: true,		//search elements only by initial text
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
 		autoType: true,				// Complete input with first suggested result and select this filled-in text.
@@ -27,7 +27,7 @@ L.Control.Search = L.Control.extend({
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
-		animatePan: true,			//animation after panTo
+		animateLocation: true,			//animate red circle over location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
 		text: 'Search...',			//placeholder value
@@ -53,8 +53,8 @@ L.Control.Search = L.Control.extend({
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
-		//var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
-		//uncomment for fast test of _animateLocation()
+		//var that = this; map.on('mousedown',function(e) { that._animateCircle(e.latlng); });
+		//uncomment for fast test of _animateCircle()
 		//TODO bind _recordsFromLayer to map events layeradd layerd remove update ecc
 		return this._container;
 	},
@@ -117,6 +117,7 @@ L.Control.Search = L.Control.extend({
 		input.type = 'text';
 		input.size = this._inputMinSize,
 		input.value = '';
+		input.autocomplete = 'off',//disable browser suggestions
 		input.placeholder = text;
 		input.style.display = 'none';
 		
@@ -446,8 +447,8 @@ L.Control.Search = L.Control.extend({
 		this._input.focus();	//block collapseDelayed after _button blur
 	},
 	
-	//TODO refact _animateLocation method more smooth!
-	_animateLocation: function(latlng) {
+	//TODO refact _animateCircle method more smooth!
+	_animateCircle: function(latlng) {
 	
 		var circle = this._circleLoc;
 		circle.setLatLng(latlng);
@@ -483,8 +484,8 @@ L.Control.Search = L.Control.extend({
 			if(this.options.autoCollapse)
 				this.collapse();
 				
-			if(this.options.animatePan)
-				this._animateLocation(newCenter);//evidence location found
+			if(this.options.animateLocation)
+				this._animateCircle(newCenter);//evidence location found
 			//TODO start animation after setView panning end, maybe on moveend
 			return newCenter;
 		}
