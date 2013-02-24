@@ -23,7 +23,7 @@ L.Control.Search = L.Control.extend({
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
 		autoType: true,				// Complete input with first suggested result and select this filled-in text.
-		//TODO searchLimit: 100,	//limit max results show in tooltip
+		searchLimit: -1,		// Limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
@@ -204,6 +204,7 @@ L.Control.Search = L.Control.extend({
 		{
 			if(regSearch.test(key))//search in records
 			{
+				if (ntip == this.options.searchLimit) break;
 				this._tooltip.appendChild( this._createTip(key) );
 				ntip++;
 			}
