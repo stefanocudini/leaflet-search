@@ -19,17 +19,18 @@ L.Control.Search = L.Control.extend({
 		//TODO add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
 		searchLayer: null,			//layer where search elements
 		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
-		searchInitial: true,		//search text in _recordsCache by initial
+		searchInitial: true,		//search elements only by initial text
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
-		autotype: true,				// Complete input with first suggested result and select this filled-in text.
+		autoType: true,				// Complete input with first suggested result and select this filled-in text.
 		searchLimit: -1,		// Limit max results to show in tooltip. -1 for no limit.
-		autoPan: true,  		//auto panTo when click on tooltip
-		autoResize: true,		//autoresize on input change
-		animatePan: true,		//animation after panTo
-		zoom: null,				//zoom after pan to location found, default: map.getZoom()
+		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
+		autoResize: true,			//autoresize on input change
+		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
+		animateLocation: true,			//animate red circle over location found
+		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
-		text: 'Search...',		//placeholder value
+		text: 'Search...',			//placeholder value
 		textErr: 'Location not found'	//error message
 	},
 
@@ -41,7 +42,7 @@ L.Control.Search = L.Control.extend({
 		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
 		this.timeDelaySearch = this.options.searchDelay;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
-		this.autotypetmp = this.options.autotype;	//useful for disable autotype temporarily in delete/backspace keydown
+		this.autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 	},
 
 	onAdd: function (map) {
@@ -52,8 +53,8 @@ L.Control.Search = L.Control.extend({
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
-		//var that = this; map.on('mousedown',function(e) { that._animateLocation(e.latlng); });
-		//uncomment for fast test of _animateLocation()
+		//var that = this; map.on('mousedown',function(e) { that._animateCircle(e.latlng); });
+		//uncomment for fast test of _animateCircle()
 		//TODO bind _recordsFromLayer to map events layeradd layerd remove update ecc
 		return this._container;
 	},
@@ -89,7 +90,7 @@ L.Control.Search = L.Control.extend({
 		this._map._container.focus();
 	},
 	
-	autoCollapse: function() {	//collapse after delay, used on_input blur
+	collapseDelayed: function() {	//collapse after delay, used on_input blur
 
 		var that = this;
 		this.timerCollapse = setTimeout(function() {
@@ -97,7 +98,7 @@ L.Control.Search = L.Control.extend({
 		}, this.timeAutoclose);
 	},
 
-	autoCollapseStop: function() {
+	collapseDelayedStop: function() {
 		clearTimeout(this.timerCollapse);
 	},
 	
@@ -116,6 +117,7 @@ L.Control.Search = L.Control.extend({
 		input.type = 'text';
 		input.size = this._inputMinSize,
 		input.value = '';
+		input.autocomplete = 'off',//disable browser suggestions
 		input.placeholder = text;
 		input.style.display = 'none';
 		
@@ -123,8 +125,8 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(input)
 			.addListener(input, 'keyup', this._handleKeypress, this)
 			.addListener(input, 'keydown', this._handleAutoresize, this)
-			.addListener(input, 'blur', this.autoCollapse, this)
-			.addListener(input, 'focus', this.autoCollapseStop, this);
+			.addListener(input, 'blur', this.collapseDelayed, this)
+			.addListener(input, 'focus', this.collapseDelayedStop, this);
 			
 		return input;
 	},
@@ -136,8 +138,8 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(button)
-			.addListener(button, 'focus', this.autoCollapseStop, this)
-			.addListener(button, 'blur', this.autoCollapse, this)
+			.addListener(button, 'focus', this.collapseDelayedStop, this)
+			.addListener(button, 'blur', this.collapseDelayed, this)
 			.addListener(button, 'click', this._handleSubmit, this);
 
 		return button;
@@ -150,14 +152,14 @@ L.Control.Search = L.Control.extend({
 		var that = this;
 		L.DomEvent
 			.disableClickPropagation(tool)
-			.addListener(tool, 'blur', this.autoCollapse, this)
+			.addListener(tool, 'blur', this.collapseDelayed, this)
 			.addListener(tool, 'mousewheel', function(e) {
-				that.autoCollapseStop;
+				that.collapseDelayedStop;
 				L.DomEvent.stopPropagation(e);
 			}, this)
 			.addListener(tool, 'mousedown', function(e) {
 				L.DomEvent.stop(e);
-				that.autoCollapseStop;
+				that.collapseDelayedStop;
 			}, this);
 //not work!	:-( try mouseover
 		return tool;
@@ -177,7 +179,7 @@ L.Control.Search = L.Control.extend({
 				this._input.focus();
 				this._hideTooltip();
 				this._handleAutoresize();	
-				if(this.options.autoPan)//go to location
+				if(this.options.tipAutoSubmit)//go to location
 					this._handleSubmit();
 			}, this);
 
@@ -210,9 +212,9 @@ L.Control.Search = L.Control.extend({
 		
 		if(ntip > 0) {
 			this._tooltip.style.display = 'block';
-			if(this.autotypetmp)
+			if(this.autoTypeTmp)
 				this._autoType();
-			this.autotypetmp = this.options.autotype;//reset default value
+			this.autoTypeTmp = this.options.autoType;//reset default value
 		}
 		else
 			this._hideTooltip();
@@ -246,7 +248,8 @@ L.Control.Search = L.Control.extend({
 		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
 			url = L.Util.template(this.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
 			//parsing url
-			//rnd = '&_='+Math.floor(Math.random()*10000);//TODO add rnd param or randomize callback name!
+			//rnd = '&_='+Math.floor(Math.random()*10000);
+			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 
 		scriptNode.type = 'text/javascript';
 		scriptNode.src = url;
@@ -318,7 +321,7 @@ L.Control.Search = L.Control.extend({
 			break;
 			case 8://backspace
 			case 46://delete
-				this.autotypetmp = false;//disable temporarily autotype
+				this.autoTypeTmp = false;//disable temporarily autoType
 			default://All keys
 
 				if(this._input.value.length < this.options.searchMinLen)
@@ -335,15 +338,24 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_fillRecordsCache: function() {
-
+	
 		var inputText = this._input.value;
+
+//TODO important optimization!!!
+//always append data in this._recordsCache
+//now _recordsCache content is emptied and replaced with new data founded
+//always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
+		
+		//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+		//run one of callbacks search(searchCall,searchJsonpUrl or searchLayer)
+		//and run this._showTooltip
 
 		L.DomUtil.addClass(this._input, 'search-input-load');
 
 		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
 			this._recordsCache = this.options.searchCall(inputText);
-		
+			
 			if(this._recordsCache)
 				this._showTooltip();
 
@@ -429,16 +441,15 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			else
 			{
-				if( this._findLocation(this._input.value)===false )	//location founded!!
+				if( this._findLocation(this._input.value)===false )
 					this.showAlert( this.options.textErr );//location not found, alert!
-				//else
-				//	this.collapse();
 			}
 		}
-		this._input.focus();	//block autoCollapse after _button blur
+		this._input.focus();	//block collapseDelayed after _button blur
 	},
 	
-	_animateLocation: function(latlng) { //TODO rewrite more smooth!
+	//TODO refact _animateCircle method more smooth!
+	_animateCircle: function(latlng) {
 	
 		var circle = this._circleLoc;
 		circle.setLatLng(latlng);
@@ -460,7 +471,7 @@ L.Control.Search = L.Control.extend({
 		}, tt);
 	},
 	
-	_findLocation: function(text) {	//get location from table _recordsCache and pan to map! ...game over!
+	_findLocation: function(text) {	//get location from table _recordsCache and pan to map!
 	
 		if( this._recordsCache.hasOwnProperty(text) )
 		{
@@ -471,10 +482,11 @@ L.Control.Search = L.Control.extend({
 			else
 				this._map.panTo(newCenter);
 
-			//TODO add option for delay Collapse when found
+			if(this.options.autoCollapse)
+				this.collapse();
 				
-			if(this.options.animatePan)
-				this._animateLocation(newCenter);//evidence location found
+			if(this.options.animateLocation)
+				this._animateCircle(newCenter);//evidence location found
 			//TODO start animation after setView panning end, maybe on moveend
 			return newCenter;
 		}
