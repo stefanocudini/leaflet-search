@@ -37,7 +37,7 @@ L.Control.Search = L.Control.extend({
 
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
-		this._inputMinSize = this.options.text.length;
+		this._inputMinSize = this.options.text ? this.options.text.length : 10;
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
 		this.options.searchJsonpFilter = this.options.searchJsonpFilter || this._jsonpDefaultFilter;
 		this.timeDelaySearch = this.options.searchDelay;
@@ -154,14 +154,16 @@ L.Control.Search = L.Control.extend({
 			.disableClickPropagation(tool)
 			.addListener(tool, 'blur', this.collapseDelayed, this)
 			.addListener(tool, 'mousewheel', function(e) {
-				that.collapseDelayedStop;
+				that.collapseDelayedStop();
 				L.DomEvent.stopPropagation(e);
 			}, this)
 			.addListener(tool, 'mousedown', function(e) {
 				L.DomEvent.stop(e);
-				that.collapseDelayedStop;
+				that.collapseDelayedStop();
+			}, this)
+			.addListener(tool, 'mouseover', function(e) {
+				that._input.focus();//collapseDelayedStop
 			}, this);
-//not work!	:-( try mouseover
 		return tool;
 	},
 
