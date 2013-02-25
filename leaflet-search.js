@@ -23,11 +23,12 @@ L.Control.Search = L.Control.extend({
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
 		autoType: true,				// Complete input with first suggested result and select this filled-in text.
-		searchLimit: -1,		// Limit max results to show in tooltip. -1 for no limit.
+		searchLimit: -1,			// Limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
-		animateLocation: true,			//animate red circle over location found
+		timeAutoclose: 1200,		//delay for autoclosing alert and collapse after blur
+		animateLocation: true,		//animate red circle over location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
 		text: 'Search...',			//placeholder value
@@ -39,7 +40,6 @@ L.Control.Search = L.Control.extend({
 		this._inputMinSize = this.options.text.length;
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
 		this.options.searchJsonpFilter = this.options.searchJsonpFilter || this._jsonpDefaultFilter;
-		this.timeAutoclose = 1200;		//delay for autoclosing alert and collapse after blur
 		this.timeDelaySearch = this.options.searchDelay;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 		this.autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
@@ -70,7 +70,7 @@ L.Control.Search = L.Control.extend({
 		clearTimeout(this.timerAlert);
 		this.timerAlert = setTimeout(function() {
 			that._alert.style.display = 'none';
-		},this.timeAutoclose);
+		},this.options.timeAutoclose);
 	},
 	
 	expand: function() {		
@@ -95,7 +95,7 @@ L.Control.Search = L.Control.extend({
 		var that = this;
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
-		}, this.timeAutoclose);
+		}, this.options.timeAutoclose);
 	},
 
 	collapseDelayedStop: function() {

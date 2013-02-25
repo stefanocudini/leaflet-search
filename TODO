@@ -10,19 +10,14 @@ Call for good developers:
 
 . add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
 
-. add options: searchLimit for limit max results show in tooltip
-
 . bind _recordsFromLayer() to map events layeradd layerd remove update ecc
 
 . use throw new Error("json parse error") on jsonp filtering errors
 
 . filter by element type on searching: marker|polyline|circle...
 
-. add option for set delay of Collapse after found results, timeAutoclose
-
 . start animation after setView panning end, maybe on moveend
 
 . rewrite _animateCircle() more smooth
- 
-. add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
+
 
