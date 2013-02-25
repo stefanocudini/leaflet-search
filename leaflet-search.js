@@ -168,7 +168,7 @@ L.Control.Search = L.Control.extend({
 	_createTip: function(text) {	//build new choice for tooltip menu
 		var tip = L.DomUtil.create('a', 'search-tip');
 			tip.href = '#',
-			tip.innerHTML = text;
+			tip.innerHTML = this._recordsCache[ text ].formatted ? this._recordsCache[ text ].formatted : text;
 
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
@@ -206,6 +206,7 @@ L.Control.Search = L.Control.extend({
 			{
 				if (ntip == this.options.searchLimit) break;
 				this._tooltip.appendChild( this._createTip(key) );
+				this._recordsCache[ key ]._index = ntip;
 				ntip++;
 			}
 		}
@@ -275,9 +276,9 @@ L.Control.Search = L.Control.extend({
 
 	_autoType: function() {
 		
-		var start = this._input.value.length,
-			firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML,	// FIXME: find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
-			end = firstRecord.length;
+		var start = this._input.value.length;
+		for (var key in this._recordsCache) if (this._recordsCache[ key ]._index == 0) firstRecord = key;
+		var end = firstRecord.length;
 			
 		this._input.value = firstRecord;
 		this._handleAutoresize();
@@ -405,7 +406,9 @@ L.Control.Search = L.Control.extend({
 			
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
 			
-			this._input.value = searchTips[this._tooltip.currentSelection].innerHTML;
+			for (var key in this._recordsCache)
+				if (this._recordsCache[ key ]._index == this._tooltip.currentSelection)
+					this._input.value = key;
 
 			// scroll:
 			var tipOffsetTop = searchTips[this._tooltip.currentSelection].offsetTop;

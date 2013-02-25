@@ -39,8 +39,11 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 		for(var i in rawjson)
 		{
 			key = rawjson[i].display_name;	//search key
+			section = rawjson[i].class;	//search key
 			loc = L.latLng( rawjson[i].lat, rawjson[i].lon );
-			json[ key ]= loc;	//key,value format
+			json[ key ] = loc;
+			//json[ key ].formatted = "<b>" + key + "</b> - " + section; // Formatted tooltip (icons, thumbnails etc.)
+			json[ key ].section = section;
 		}
 	
 		return json;
