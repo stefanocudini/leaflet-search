@@ -194,7 +194,7 @@ L.Control.Search = L.Control.extend({
 		if(this._input.value.length < this.options.searchMinLen)
 			return this._hideTooltip();
 
-		var regFilter = new RegExp("^[.]$|[|]",'g'),	//remove . and | 
+		var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
 			text = this._input.value.replace(regFilter,''),		//sanitize text
 			I = this.options.searchInitial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
