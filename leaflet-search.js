@@ -81,13 +81,14 @@ L.Control.Search = L.Control.extend({
 	
 	cancel: function() {
 		this._input.value = '';
+		this._handleKeypress({keyCode:8});//simulate backspace keypress
 		this._input.size = this._inputMinSize;
 		this._input.focus();
+		this._cancel.style.display = 'none';
 	},
 	
 	expand: function() {		
 		this._input.style.display = 'block';
-		this._cancel.style.display = 'block';
 		L.DomUtil.addClass(this._container,'exp');		
 		this._input.focus();
 	},
@@ -333,6 +334,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_handleKeypress: function (e) {	//run _input keyup event
+		
 		switch(e.keyCode)
 		{
 			case 27: //Esc
@@ -358,16 +360,23 @@ L.Control.Search = L.Control.extend({
 				this.autoTypeTmp = false;//disable temporarily autoType
 			default://All keys
 
-				if(this._input.value.length < this.options.searchMinLen)
-					return this._hideTooltip();
+				if(this._input.value.length)
+					this._cancel.style.display = 'block';
+				else
+					this._cancel.style.display = 'none';
 
-				var that = this;
-				clearTimeout(this.timerKeypress);	//cancel last search request while type in				
-				this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
+				if(this._input.value.length >= this.options.searchMinLen)
+				{
+					var that = this;
+					clearTimeout(this.timerKeypress);	//cancel last search request while type in				
+					this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 
-					that._fillRecordsCache();
+						that._fillRecordsCache();
 					
-				}, this.timeDelaySearch);
+					}, this.timeDelaySearch);
+				}
+				else
+					this._hideTooltip();
 		}
 	},
 	
