@@ -34,11 +34,23 @@
 	border:1px solid #666;
 	border-radius:2px;
 	height:16px;
-	padding:0 .125em;
-	margin:2px;
+	padding:0 16px 0 2px;
+	margin:2px 0 2px 2px;
 }
 .leaflet-control-search .search-input-load {
 	background: url('images/loader.gif') no-repeat center right #fff;
+}
+.leaflet-control-search .search-cancel {
+	display:block;
+	width:18px;
+	height:18px;
+	position:absolute;
+	right:22px;
+	margin:2px 0;
+	background: url('images/search-icon.png') no-repeat 0 -42px;
+}
+.leaflet-control-search .search-cancel:hover {
+	background: url('images/search-icon.png') no-repeat 0 -58px;
 }
 .leaflet-control-search .search-button {
 	display:block;

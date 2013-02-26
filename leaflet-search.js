@@ -31,9 +31,10 @@ L.Control.Search = L.Control.extend({
 		animateLocation: true,		//animate red circle over location found
 		markerLocation: false,		//build a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
-		position: 'topleft',
-		text: 'Search...',			//placeholder value
-		textErr: 'Location not found'	//error message
+		text: 'Search...',			//placeholder value	
+		textCancel: 'Cancel',		//title in cancel button
+		textErr: 'Location not found',	//error message
+		position: 'topleft'
 	},
 
 	initialize: function(options) {
@@ -51,8 +52,11 @@ L.Control.Search = L.Control.extend({
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
+		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
+				
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
+		
 		if(this.options.animateLocation)
 			this._circleLoc = (new L.CircleMarker([0,0], {radius: 20, weight:3, color: '#e03', fill: false})).addTo(this._map);
 		if(this.options.markerLocation)
@@ -75,18 +79,25 @@ L.Control.Search = L.Control.extend({
 		},this.options.timeAutoclose);
 	},
 	
+	cancel: function() {
+		this._input.value = '';
+		this._input.size = this._inputMinSize;
+		this._input.focus();
+	},
+	
 	expand: function() {		
 		this._input.style.display = 'block';
+		this._cancel.style.display = 'block';
 		L.DomUtil.addClass(this._container,'exp');		
 		this._input.focus();
 	},
 
 	collapse: function() {
 		this._hideTooltip();
-		this._input.value ='';
-		this._input.size = this._inputMinSize;
+		this.cancel();
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
+		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
 		if(this._markerLoc)
 			this._markerLoc.setLatLng([0,0]);
@@ -120,9 +131,9 @@ L.Control.Search = L.Control.extend({
 	_createInput: function (text, className) {
 		var input = L.DomUtil.create('input', className, this._container);
 		input.type = 'text';
-		input.size = this._inputMinSize,
+		input.size = this._inputMinSize;
 		input.value = '';
-		input.autocomplete = 'off',//disable browser suggestions
+		input.autocomplete = 'off';
 		input.placeholder = text;
 		input.style.display = 'none';
 		
@@ -132,14 +143,30 @@ L.Control.Search = L.Control.extend({
 			.addListener(input, 'keydown', this._handleAutoresize, this)
 			.addListener(input, 'blur', this.collapseDelayed, this)
 			.addListener(input, 'focus', this.collapseDelayedStop, this);
-			
+		
 		return input;
 	},
 
-	_createButton: function (text, className) {
+	_createCancel: function (title, className) {
+		var cancel = L.DomUtil.create('a', className, this._container);
+		cancel.href = '#';
+		cancel.title = title;
+		cancel.style.display = 'none';
+		//cancel.innerHTML = "<span>&times;</span>";
+
+		L.DomEvent
+			.disableClickPropagation(cancel)
+			.addListener(cancel, 'click', this.cancel, this);
+//			.addListener(cancel, 'focus', this.collapseDelayedStop, this)
+//			.addListener(cancel, 'blur', this.collapseDelayed, this)
+
+		return cancel;
+	},
+	
+	_createButton: function (title, className) {
 		var button = L.DomUtil.create('a', className, this._container);
 		button.href = '#';
-		button.title = text;
+		button.title = title;
 
 		L.DomEvent
 			.disableClickPropagation(button)
@@ -174,8 +201,8 @@ L.Control.Search = L.Control.extend({
 
 	_createTip: function(text) {	//build new choice for tooltip menu
 		var tip = L.DomUtil.create('a', 'search-tip');
-			tip.href = '#',
-			tip.innerHTML = text;
+		tip.href = '#';
+		tip.innerHTML = text;
 
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
@@ -444,7 +471,7 @@ L.Control.Search = L.Control.extend({
 			this.expand();
 		else
 		{
-			if(this._input.value=='')	//hide _input only
+			if(this._input.value == '')	//hide _input only
 				this.collapse();
 			else
 			{
