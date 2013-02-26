@@ -153,7 +153,7 @@ L.Control.Search = L.Control.extend({
 		cancel.href = '#';
 		cancel.title = title;
 		cancel.style.display = 'none';
-		//cancel.innerHTML = "<span>&times;</span>";
+		cancel.innerHTML = "<span>&otimes;</span>";//imageless(see css)
 
 		L.DomEvent
 			.disableClickPropagation(cancel)

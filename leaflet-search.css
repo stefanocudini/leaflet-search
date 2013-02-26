@@ -48,9 +48,20 @@
 	right:22px;
 	margin:2px 0;
 	background: url('images/search-icon.png') no-repeat 0 -42px;
+	text-decoration:none;	
 }
 .leaflet-control-search .search-cancel:hover {
 	background: url('images/search-icon.png') no-repeat 0 -58px;
+}
+.leaflet-control-search .search-cancel span {
+	display:none;/* comment for cancel button imageless */
+	font-size:18px;
+	line-height:20px;
+	color:#ccc;
+	font-weight:bold;
+}
+.leaflet-control-search .search-cancel:hover span {
+	color:#aaa;
 }
 .leaflet-control-search .search-button {
 	display:block;
