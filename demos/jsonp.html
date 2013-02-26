@@ -27,7 +27,7 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...'}) );
+	map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...', markerLocation: true}) );
 	//view source of search.php for more details
 
 </script>
