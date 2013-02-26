@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.2.0
+ * Leaflet Search Control 1.3.0
  * http://labs.easyblog.it/maps/leaflet-search
  *
  * https://github.com/stefanocudini/leaflet-search
@@ -29,6 +29,7 @@ L.Control.Search = L.Control.extend({
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
 		timeAutoclose: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate red circle over location found
+		markerLocation: false,		//build a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
 		text: 'Search...',			//placeholder value
@@ -47,15 +48,16 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
-		this._circleLoc = (new L.CircleMarker([0,0], {radius: 20, weight:3, color: '#e03', fill: false})).addTo(this._map);
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._createButton(this.options.text, 'search-button');
 		this._tooltip = this._createTooltip('search-tooltip');
-		//var that = this; map.on('mousedown',function(e) { that._animateCircle(e.latlng); });
-		//uncomment for fast test of _animateCircle()
-		//TODO bind _recordsFromLayer to map events layeradd layerd remove update ecc
+		if(this.options.animateLocation)
+			this._circleLoc = (new L.CircleMarker([0,0], {radius: 20, weight:3, color: '#e03', fill: false})).addTo(this._map);
+		if(this.options.markerLocation)
+			this._markerLoc = (new L.Marker([0,0])).addTo(this._map);
+		//TODO bind _recordsFromLayer to map events layeradd layerremove update ecc
 		return this._container;
 	},
 
@@ -86,7 +88,10 @@ L.Control.Search = L.Control.extend({
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
-		this._circleLoc.setLatLng([0,0]);
+		if(this._markerLoc)
+			this._markerLoc.setLatLng([0,0]);
+		if(this._circleLoc)
+			this._circleLoc.setLatLng([0,0]);
 		this._map._container.focus();
 	},
 	
@@ -244,7 +249,7 @@ L.Control.Search = L.Control.extend({
 		
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that.options.searchJsonpFilter(data);
+			var fdata = that.options.searchJsonpFilter.apply(that,[data]);
 			callAfter(fdata);
 		}
 		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
@@ -356,7 +361,7 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			this._recordsCache = this.options.searchCall(inputText);
+			this._recordsCache = this.options.searchCall.apply(this,[inputText]);
 			
 			if(this._recordsCache)
 				this._showTooltip();
@@ -452,15 +457,19 @@ L.Control.Search = L.Control.extend({
 	
 	//TODO refact _animateCircle method more smooth!
 	_animateCircle: function(latlng) {
-	
+		//for testing of _animateCircle() use:
+		//  var that = this;
+		//	map.on('mousedown',function(e) { that._animateCircle(e.latlng); });
+		//inside initialize
+		//
 		var circle = this._circleLoc;
-		circle.setLatLng(latlng);
-		circle.setRadius(20);
-	
-		var	tt = 200,
+			circle.setLatLng(latlng);
+			circle.setRadius(20),
+			tt = 200,
 			ss = 10,
 			mr = parseInt(circle._radius/ss),
 			f = 0;
+			
 		var	that = this;
 		this.timerAnimLoc = setInterval(function() {  //animation
 			f += 0.5;
@@ -486,15 +495,28 @@ L.Control.Search = L.Control.extend({
 
 			if(this.options.autoCollapse)
 				this.collapse();
-				
+
+			if(this.options.markerLocation)
+			{
+				this._markerLoc.options.title = text;
+				this._markerLoc._icon.title = text;//sacrilegious patch!
+				this._markerLoc.setLatLng(newCenter);	//hide marker location
+			}
+			
 			if(this.options.animateLocation)
 				this._animateCircle(newCenter);//evidence location found
+
 			//TODO start animation after setView panning end, maybe on moveend
 			return newCenter;
 		}
 		else
-			this._circleLoc.setLatLng([0,0]);	//hide evidence
-		
+		{
+			if(this._markerLoc)
+				this._markerLoc.setLatLng([0,0]);	//hide marker location
+				
+			if(this._circleLoc)
+				this._circleLoc.setLatLng([0,0]);	//hide evidence
+		}
 		return false;
 	}
 });
