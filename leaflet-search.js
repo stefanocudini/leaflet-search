@@ -8,6 +8,8 @@
  * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
  */
+ 
+ //TODO test updateTODO
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
