@@ -13,8 +13,8 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
-		searchLayer: null,			//layer where search markers
-		searchProperty: 'title',	//property in marker.options trough filter elements in layer searchLayer
+		layer: null,				//layer where search markers
+		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO add option searchLoc or searchLat,searchLon for remapping fields
 		searchCall: null,			//callback that fill _recordsCache with key,value table
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
@@ -39,7 +39,7 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
-		this._layer = this.options.searchLayer || new L.LayerGroup();
+		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 		this._delayType = 300;		//delay after searchCall
@@ -243,7 +243,7 @@ L.Control.Search = L.Control.extend({
 			this._markerLoc.addTo(this._map).setLatLng(latlng);
 			this._markerLoc.options.title = title;
 			this._markerLoc._icon.title = title;//set only after addTo(map)
-			//maybe use this.options.searchProperty in place of title
+			//maybe use this.options.propertyName in place of title
 		}
 		
 		if(this._circleLoc)
@@ -301,7 +301,7 @@ L.Control.Search = L.Control.extend({
 
 	_defaultFilterJSON: function(jsonraw) {	//default callback for filter data
 		var jsonret = {},
-			propname = this.options.searchProperty;
+			propname = this.options.propertyName;
 
 		for(var i in jsonraw)
 		{
@@ -332,7 +332,7 @@ L.Control.Search = L.Control.extend({
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
-			propname = this.options.searchProperty;
+			propname = this.options.propertyName;
 		
 		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
 		//TODO implement filter by element type: marker|polyline|circle...
@@ -429,7 +429,7 @@ L.Control.Search = L.Control.extend({
 //always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 		
 		//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-		//run one of callbacks search(searchCall,jsonpUrl or searchLayer)
+		//run one of callbacks search(searchCall,jsonpUrl or options.layer)
 		//and run this._showTooltip
 
 		L.DomUtil.addClass(this._input, 'search-input-load');
@@ -453,9 +453,9 @@ L.Control.Search = L.Control.extend({
 				L.DomUtil.removeClass(that._input, 'search-input-load');
 			});
 		}
-		else if(this.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
+		else if(this.options.layer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 		{
-			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into searchLayer				
+			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into layer				
 			this._showTooltip();
 			L.DomUtil.removeClass(this._input, 'search-input-load');
 		}
