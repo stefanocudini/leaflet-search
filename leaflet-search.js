@@ -16,9 +16,9 @@ L.Control.Search = L.Control.extend({
 		searchCall: null,			//callback that fill _recordsCache with key,value table
 		searchJsonpUrl: '',			//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		searchJsonpFilter: null,	//callback for filtering data to _recordsCache
-		//TODO add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
+		//TODO add option searchLoc or searchLat,searchLon for remapping fields from jsonp
 		searchLayer: null,			//layer where search elements
-		searchLayerProp: 'title',	//property in marker.options trough filter elements in layer searchLayer
+		searchProperty: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchInitial: true,		//search elements only by initial text
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
@@ -244,6 +244,7 @@ L.Control.Search = L.Control.extend({
 			this._markerLoc.addTo(this._map).setLatLng(latlng);
 			this._markerLoc.options.title = title;
 			this._markerLoc._icon.title = title;//set only after addTo(map)
+			//maybe use this.options.searchProperty in place of title
 		}
 		
 		if(this._circleLoc)
@@ -300,10 +301,12 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_jsonpDefaultFilter: function(jsonraw) {	//default callback for filter data from jsonp to _recordsCache format(key,latlng)
-		var jsonret = {};
+		var jsonret = {},
+			prop = this.options.searchProperty;
+
 		for(var i in jsonraw)
-			jsonret[ jsonraw[i].title ]= L.latLng( jsonraw[i].loc );
-		//TODO replace .title and .loc with options: searchJsonpKey and searchJsonpLoc
+			jsonret[ jsonraw[i][prop] ]= L.latLng( jsonraw[i].loc );
+
 		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
@@ -329,7 +332,7 @@ L.Control.Search = L.Control.extend({
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
 			layerSearch = this.options.searchLayer,
-			propSearch = this.options.searchLayerProp;
+			propSearch = this.options.searchProperty;
 		
 		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
 		layerSearch.eachLayer(function(marker) {
