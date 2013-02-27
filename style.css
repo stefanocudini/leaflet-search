@@ -26,9 +26,9 @@ h2, h3, h4 {
 	border-radius:.125em;
 	border:2px solid #1978cf;
 	box-shadow: 0 0 8px #999;
-	width:600px;
-	height:400px;
 	float:left;
+	width:600px;
+	height:400px;	
 }
 ul {
 	font-size:.85em;
