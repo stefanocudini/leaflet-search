@@ -432,7 +432,7 @@ L.Control.Search = L.Control.extend({
 		//run one of callbacks search(searchCall,jsonpUrl or options.layer)
 		//and run this._showTooltip
 
-		L.DomUtil.addClass(this._input, 'search-input-load');
+		L.DomUtil.addClass(this._container, 'search-load');
 
 		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
@@ -441,7 +441,7 @@ L.Control.Search = L.Control.extend({
 			if(this._recordsCache)
 				this._showTooltip();
 
-			L.DomUtil.removeClass(this._input, 'search-input-load');
+			L.DomUtil.removeClass(this._container, 'search-load');
 			//FIXME: apparently executed before searchCall!! A BIG MYSTERY!
 		}
 		else if(this.options.jsonpUrl)	//JSONP SERVICE REQUESTING
@@ -450,14 +450,14 @@ L.Control.Search = L.Control.extend({
 			this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
 				that._recordsCache = data;
 				that._showTooltip();
-				L.DomUtil.removeClass(that._input, 'search-input-load');
+				L.DomUtil.removeClass(that._container, 'search-load');
 			});
 		}
 		else if(this.options.layer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 		{
 			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into layer				
 			this._showTooltip();
-			L.DomUtil.removeClass(this._input, 'search-input-load');
+			L.DomUtil.removeClass(this._container, 'search-load');
 		}
 	},
 	
