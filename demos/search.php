@@ -92,17 +92,16 @@ function searchInit($text)	//search initial text in titles
 $fdata = array_filter($data, 'searchInit');	//filter data
 $fdata = array_values($fdata);	//reset $fdata indexs
 
-$json = json_encode($fdata,true);
+$JSON = json_encode($fdata,true);
 
-
-#sleep(2);	//simulate connection latency for localhost tests
-
+if($_SERVER['REMOTE_ADDR']=='127.0.0.1') sleep(1);
+//simulate connection latency for localhost tests
 @header("Content-type: application/json; charset=utf-8");
 
 if(isset($_GET['callback']) and !empty($_GET['callback']))	//support for JSONP request
-	echo $_GET['callback']."($json)";
+	echo $_GET['callback']."($JSON)";
 else
-	echo $json;	//AJAX request
+	echo $JSON;	//AJAX request
 
 
 ?>
