@@ -16,7 +16,7 @@ L.Control.Search = L.Control.extend({
 		searchLayer: null,			//layer where search markers
 		searchProperty: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchCall: null,			//callback that fill _recordsCache with key,value table
-		searchJsonpUrl: '',			//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
+		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,	//callback for filtering data to _recordsCache
 		//TODO add option searchLoc or searchLat,searchLon for remapping fields
 		searchInitial: true,		//search elements only by initial text
@@ -42,8 +42,8 @@ L.Control.Search = L.Control.extend({
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
 		this._layer = this.options.searchLayer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
+		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
-		this.autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 	},
 
 	onAdd: function (map) {
@@ -282,9 +282,9 @@ L.Control.Search = L.Control.extend({
 		
 		if(ntip > 0) {
 			this._tooltip.style.display = 'block';
-			if(this.autoTypeTmp)
+			if(this._autoTypeTmp)
 				this._autoType();
-			this.autoTypeTmp = this.options.autoType;//reset default value
+			this._autoTypeTmp = this.options.autoType;//reset default value
 		}
 		else
 			this._hideTooltip();
@@ -320,7 +320,7 @@ L.Control.Search = L.Control.extend({
 			callAfter(fdata);
 		}
 		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
-			url = L.Util.template(this.options.searchJsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
+			url = L.Util.template(this.options.jsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
 			//parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
@@ -396,7 +396,7 @@ L.Control.Search = L.Control.extend({
 			break;
 			case 8://backspace
 			case 46://delete
-				this.autoTypeTmp = false;//disable temporarily autoType
+				this._autoTypeTmp = false;//disable temporarily autoType
 			default://All keys
 
 				if(this._input.value.length)
@@ -429,7 +429,7 @@ L.Control.Search = L.Control.extend({
 //always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 		
 		//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-		//run one of callbacks search(searchCall,searchJsonpUrl or searchLayer)
+		//run one of callbacks search(searchCall,jsonpUrl or searchLayer)
 		//and run this._showTooltip
 
 		L.DomUtil.addClass(this._input, 'search-input-load');
@@ -444,7 +444,7 @@ L.Control.Search = L.Control.extend({
 			L.DomUtil.removeClass(this._input, 'search-input-load');
 			//FIXME: apparently executed before searchCall!! A BIG MYSTERY!
 		}
-		else if(this.options.searchJsonpUrl)	//JSONP SERVICE REQUESTING
+		else if(this.options.jsonpUrl)	//JSONP SERVICE REQUESTING
 		{
 			var that = this;
 			this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
