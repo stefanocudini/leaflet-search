@@ -1,23 +1,26 @@
-Call for good developers:
+. add option searchLoc or searchLat,searchLon for remapping fields
 
-. return also marker in _recordsFromLayer();
+. extend L.Marker for build uniq new type of marker with circle around
 
-. implement cache for ajax/jsonp seaching
+. start animation after setView or panTo, maybe with map.on('moveend')...
 
-. caching search results while layerSearch contents not change, controlling on 'load' event
+. use: throw new Error("my message");on error
 
-. refact _handleAutoresize method
+. add rnd param or randomize callback name! in recordsFromJsonp
 
-. add option searchLoc or searchLat,searchLon for remapping fields from jsonp
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc
 
-. bind _recordsFromLayer() to map events layeradd layerd remove update ecc
+. implement filter by element type: marker|polyline|circle...
 
-. use throw new Error("json parse error") on jsonp filtering errors
+. caching retRecords while layerSearch not change, controlling on 'load' event
 
-. filter by element type on searching: marker|polyline|circle...
+. return also marker! in _recordsFromLayer
 
-. start animation after setView panning end, maybe on moveend
+. important optimization!!! always append data in this._recordsCache
 
-. rewrite _animateCircle() more smooth
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
 
-. disable input while ajax requesting
+. refact _handleAutoresize now is not accurate
+
+. refact _animateCircle more smooth!
+

@@ -225,7 +225,7 @@ L.Control.Search = L.Control.extend({
 
 				that._animateCircle(e.target, function() {
 					//e.target._map.removeLayer(e.target);
-					//TODO refact!
+					//refact!
 				});
 			});
 			//TODO start animation after setView or panTo, maybe with map.on('moveend')...
@@ -337,7 +337,7 @@ L.Control.Search = L.Control.extend({
 		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
 		//TODO implement filter by element type: marker|polyline|circle...
 		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
-		//TODO return also marker!
+		//TODO return also marker! in _recordsFromLayer
 		
 		this._layer.eachLayer(function(marker) {
 			if(marker.options.hasOwnProperty(propname) && marker.options[propname])
@@ -423,8 +423,7 @@ L.Control.Search = L.Control.extend({
 	
 		var inputText = this._input.value;
 
-//TODO important optimization!!!
-//always append data in this._recordsCache
+//TODO important optimization!!! always append data in this._recordsCache
 //now _recordsCache content is emptied and replaced with new data founded
 //always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 		
@@ -463,7 +462,7 @@ L.Control.Search = L.Control.extend({
 	
 	// FIXME: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
-	//TODO refact! now is not accurate
+	//TODO refact _handleAutoresize now is not accurate
 		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
