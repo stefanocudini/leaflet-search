@@ -20,4 +20,4 @@ Call for good developers:
 
 . rewrite _animateCircle() more smooth
 
-
+. disable input while ajax requesting
