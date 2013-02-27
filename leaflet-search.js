@@ -40,8 +40,7 @@ L.Control.Search = L.Control.extend({
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
-		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
-		this.timeDelaySearch = this.options.searchDelay;
+		this._layer = this.options.searchLayer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 		this.autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
@@ -333,20 +332,19 @@ L.Control.Search = L.Control.extend({
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
-			layer = this.options.searchLayer,
 			propname = this.options.searchProperty;
 		
 		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
-		layer.eachLayer(function(marker) {
 		//TODO implement filter by element type: marker|polyline|circle...
-			var key = marker.options.hasOwnProperty(propname) && marker.options[propname] || '';
-			//TODO check if propSearch is a string! else use: throw new Error("my message");
-			if(key)
-				retRecords[key] = marker.getLatLng();
-		},this);
 		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
-		return retRecords;
 		//TODO return also marker!
+		
+		this._layer.eachLayer(function(marker) {
+			if(marker.options.hasOwnProperty(propname) && marker.options[propname])
+				retRecords[ marker.options[propname] ] = marker.getLatLng();
+		},this);
+		
+		return retRecords;
 	},
 
 	_autoType: function() {
@@ -414,7 +412,7 @@ L.Control.Search = L.Control.extend({
 
 						that._fillRecordsCache();
 					
-					}, this.timeDelaySearch);
+					}, this.options.searchDelay);
 				}
 				else
 					this._hideTooltip();

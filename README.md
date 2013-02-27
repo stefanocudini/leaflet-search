@@ -4,7 +4,7 @@ Leaflet.Control.Search
 What ?
 ------
 
-A leaflet control that search markers location by attribute, with ajax/jsonp autocomplete feature
+A leaflet control that search markers location by property, with ajax/jsonp autocomplete feature
 
 Tested in Leaflet 0.5
 
