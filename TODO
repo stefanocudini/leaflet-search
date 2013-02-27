@@ -1,5 +1,3 @@
-. test updateTODO
-
 . add option searchLoc or searchLat,searchLon for remapping fields
 
 . extend L.Marker for build uniq new type of marker with circle around
