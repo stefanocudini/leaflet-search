@@ -8,7 +8,7 @@ Call for good developers:
 
 . refact _handleAutoresize method
 
-. add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
+. add option searchLoc or searchLat,searchLon for remapping fields from jsonp
 
 . bind _recordsFromLayer() to map events layeradd layerd remove update ecc
 

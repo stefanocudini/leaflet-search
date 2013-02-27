@@ -13,12 +13,12 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
+		searchLayer: null,			//layer where search markers
+		searchProperty: 'title',	//property in marker.options trough filter elements in layer searchLayer
 		searchCall: null,			//callback that fill _recordsCache with key,value table
 		searchJsonpUrl: '',			//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
-		searchJsonpFilter: null,	//callback for filtering data to _recordsCache
-		//TODO add option searchLoc or searchLat,searchLon for remapping fields from jsonp
-		searchLayer: null,			//layer where search elements
-		searchProperty: 'title',	//property in marker.options trough filter elements in layer searchLayer
+		filterJSON: null,	//callback for filtering data to _recordsCache
+		//TODO add option searchLoc or searchLat,searchLon for remapping fields
 		searchInitial: true,		//search elements only by initial text
 		searchMinLen: 1,			//minimal text length for autocomplete
 		searchDelay: 300,			//delay for searching after digit
@@ -41,8 +41,8 @@ L.Control.Search = L.Control.extend({
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
 		this.options.searchLayer = this.options.searchLayer || new L.LayerGroup();
-		this.options.searchJsonpFilter = this.options.searchJsonpFilter || this._jsonpDefaultFilter;
 		this.timeDelaySearch = this.options.searchDelay;
+		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 		this.autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 	},
@@ -300,13 +300,15 @@ L.Control.Search = L.Control.extend({
 		return 0;
 	},
 
-	_jsonpDefaultFilter: function(jsonraw) {	//default callback for filter data from jsonp to _recordsCache format(key,latlng)
+	_defaultFilterJSON: function(jsonraw) {	//default callback for filter data
 		var jsonret = {},
-			prop = this.options.searchProperty;
+			propname = this.options.searchProperty;
 
 		for(var i in jsonraw)
-			jsonret[ jsonraw[i][prop] ]= L.latLng( jsonraw[i].loc );
-
+		{
+			if( jsonraw[i].hasOwnProperty(propname) )
+				jsonret[ jsonraw[i][propname] ]= L.latLng( jsonraw[i].loc );
+		}
 		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
@@ -315,7 +317,7 @@ L.Control.Search = L.Control.extend({
 		
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that.options.searchJsonpFilter.apply(that,[data]);
+			var fdata = that._filterJSON.apply(that,[data]);//defined in inizialize...
 			callAfter(fdata);
 		}
 		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
@@ -331,13 +333,13 @@ L.Control.Search = L.Control.extend({
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
-			layerSearch = this.options.searchLayer,
-			propSearch = this.options.searchProperty;
+			layer = this.options.searchLayer,
+			propname = this.options.searchProperty;
 		
 		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
-		layerSearch.eachLayer(function(marker) {
+		layer.eachLayer(function(marker) {
 		//TODO implement filter by element type: marker|polyline|circle...
-			var key = marker.options.hasOwnProperty(propSearch) && marker.options[propSearch] || '';
+			var key = marker.options.hasOwnProperty(propname) && marker.options[propname] || '';
 			//TODO check if propSearch is a string! else use: throw new Error("my message");
 			if(key)
 				retRecords[key] = marker.getLatLng();
