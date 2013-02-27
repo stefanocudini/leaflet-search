@@ -1,8 +1,8 @@
 . option condition problem {autoCollapse: true, markerLocation: true} not show location
 
-. find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
+. _autoType find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
 
-. apparently executed before searchCall!! A BIG MYSTERY!
+. removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!
 
-. Should resize max search box size when map is resized.
+. _handleAutoresize Should resize max search box size when map is resized.
 

@@ -381,7 +381,7 @@ L.Control.Search = L.Control.extend({
 		
 		var start = this._input.value.length,
 			firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML,
-			//FIXME find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
+			//FIXME _autoType find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
 			end = firstRecord.length;
 			
 		this._input.value = firstRecord;
@@ -472,7 +472,7 @@ L.Control.Search = L.Control.extend({
 				this._showTooltip();
 
 			L.DomUtil.removeClass(this._container, 'search-load');
-			//FIXME apparently executed before searchCall!! A BIG MYSTERY!
+			//FIXME removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!
 		}
 		else if(this.options.jsonpUrl)	//JSONP SERVICE REQUESTING
 		{
@@ -491,7 +491,7 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 	
-	//FIXME Should resize max search box size when map is resized.
+	//FIXME _handleAutoresize Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
 	//TODO refact _handleAutoresize now is not accurate
 		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
