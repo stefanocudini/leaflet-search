@@ -9,6 +9,43 @@
  * Licensed under the MIT license.
  */
 
+L.Control.SearchMarker = L.CircleMarker.extend({
+	//includes: L.Mixin.Events,
+//extend inizialize and options
+
+	setLatLng: function (latlng) {  //override for support 'move' event like L.Marker
+		var ret = L.CircleMarker.prototype.setLatLng.apply(this, arguments);
+		this.fire('move', { latlng: latlng });
+		return ret;
+	}/*,
+	
+	animate: function(circle, afterAnimCall) {
+	//TODO refact _animateCircle more smooth!
+
+		var tInt = 200,//time interval
+			ss = 10,//animation frames
+			mr = parseInt(circle._radius/ss),
+			newrad = circle._radius * 2,
+			acc = 0;
+
+		circle._timerAnimLoc = setInterval(function() {  //animation
+			acc += 0.5;
+			mr += acc;	//adding acceleration
+			newrad -= mr;
+			
+			circle.setRadius(newrad);
+
+			if(newrad<2)//stop animation
+			{
+				clearInterval(circle._timerAnimLoc);
+				circle.setRadius(circle.options.radius);//reset radius
+				if(typeof afterAnimCall == 'function')
+					afterAnimCall();
+			}
+		});
+	 }*/
+});
+
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	
@@ -206,19 +243,12 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_createMarkerLoc: function() {	//indicator for location found
-		//TODO extend L.Marker for build uniq new type of marker with circle around
+		//TODO extend L.Marker for build new type of marker with circle around
 		//that has methods .hide() .show() .animate()
 		
 		if(this.options.animateLocation)
 		{
-			L.CircleMarkerSearch = L.CircleMarker.extend({
-				setLatLng: function (latlng) {  //override setLatLng method for support 'move' event like L.Marker
-					this._latlng = L.latLng(latlng);
-					this.fire('move', { latlng: this._latlng });
-					return this.redraw();
-				}
-			});
-			this._circleLoc = (new L.CircleMarkerSearch([0,0], {radius: 10, weight:3, color: '#e03', fill: false}));
+			this._circleLoc = new L.Control.SearchMarker([0,0], {radius: 10, weight:3, color: '#e03', fill: false});
 			
 			var that = this;
 			this._circleLoc.on('move', function(e) {
