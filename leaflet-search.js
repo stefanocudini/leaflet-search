@@ -10,7 +10,7 @@
  */
 
 L.Control.Search = L.Control.extend({
-	includes: L.Mixin.Events, 
+	includes: L.Mixin.Events,
 	
 	options: {
 		searchCall: null,			//callback that fill _recordsCache with key,value table
@@ -28,8 +28,8 @@ L.Control.Search = L.Control.extend({
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
 		timeAutoclose: 1200,		//delay for autoclosing alert and collapse after blur
-		animateLocation: true,		//animate red circle over location found
-		markerLocation: false,		//build a marker in location found
+		animateLocation: true,		//animate a circle over location fund
+		markerLocation: false,		//draw a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
@@ -52,21 +52,15 @@ L.Control.Search = L.Control.extend({
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
+		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
-				
 		this._createButton(this.options.text, 'search-button');
-		this._tooltip = this._createTooltip('search-tooltip');
-		
-		if(this.options.animateLocation)
-			this._circleLoc = (new L.CircleMarker([0,0], {radius: 20, weight:3, color: '#e03', fill: false})).addTo(this._map);
-		if(this.options.markerLocation)
-			this._markerLoc = (new L.Marker([0,0])).addTo(this._map);
-		//TODO bind _recordsFromLayer to map events layeradd layerremove update ecc
+		this._createMarkerLoc();//make circle and marker for Location found
 		return this._container;
 	},
 
 	onRemove: function(map) {
-		this._recordsCache = {};//free memory!...?
+		this._recordsCache = {};
 	},
 	
 	showAlert: function(text) {
@@ -100,15 +94,11 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'none';
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container,'exp');		
-		if(this._markerLoc)
-			this._markerLoc.setLatLng([0,0]);
-		if(this._circleLoc)
-			this._circleLoc.setLatLng([0,0]);
+		this._hideMarkerLoc();
 		this._map._container.focus();
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
-
 		var that = this;
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
@@ -118,11 +108,8 @@ L.Control.Search = L.Control.extend({
 	collapseDelayedStop: function() {
 		clearTimeout(this.timerCollapse);
 	},
-	
-	_clickFocus : function(e) {
-		e.target.focus();
-	},
-	
+
+////start DOM creations
 	_createAlert: function(className) {
 		var alert = L.DomUtil.create('div', className, this._container);
 		alert.style.display = 'none';
@@ -158,8 +145,6 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(cancel)
 			.addListener(cancel, 'click', this.cancel, this);
-//			.addListener(cancel, 'focus', this.collapseDelayedStop, this)
-//			.addListener(cancel, 'blur', this.collapseDelayed, this)
 
 		return cancel;
 	},
@@ -214,14 +199,64 @@ L.Control.Search = L.Control.extend({
 				this._input.focus();
 				this._hideTooltip();
 				this._handleAutoresize();	
-				if(this.options.tipAutoSubmit)//go to location
+				if(this.options.tipAutoSubmit)//go to location at once
 					this._handleSubmit();
 			}, this);
 
 		return tip;
 	},
-	//////end DOM creations
+	
+	_createMarkerLoc: function() {	//indicator for location found
+		//TODO extend L.Marker for build uniq new type of marker with circle around
+		//that has methods .hide() .show() .animate()
+		
+		if(this.options.animateLocation)
+		{
+			L.CircleMarkerSearch = L.CircleMarker.extend({
+				setLatLng: function (latlng) {  //override setLatLng method for support 'move' event like L.Marker
+					this._latlng = L.latLng(latlng);
+					this.fire('move', { latlng: this._latlng });
+					return this.redraw();
+				}
+			});
+			this._circleLoc = (new L.CircleMarkerSearch([0,0], {radius: 20, weight:3, color: '#e03', fill: false}));
+			
+			var that = this;
+			this._circleLoc.on('move', function(e) {
 
+				that._animateCircle(e.target, function() {
+					e.target._map.removeLayer(e.target);
+					//TODO refact!
+				});
+			});
+			//TODO start animation after setView or panTo, maybe with map.on('moveend')...
+		}
+		
+		if(this.options.markerLocation)
+			this._markerLoc = (new L.Marker([0,0]));
+	},
+
+//////end DOM creations
+
+	_showMarkerLoc: function(latlng, title) {
+		if(this._markerLoc)
+		{
+			this._markerLoc.addTo(this._map).setLatLng(latlng);
+			this._markerLoc.options.title = title;
+			this._markerLoc._icon.title = title;//set only after addTo(map)
+		}
+		
+		if(this._circleLoc)
+			this._circleLoc.addTo(this._map).setLatLng(latlng);
+	},
+
+	_hideMarkerLoc: function() {	
+		if(this._markerLoc)
+			this._map.removeLayer(this._markerLoc);
+		if(this._circleLoc)
+			this._map.removeLayer(this._circleLoc);
+	},
+	
 	_showTooltip: function() {	//Filter this._recordsCache with this._input.values and show tooltip
 
 		if(this._input.value.length < this.options.searchMinLen)
@@ -295,7 +330,8 @@ L.Control.Search = L.Control.extend({
 		var retRecords = {},
 			layerSearch = this.options.searchLayer,
 			propSearch = this.options.searchLayerProp;
-
+		
+		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
 		layerSearch.eachLayer(function(marker) {
 		//TODO implement filter by element type: marker|polyline|circle...
 			var key = marker.options.hasOwnProperty(propSearch) && marker.options[propSearch] || '';
@@ -417,7 +453,7 @@ L.Control.Search = L.Control.extend({
 		else if(this.options.searchLayer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 		{
 			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into searchLayer				
-			this._showTooltip();	//show tooltip with filter records by this._input.value
+			this._showTooltip();
 			L.DomUtil.removeClass(this._input, 'search-input-load');
 		}
 	},
@@ -462,7 +498,7 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 
-	_handleSubmit: function() {	//search button action, and enter key shortcut
+	_handleSubmit: function() {
 
 		// deselect text:
 		var sel;
@@ -491,31 +527,30 @@ L.Control.Search = L.Control.extend({
 		this._input.focus();	//block collapseDelayed after _button blur
 	},
 	
-	//TODO refact _animateCircle method more smooth!
-	_animateCircle: function(latlng) {
-		//for testing of _animateCircle() use:
-		//  var that = this;
-		//	map.on('mousedown',function(e) { that._animateCircle(e.latlng); });
-		//inside initialize
-		//
-		var circle = this._circleLoc;
-			circle.setLatLng(latlng);
-			circle.setRadius(20),
-			tt = 200,
-			ss = 10,
+	_animateCircle: function(circle, afterAnimCall) {
+	//TODO refact _animateCircle more smooth!
+
+		var tInt = 200,//time interval
+			ss = 10,//animation frames
 			mr = parseInt(circle._radius/ss),
-			f = 0;
+			newrad = circle._radius,
+			acc = 0;
+
+		circle._timerAnimLoc = setInterval(function() {  //animation
+			acc += 0.5;
+			mr += acc;	//adding acceleration
+			newrad -= mr;
 			
-		var	that = this;
-		this.timerAnimLoc = setInterval(function() {  //animation
-			f += 0.5;
-			mr += f;//adding acceleration
-			var nr = circle._radius - mr;
-			if( nr > 2)
-				circle.setRadius(nr);
-			else
-				clearInterval(that.timerAnimLoc);
-		}, tt);
+			circle.setRadius(newrad);
+
+			if(newrad<2)//stop animation
+			{
+				clearInterval(circle._timerAnimLoc);
+				circle.setRadius(circle.options.radius);//reset radius
+				if(typeof afterAnimCall == 'function')
+					afterAnimCall();
+			}
+		}, tInt);
 	},
 	
 	_findLocation: function(text) {	//get location from table _recordsCache and pan to map!
@@ -529,30 +564,17 @@ L.Control.Search = L.Control.extend({
 			else
 				this._map.panTo(newCenter);
 
+			this._showMarkerLoc(newCenter, text);  //show circle/marker in location
+
 			if(this.options.autoCollapse)
-				this.collapse();
+				this.collapse();			
 
-			if(this.options.markerLocation)
-			{
-				this._markerLoc.options.title = text;
-				this._markerLoc._icon.title = text;//sacrilegious patch!
-				this._markerLoc.setLatLng(newCenter);	//hide marker location
-			}
-			
-			if(this.options.animateLocation)
-				this._animateCircle(newCenter);//evidence location found
-
-			//TODO start animation after setView panning end, maybe on moveend
 			return newCenter;
 		}
-		else
-		{
-			if(this._markerLoc)
-				this._markerLoc.setLatLng([0,0]);	//hide marker location
-				
-			if(this._circleLoc)
-				this._circleLoc.setLatLng([0,0]);	//hide evidence
-		}
+//		else
+//			this._hideMarkerLoc();//remove this._circleLoc, this._markerLoc from map
+//maybe needless
+		
 		return false;
 	}
 });
