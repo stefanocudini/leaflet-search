@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.3.0
+ * Leaflet Search Control 1.3.2
  * http://labs.easyblog.it/maps/leaflet-search
  *
  * https://github.com/stefanocudini/leaflet-search
@@ -15,15 +15,14 @@ L.Control.Search = L.Control.extend({
 	options: {
 		searchLayer: null,			//layer where search markers
 		searchProperty: 'title',	//property in marker.options trough filter elements in layer searchLayer
+		//TODO add option searchLoc or searchLat,searchLon for remapping fields
 		searchCall: null,			//callback that fill _recordsCache with key,value table
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
-		filterJSON: null,	//callback for filtering data to _recordsCache
-		//TODO add option searchLoc or searchLat,searchLon for remapping fields
-		searchInitial: true,		//search elements only by initial text
-		searchMinLen: 1,			//minimal text length for autocomplete
-		searchDelay: 300,			//delay for searching after digit
-		autoType: true,				// Complete input with first suggested result and select this filled-in text.
-		searchLimit: -1,			// Limit max results to show in tooltip. -1 for no limit.
+		filterJSON: null,			//callback for filtering data to _recordsCache
+		minLength: 1,				//minimal text length for autocomplete
+		initial: true,				//search elements only by initial text
+		autoType: true,				//complete input with first suggested result and select this filled-in text.
+		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
@@ -36,13 +35,14 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',	//error message
 		position: 'topleft'
 	},
-
+//FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
 		this._layer = this.options.searchLayer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
+		this._delayType = 300;		//delay after searchCall
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
@@ -259,12 +259,12 @@ L.Control.Search = L.Control.extend({
 	
 	_showTooltip: function() {	//Filter this._recordsCache with this._input.values and show tooltip
 
-		if(this._input.value.length < this.options.searchMinLen)
+		if(this._input.value.length < this.options.minLength)
 			return this._hideTooltip();
 
 		var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
 			text = this._input.value.replace(regFilter,''),		//sanitize text
-			I = this.options.searchInitial ? '^' : '',  //search for initial text
+			I = this.options.initial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
 			ntip = 0;
 		
@@ -274,7 +274,7 @@ L.Control.Search = L.Control.extend({
 		{
 			if(regSearch.test(key))//search in records
 			{
-				if (ntip == this.options.searchLimit) break;
+				if (ntip == this.options.tooltipLimit) break;
 				this._tooltip.appendChild( this._createTip(key) );
 				ntip++;
 			}
@@ -404,7 +404,7 @@ L.Control.Search = L.Control.extend({
 				else
 					this._cancel.style.display = 'none';
 
-				if(this._input.value.length >= this.options.searchMinLen)
+				if(this._input.value.length >= this.options.minLength)
 				{
 					var that = this;
 					clearTimeout(this.timerKeypress);	//cancel last search request while type in				
@@ -412,7 +412,7 @@ L.Control.Search = L.Control.extend({
 
 						that._fillRecordsCache();
 					
-					}, this.options.searchDelay);
+					}, this._delayType);
 				}
 				else
 					this._hideTooltip();
