@@ -219,13 +219,13 @@ L.Control.Search = L.Control.extend({
 					return this.redraw();
 				}
 			});
-			this._circleLoc = (new L.CircleMarkerSearch([0,0], {radius: 20, weight:3, color: '#e03', fill: false}));
+			this._circleLoc = (new L.CircleMarkerSearch([0,0], {radius: 10, weight:3, color: '#e03', fill: false}));
 			
 			var that = this;
 			this._circleLoc.on('move', function(e) {
 
 				that._animateCircle(e.target, function() {
-					e.target._map.removeLayer(e.target);
+					//e.target._map.removeLayer(e.target);
 					//TODO refact!
 				});
 			});
@@ -533,7 +533,7 @@ L.Control.Search = L.Control.extend({
 		var tInt = 200,//time interval
 			ss = 10,//animation frames
 			mr = parseInt(circle._radius/ss),
-			newrad = circle._radius,
+			newrad = circle._radius * 2,
 			acc = 0;
 
 		circle._timerAnimLoc = setInterval(function() {  //animation
