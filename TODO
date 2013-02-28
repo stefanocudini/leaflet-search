@@ -1,28 +1,32 @@
-. refact _animateCircle more smooth!
+. start animation after setView or panTo, maybe with map.on('moveend')..., row 15
 
-. add option searchLoc or searchLat,searchLon for remapping fields
+. marker: true	//show icon optional, show only circleLoc, row 26
 
-. extend L.Marker for build new type of marker with circle around
+. also this._circleLoc, row 50
 
-. start animation after setView or panTo, maybe with map.on('moveend')...
+. refact L.Control.SearchMarker.animate() more smooth! and use bringToFront(), row 74
 
-. use: throw new Error("my message");on error
+. use create event animateEnd in L.Control.SearchMarker , row 96
 
-. add rnd param or randomize callback name! in recordsFromJsonp
+. add option searchLoc or searchLat,searchLon for remapping fields, row 110
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc
+. use: throw new Error("my message");on error, row 356
 
-. implement filter by element type: marker|polyline|circle...
+. add rnd param or randomize callback name! in recordsFromJsonp, row 371
 
-. caching retRecords while layerSearch not change, controlling on 'load' event
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 382
 
-. return also marker! in _recordsFromLayer
+. implement filter by element type: marker|polyline|circle..., row 383
 
-. important optimization!!! always append data in this._recordsCache
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 384
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+. return also marker! in _recordsFromLayer, row 385
 
-. refact _handleAutoresize now is not accurate
+. important optimization!!! always append data in this._recordsCache, row 472
 
-. refact _animateCircle more smooth!
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 476
+
+. refact _handleAutoresize now is not accurate, row 511
+
+. refact _animateCircle more smooth!, row 579
 

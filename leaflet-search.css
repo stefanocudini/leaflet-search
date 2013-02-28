@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.3.2
+ * Leaflet Search Control 1.3.5
  * http://labs.easyblog.it/maps/leaflet-search
  *
  * https://github.com/stefanocudini/leaflet-search
@@ -24,7 +24,7 @@
 	margin-left: 13px;
 	margin-top: 12px;
 }
-.leaflet-control-search.exp {/*expanded*/
+.leaflet-control-search.search-exp {/*expanded*/
 	box-shadow: 0 1px 7px #999;	
 }
 .leaflet-control-search .search-input {

@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.3.2
+ * Leaflet Search Control 1.3.5
  * http://labs.easyblog.it/maps/leaflet-search
  *
  * https://github.com/stefanocudini/leaflet-search
@@ -9,42 +9,101 @@
  * Licensed under the MIT license.
  */
 
-L.Control.SearchMarker = L.CircleMarker.extend({
-	//includes: L.Mixin.Events,
-//extend inizialize and options
-
-	setLatLng: function (latlng) {  //override for support 'move' event like L.Marker
-		var ret = L.CircleMarker.prototype.setLatLng.apply(this, arguments);
-		this.fire('move', { latlng: latlng });
-		return ret;
-	}/*,
+L.Control.SearchMarker = L.Marker.extend({
+//extended L.Marker for create new type of marker has animated circle around
+//and has new methods: .hide() .show() .setTitle() .animate()
+//TODO start L.Control.SearchMarker.animation after setView or panTo, maybe with map.on('moveend')...
+	includes: L.Mixin.Events,
 	
-	animate: function(circle, afterAnimCall) {
-	//TODO refact _animateCircle more smooth!
+	options: {
+		radius: 10,
+		weight: 3,
+		color: '#e03',
+		stroke: true,
+		fill: false,
+		animation: true, //animate on show
+		title: ''
+		//TODO marker: true	//show icon optional, show only circleLoc
+	},
+	
+	initialize: function (latlng, options) {
+		L.setOptions(this, options);
+		L.Marker.prototype.initialize.call(this, latlng, options);
+		this._circleLoc = new L.CircleMarker(latlng, this.options);
+	},
 
-		var tInt = 200,//time interval
-			ss = 10,//animation frames
+	onAdd: function (map) {
+		L.Marker.prototype.onAdd.call(this, map);
+		this._circleLoc.addTo(map);
+		this.hide();
+	},
+	
+	setLatLng: function (latlng) {
+		L.Marker.prototype.setLatLng.call(this, latlng);
+		this._circleLoc.setLatLng(latlng);
+		return this;
+	},
+	
+	setTitle: function(title) {
+		this.options.title = title;
+		this._icon.title = title;
+		//TODO set title also this._circleLoc if option marker false
+		return this;
+	},
+
+	show: function() {
+		if(this._icon)
+			this._icon.style.display = 'block';
+		if(this._shadow)
+			this._shadow.style.display = 'block';
+		if(this._circleLoc)			
+			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
+		if(this.options.animation)
+			this.animate();
+		return this;
+	},
+
+	hide: function() {
+		if(this._icon)
+			this._icon.style.display = 'none';
+		if(this._shadow)
+			this._shadow.style.display = 'none';
+		if(this._circleLoc)			
+			this._circleLoc.setStyle({fill: false, stroke: false});
+		return this;
+	},
+
+	animate: function() {
+	//TODO refact L.Control.SearchMarker.animate() more smooth! and use bringToFront()
+		var circle = this._circleLoc,
+			tInt = 200,	//time interval
+			ss = 10,	//animation frames
 			mr = parseInt(circle._radius/ss),
+			oldrad = circle._radius,
 			newrad = circle._radius * 2,
 			acc = 0;
 
-		circle._timerAnimLoc = setInterval(function() {  //animation
+		circle._timerAnimLoc = setInterval(function() {  //animation loop
 			acc += 0.5;
 			mr += acc;	//adding acceleration
 			newrad -= mr;
 			
 			circle.setRadius(newrad);
 
-			if(newrad<2)//stop animation
+			if(newrad<oldrad)//stop animation
 			{
 				clearInterval(circle._timerAnimLoc);
 				circle.setRadius(circle.options.radius);//reset radius
-				if(typeof afterAnimCall == 'function')
-					afterAnimCall();
+				//if(typeof afterAnimCall == 'function')
+					//afterAnimCall();
+					//TODO use create event animateEnd in L.Control.SearchMarker 
 			}
-		});
-	 }*/
+		}, tInt);
+		
+		return this;
+	 }
 });
+
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
@@ -64,7 +123,7 @@ L.Control.Search = L.Control.extend({
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
 		timeAutoclose: 1200,		//delay for autoclosing alert and collapse after blur
-		animateLocation: true,		//animate a circle over location fund
+		animateLocation: false,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
@@ -85,13 +144,16 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
+		this._map.addLayer(this._layer);
+		this._markerLoc = new L.Control.SearchMarker([0,0],{animation: this.options.animateLocation});
+		this._layer.addLayer(this._markerLoc);
+		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._createButton(this.options.text, 'search-button');
-		this._createMarkerLoc();//make circle and marker for Location found
 		return this._container;
 	},
 
@@ -119,7 +181,7 @@ L.Control.Search = L.Control.extend({
 	
 	expand: function() {		
 		this._input.style.display = 'block';
-		L.DomUtil.addClass(this._container,'exp');		
+		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
 	},
 
@@ -129,8 +191,8 @@ L.Control.Search = L.Control.extend({
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
 		this._cancel.style.display = 'none';
-		L.DomUtil.removeClass(this._container,'exp');		
-		this._hideMarkerLoc();
+		L.DomUtil.removeClass(this._container, 'search-exp');		
+		this._markerLoc.hide();
 		this._map._container.focus();
 	},
 	
@@ -241,51 +303,8 @@ L.Control.Search = L.Control.extend({
 
 		return tip;
 	},
-	
-	_createMarkerLoc: function() {	//indicator for location found
-		//TODO extend L.Marker for build new type of marker with circle around
-		//that has methods .hide() .show() .animate()
-		
-		if(this.options.animateLocation)
-		{
-			this._circleLoc = new L.Control.SearchMarker([0,0], {radius: 10, weight:3, color: '#e03', fill: false});
-			
-			var that = this;
-			this._circleLoc.on('move', function(e) {
-
-				that._animateCircle(e.target, function() {
-					//e.target._map.removeLayer(e.target);
-					//refact!
-				});
-			});
-			//TODO start animation after setView or panTo, maybe with map.on('moveend')...
-		}
-		
-		if(this.options.markerLocation)
-			this._markerLoc = (new L.Marker([0,0]));
-	},
 
 //////end DOM creations
-
-	_showMarkerLoc: function(latlng, title) {
-		if(this._markerLoc)
-		{
-			this._markerLoc.addTo(this._map).setLatLng(latlng);
-			this._markerLoc.options.title = title;
-			this._markerLoc._icon.title = title;//set only after addTo(map)
-			//maybe use this.options.propertyName in place of title
-		}
-		
-		if(this._circleLoc)
-			this._circleLoc.addTo(this._map).setLatLng(latlng);
-	},
-
-	_hideMarkerLoc: function() {	
-		if(this._markerLoc)
-			this._map.removeLayer(this._markerLoc);
-		if(this._circleLoc)
-			this._map.removeLayer(this._circleLoc);
-	},
 	
 	_showTooltip: function() {	//Filter this._recordsCache with this._input.values and show tooltip
 
@@ -597,15 +616,17 @@ L.Control.Search = L.Control.extend({
 			else
 				this._map.panTo(newCenter);
 
-			this._showMarkerLoc(newCenter, text);  //show circle/marker in location
-
+			this._markerLoc.setLatLng(newCenter);  //show circle/marker in location found
+			this._markerLoc.setTitle(text);
+			this._markerLoc.show();
+			
 			if(this.options.autoCollapse)
 				this.collapse();			
 
 			return newCenter;
 		}
 //		else
-//			this._hideMarkerLoc();//remove this._circleLoc, this._markerLoc from map
+//			this._markerLoc.hide();//remove this._circleLoc, this._markerLoc from map
 //maybe needless
 		
 		return false;
