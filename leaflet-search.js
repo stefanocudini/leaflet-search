@@ -270,10 +270,6 @@ L.Control.Search = L.Control.extend({
 				that.collapseDelayedStop();
 				L.DomEvent.stopPropagation(e);//disable zoom map
 			}, this)
-//			.on(tool, 'mousedown', function(e) {
-//				L.DomEvent.stop(e);
-//				that.collapseDelayedStop();
-//			}, this)//maybe unavailing
 			.on(tool, 'mouseover', function(e) {
 				that._input.focus();//collapseDelayedStop
 			}, this);
@@ -288,6 +284,7 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		L.DomEvent
+			.disableClickPropagation(tip)
 			.on(tip, 'click', L.DomEvent.stop, this)
 			.on(tip, 'click', function(e) {
 				this._input.value = text;
