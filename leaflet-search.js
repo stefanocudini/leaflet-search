@@ -22,8 +22,8 @@ L.Control.SearchMarker = L.Marker.extend({
 		stroke: true,
 		fill: false,
 		animation: true, //animate on show
-		title: ''
-		//TODO marker: true	//show icon optional, show only circleLoc
+		title: '',
+		marker: false	//show icon optional, show only circleLoc
 	},
 	
 	initialize: function (latlng, options) {
@@ -47,15 +47,17 @@ L.Control.SearchMarker = L.Marker.extend({
 	setTitle: function(title) {
 		this.options.title = title;
 		this._icon.title = title;
-		//TODO set title also this._circleLoc if option marker false
 		return this;
 	},
 
 	show: function() {
-		if(this._icon)
-			this._icon.style.display = 'block';
-		if(this._shadow)
-			this._shadow.style.display = 'block';
+		if(this.options.marker)
+		{
+			if(this._icon)
+				this._icon.style.display = 'block';
+			if(this._shadow)
+				this._shadow.style.display = 'block';
+		}
 		if(this._circleLoc)			
 			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
 		if(this.options.animation)
@@ -145,7 +147,7 @@ L.Control.Search = L.Control.extend({
 	onAdd: function (map) {
 		this._map = map;
 		this._map.addLayer(this._layer);
-		this._markerLoc = new L.Control.SearchMarker([0,0],{animation: this.options.animateLocation});
+		this._markerLoc = new L.Control.SearchMarker([0,0],{animation: this.options.animateLocation, marker: this.options.markerLocation});
 		this._layer.addLayer(this._markerLoc);
 		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
