@@ -21,7 +21,6 @@ L.Control.SearchMarker = L.Marker.extend({
 		color: '#e03',
 		stroke: true,
 		fill: false,
-		animation: true, //animate on show
 		title: '',
 		marker: false	//show icon optional, show only circleLoc
 	},
@@ -58,10 +57,8 @@ L.Control.SearchMarker = L.Marker.extend({
 			if(this._shadow)
 				this._shadow.style.display = 'block';
 		}
-		if(this._circleLoc)			
+		if(this._circleLoc)
 			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
-		if(this.options.animation)
-			this.animate();
 		return this;
 	},
 
@@ -79,20 +76,20 @@ L.Control.SearchMarker = L.Marker.extend({
 	//TODO refact L.Control.SearchMarker.animate() more smooth! and use bringToFront()
 		var circle = this._circleLoc,
 			tInt = 200,	//time interval
-			ss = 10,	//animation frames
+			ss = 10,	//frames
 			mr = parseInt(circle._radius/ss),
 			oldrad = circle._radius,
 			newrad = circle._radius * 2,
 			acc = 0;
 
-		circle._timerAnimLoc = setInterval(function() {  //animation loop
+		circle._timerAnimLoc = setInterval(function() {
 			acc += 0.5;
 			mr += acc;	//adding acceleration
 			newrad -= mr;
 			
 			circle.setRadius(newrad);
 
-			if(newrad<oldrad)//stop animation
+			if(newrad<oldrad)
 			{
 				clearInterval(circle._timerAnimLoc);
 				circle.setRadius(circle.options.radius);//reset radius
@@ -125,7 +122,7 @@ L.Control.Search = L.Control.extend({
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
 		timeAutoclose: 1200,		//delay for autoclosing alert and collapse after blur
-		animateLocation: false,		//animate a circle over location found
+		animateLocation: true,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
@@ -147,7 +144,7 @@ L.Control.Search = L.Control.extend({
 	onAdd: function (map) {
 		this._map = map;
 		this._map.addLayer(this._layer);
-		this._markerLoc = new L.Control.SearchMarker([0,0],{animation: this.options.animateLocation, marker: this.options.markerLocation});
+		this._markerLoc = new L.Control.SearchMarker([0,0],{marker: this.options.markerLocation});
 		this._layer.addLayer(this._markerLoc);
 		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
@@ -621,6 +618,8 @@ L.Control.Search = L.Control.extend({
 			this._markerLoc.setLatLng(newCenter);  //show circle/marker in location found
 			this._markerLoc.setTitle(text);
 			this._markerLoc.show();
+			if(this.options.animateLocation)
+				this._markerLoc.animate();
 			
 			if(this.options.autoCollapse)
 				this.collapse();			
