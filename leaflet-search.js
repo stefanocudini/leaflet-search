@@ -223,11 +223,10 @@ L.Control.Search = L.Control.extend({
 		input.style.display = 'none';
 		
 		L.DomEvent
-			.disableClickPropagation(input)
-			.addListener(input, 'keyup', this._handleKeypress, this)
-			.addListener(input, 'keydown', this._handleAutoresize, this)
-			.addListener(input, 'blur', this.collapseDelayed, this)
-			.addListener(input, 'focus', this.collapseDelayedStop, this);
+			.on(input, 'keyup', this._handleKeypress, this)
+			.on(input, 'keydown', this._handleAutoresize, this)
+			.on(input, 'blur', this.collapseDelayed, this)
+			.on(input, 'focus', this.collapseDelayedStop, this);
 		
 		return input;
 	},
@@ -240,8 +239,8 @@ L.Control.Search = L.Control.extend({
 		cancel.innerHTML = "<span>&otimes;</span>";//imageless(see css)
 
 		L.DomEvent
-			.disableClickPropagation(cancel)
-			.addListener(cancel, 'click', this.cancel, this);
+			.on(cancel, 'click', L.DomEvent.stop, this)
+			.on(cancel, 'click', this.cancel, this);
 
 		return cancel;
 	},
@@ -252,10 +251,10 @@ L.Control.Search = L.Control.extend({
 		button.title = title;
 
 		L.DomEvent
-			.disableClickPropagation(button)
-			.addListener(button, 'focus', this.collapseDelayedStop, this)
-			.addListener(button, 'blur', this.collapseDelayed, this)
-			.addListener(button, 'click', this._handleSubmit, this);
+			.on(button, 'click', L.DomEvent.stop, this)
+			.on(button, 'click', this._handleSubmit, this)			
+			.on(button, 'focus', this.collapseDelayedStop, this)
+			.on(button, 'blur', this.collapseDelayed, this);
 
 		return button;
 	},
@@ -266,17 +265,16 @@ L.Control.Search = L.Control.extend({
 
 		var that = this;
 		L.DomEvent
-			.disableClickPropagation(tool)
-			.addListener(tool, 'blur', this.collapseDelayed, this)
-			.addListener(tool, 'mousewheel', function(e) {
+			.on(tool, 'blur', this.collapseDelayed, this)
+			.on(tool, 'mousewheel', function(e) {
 				that.collapseDelayedStop();
-				L.DomEvent.stopPropagation(e);
+				L.DomEvent.stopPropagation(e);//disable zoom map
 			}, this)
-			.addListener(tool, 'mousedown', function(e) {
-				L.DomEvent.stop(e);
-				that.collapseDelayedStop();
-			}, this)
-			.addListener(tool, 'mouseover', function(e) {
+//			.on(tool, 'mousedown', function(e) {
+//				L.DomEvent.stop(e);
+//				that.collapseDelayedStop();
+//			}, this)//maybe unavailing
+			.on(tool, 'mouseover', function(e) {
 				that._input.focus();//collapseDelayedStop
 			}, this);
 		return tool;
@@ -290,8 +288,8 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		L.DomEvent
-			.disableClickPropagation(tip)
-			.addListener(tip, 'click', function(e) {
+			.on(tip, 'click', L.DomEvent.stop, this)
+			.on(tip, 'click', function(e) {
 				this._input.value = text;
 				this._input.focus();
 				this._hideTooltip();
