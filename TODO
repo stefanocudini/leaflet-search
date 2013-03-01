@@ -1,23 +1,36 @@
-Call for good developers:
+. start L.Control.SearchMarker.animation after setView or panTo, maybe with map.on('moveend')..., row 15
 
-. return also marker in _recordsFromLayer();
+. refact L.Control.SearchMarker.animate() more smooth! and use bringToFront(), row 80
 
-. implement cache for ajax/jsonp seaching
+. use create event animateEnd in L.Control.SearchMarker , row 102
 
-. caching search results while layerSearch contents not change, controlling on 'load' event
+. add option searchLoc or searchLat,searchLon for remapping fields, row 117
 
-. refact _handleAutoresize method
+. add option for persist markerLoc after autoCollapse!, row 128
 
-. add options: searchJsonpKey and searchJsonpLoc for remapping fields from jsonp
+. optional markerLoc.hide in collapse(), row 201
 
-. bind _recordsFromLayer() to map events layeradd layerd remove update ecc
+. add new option: the callback for building the tip content from text argument, row 291
 
-. use throw new Error("json parse error") on jsonp filtering errors
+. use: throw new Error("my message");on error, row 363
 
-. filter by element type on searching: marker|polyline|circle...
+. add rnd param or randomize callback name! in recordsFromJsonp, row 378
 
-. start animation after setView panning end, maybe on moveend
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 389
 
-. rewrite _animateCircle() more smooth
+. implement filter by element type: marker|polyline|circle..., row 390
 
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 391
+
+. return also marker! in _recordsFromLayer, row 392
+
+. important optimization!!! always append data in this._recordsCache, row 479
+
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 483
+
+. change structure of _recordsCache, row 487
+
+. refact _handleAutoresize now is not accurate, row 522
+
+. refact _animateCircle more smooth!, row 590
 

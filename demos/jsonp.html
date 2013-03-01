@@ -16,7 +16,7 @@
 
 <div id="post-it">
 <b>Search values:</b><br />
-black, blue, cyan, darkblue, darkred, darkgray, gray, green, red, yellow, white
+aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, green, red, skyblue, yellow, white ...
 </div>
 
 <script src="/leaflet/leaflet.js"></script>
@@ -27,7 +27,7 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, green, red, yellow, white
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	map.addControl( new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...'}) );
+	map.addControl( new L.Control.Search({jsonpUrl: 'search.php?q={s}&callback={c}', text:'Color...', markerLocation: true}) );
 	//view source of search.php for more details
 
 </script>
