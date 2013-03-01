@@ -287,7 +287,7 @@ L.Control.Search = L.Control.extend({
 	_createTip: function(text) {
 		var tip = L.DomUtil.create('a', 'search-tip');
 			tip.href = '#',
-			tip.innerHTML = this._recordsCache[ text ].formatted ? this._recordsCache[ text ].formatted : text;
+			tip.innerHTML = this._recordsCache[ text ].formatted ? this._recordsCache[ text ].formatted : text; // Default to plain text if no formatted text is available.
 		//TODO add new option: the callback for building the tip content from text argument
 
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
@@ -308,7 +308,55 @@ L.Control.Search = L.Control.extend({
 	},
 
 //////end DOM creations
-	
+	_groupBy: function( arr, by ) {
+		var groups = {},
+		group,
+		values,
+		i = arr.length,
+		j,
+		key;
+
+		// make sure we specified how we want it grouped
+		if( !by ) { return arr; } // TODO: If hierarchy is not defined or is of length 1, just return flat json with no section.
+		while( i-- ) {
+
+			// find out group values for this item
+			values = ( typeof(by) === "function" && by( arr[i] ) || 
+					typeof arr[i] === "object" && arr[i][by] || 
+					arr[i] );
+
+			// make sure our group values are an array
+			values = values instanceof Array && values || [ values ]; // If not an array put them in an array.
+
+			// group
+			group = groups;
+			for( j = 0; j < values.length; j++ ) { // Vertical search. # of sections
+				key = values[j];
+				group = ( group[key] || ( group[key] = j === values.length - 1 && [] || {} ) );
+			}
+			// for the last group, push the actual item onto the array
+			group = ( group instanceof Array && group || [] ).push( arr[i] );
+		}
+
+		return groups;
+	},	
+
+	_toTree: function(treeObj) {
+		var ul = document.createElement("div");
+		for(var obj in treeObj) {
+			if (treeObj[obj] instanceof Array) { // leaf.
+				ul.appendChild(this._createTip(obj));
+				continue;
+			}
+			else { // branch
+				ul.innerHTML += obj;
+				ul.className = "tooltip-section";
+			}
+			ul.appendChild(this._toTree(treeObj[obj]));
+		}
+		return ul;
+	},
+
 	_showTooltip: function() {	//Filter this._recordsCache with this._input.values and show tooltip
 
 		if(this._input.value.length < this.options.minLength)
@@ -321,17 +369,21 @@ L.Control.Search = L.Control.extend({
 			ntip = 0;
 		
 		this._tooltip.innerHTML = '';
-
-		for(var key in this._recordsCache)
-		{
+		
+		var recordsArray = [];
+		for (var key in this._recordsCache) {
 			if(regSearch.test(key))//search in records
 			{
 				if (ntip == this.options.tooltipLimit) break;
-				this._tooltip.appendChild( this._createTip(key) );
+				this._recordsCache[key].key = key;
+				recordsArray.push(this._recordsCache[key]);
 				this._recordsCache[ key ]._index = ntip;
 				ntip++;
 			}
 		}
+
+		var groups = this._groupBy( recordsArray, function( item ) { return [ item.section, item.key ]; } );
+		this._tooltip.appendChild(this._toTree(groups));
 		
 		if(ntip > 0) {
 			this._tooltip.style.display = 'block';
@@ -517,13 +569,14 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 	
-	//FIXME _handleAutoresize Should resize max search box size when map is resized.
+	// TODO: Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
 	//TODO refact _handleAutoresize now is not accurate
 		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
 
+	// FIXME: Scrolling Up should work better with multisection tooltips.
 	_handleArrowSelect: function(velocity) {
 	
 		var searchTips = this._tooltip.getElementsByTagName('a');
