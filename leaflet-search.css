@@ -100,3 +100,7 @@
 }
 
 
+.leaflet-control-search .tooltip-section {
+	background: #ccc;
+	border:solid 0;
+}

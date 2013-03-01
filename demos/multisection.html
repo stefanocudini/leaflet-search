@@ -32,25 +32,22 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 
 	function filter(rawjson) {	//callback that remap fields name
 		var json = {},
-			key, loc;
+			key, loc, section;
 		
-		//console.log(rawjson);
-	
-		//////
 		for(var i in rawjson)
 		{
 			key = rawjson[i].display_name;	//search key
 			loc = L.latLng( rawjson[i].lat, rawjson[i].lon );
+			section = rawjson[i].class;
 			json[ key ]= loc;	//key,value format
-			json[key].section = rawjson[i].class;	//search key
-			console.log(json[ key ].section);
+			json[key].section = section;	//search key
+			//json[key].formatted = key + ' -- <b>' + section + '</b>';
 		}
 	
-		///console.log(json);
 		return json;
 	}
 
-	map.addControl( new L.Control.Search({searchJsonpUrl: jsonpurl, searchJsonpFilter: filter, autotype: false}) );
+	map.addControl( new L.Control.Search({searchJsonpUrl: jsonpurl, searchJsonpFilter: filter, searchLimit: 5 }) ); // TODO: pass hierarchy array here..or somewhere.
 
 </script>
 
