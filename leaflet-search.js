@@ -115,7 +115,7 @@ L.Control.Search = L.Control.extend({
 		layer: null,				//layer where search markers
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
-		searchCall: null,			//callback that fill _recordsCache with key,value table
+		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
@@ -124,7 +124,7 @@ L.Control.Search = L.Control.extend({
 		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
-		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
+		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
 		//TODO add option for persist markerLoc after autoCollapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
@@ -332,7 +332,8 @@ L.Control.Search = L.Control.extend({
 			}
 		}
 		
-		if(ntip > 0) {
+		if(ntip > 0)
+		{
 			this._tooltip.style.display = 'block';
 			if(this._autoTypeTmp)
 				this._autoType();
@@ -364,22 +365,21 @@ L.Control.Search = L.Control.extend({
 		return jsonret;
 	},
 	
-	_recordsFromJsonp: function(inputText, callAfter) {  //extract searched records from remote jsonp service
+	_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
 		
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
 			var fdata = that._filterJSON.apply(that,[data]);//defined in inizialize...
 			callAfter(fdata);
 		}
-		var scriptNode = L.DomUtil.create('script','', document.getElementsByTagName('body')[0] ),			
-			url = L.Util.template(this.options.jsonpUrl, {s: inputText, c:"L.Control.Search.callJsonp"});
+		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
+			url = L.Util.template(this.options.jsonpUrl, {s: text, c:"L.Control.Search.callJsonp"});
 			//parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-
-		scriptNode.type = 'text/javascript';
-		scriptNode.src = url;
-		return callAfter;
+		script.type = 'text/javascript';
+		script.src = url;
+		return this;
 	},
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
@@ -490,12 +490,11 @@ L.Control.Search = L.Control.extend({
 //
 		L.DomUtil.addClass(this._container, 'search-load');
 
-		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
+		if(this.options.searchCall)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
 			this._recordsCache = this.options.searchCall.apply(this,[inputText]);
-			
-			if(this._recordsCache)
-				this._showTooltip();
+
+			this._showTooltip();
 
 			L.DomUtil.removeClass(this._container, 'search-load');
 			//FIXME removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!

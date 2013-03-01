@@ -84,7 +84,7 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
-<h4>searchCall ajax</h4>
+<h4>searchCall AJAX</h4>
 <div id="map_ajax" class="maptest"></div>
 <script>
 
@@ -108,7 +108,7 @@ h4 {
 					resultsraw = json;
 			}
 		});
-	
+
 		for(i in resultsraw)	//reformatting results in key,value
 			results[ resultsraw[i].title ] = resultsraw[i].loc;
 
@@ -136,26 +136,29 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
-<h4>jsonpUrl, filterJSON</h4>
+<h4>jsonpUrl, filterJSON, Cities</h4>
 <div id="map_filterjson" class="maptest"></div>
 <script>
 
 	var map = new L.Map('map_filterjson', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 	
-	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?json_callback={c}&q={s}&format=json&osm_type=N&limit=100';
+	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?json_callback={c}&q={s}'+
+				   '&format=json&osm_type=N&limit=100&addressdetails=0';
 	//third party jsonp service	
 
 	function filterJSONCall(rawjson) {	//callback that remap fields name
 		var json = {},
-			key, loc;
-		
-		//console.log(rawjson);
-	
+			key, loc, disp = [];
+			
 		for(var i in rawjson)
-		{
-			key = rawjson[i].display_name;	//search key
+		{	
+			disp = rawjson[i].display_name.split(',');	
+
+			key = disp[0] +', '+ disp[1];
+			
 			loc = L.latLng( rawjson[i].lat, rawjson[i].lon );
+			
 			json[ key ]= loc;	//key,value format
 		}
 		
@@ -178,7 +181,7 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
-<h4>searchCall ajax bulk</h4>
+<h4>searchCall ajax bulk, Cities</h4>
 <div id="map_ajaxbulk" class="maptest"></div>
 <script>
 
