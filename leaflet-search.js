@@ -265,6 +265,7 @@ L.Control.Search = L.Control.extend({
 
 		var that = this;
 		L.DomEvent
+			.disableClickPropagation(tool)
 			.on(tool, 'blur', this.collapseDelayed, this)
 			.on(tool, 'mousewheel', function(e) {
 				that.collapseDelayedStop();
@@ -276,15 +277,16 @@ L.Control.Search = L.Control.extend({
 		return tool;
 	},
 
-	_createTip: function(text) {	//build new choice for tooltip menu
+	_createTip: function(text) {
 		var tip = L.DomUtil.create('a', 'search-tip');
 		tip.href = '#';
 		tip.innerHTML = text;
+		//TODO add new option: the callback for building the tip content from text argument
 
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		L.DomEvent
-			.disableClickPropagation(tip)
+			.disableClickPropagation(tip)		
 			.on(tip, 'click', L.DomEvent.stop, this)
 			.on(tip, 'click', function(e) {
 				this._input.value = text;
@@ -475,6 +477,10 @@ L.Control.Search = L.Control.extend({
 		//run one of callbacks search(searchCall,jsonpUrl or options.layer)
 		//and run this._showTooltip
 
+//TODO change structure of _recordsCache
+//	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
+//	in this mode every record can have a free structure of attributes, only 'loc' is required
+//
 		L.DomUtil.addClass(this._container, 'search-load');
 
 		if(this.options.searchCall)	//PERSONAL SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
