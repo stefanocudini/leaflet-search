@@ -56,9 +56,13 @@ L.Control.SearchMarker = L.Marker.extend({
 				this._icon.style.display = 'block';
 			if(this._shadow)
 				this._shadow.style.display = 'block';
+			//this._bringToFront();
 		}
 		if(this._circleLoc)
+		{
 			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
+			//this._circleLoc.bringToFront();
+		}
 		return this;
 	},
 
@@ -110,7 +114,7 @@ L.Control.Search = L.Control.extend({
 	options: {
 		layer: null,				//layer where search markers
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
-		//TODO add option searchLoc or searchLat,searchLon for remapping fields
+		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
 		searchCall: null,			//callback that fill _recordsCache with key,value table
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
@@ -121,7 +125,8 @@ L.Control.Search = L.Control.extend({
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or tooltip if enabled tipAutoSubmit)
-		timeAutoclose: 1200,		//delay for autoclosing alert and collapse after blur
+		//TODO add option for persist markerLoc after autoCollapse!
+		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
@@ -131,6 +136,7 @@ L.Control.Search = L.Control.extend({
 		position: 'topleft'
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+//FIXME option condition problem {autoCollapse:false }
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
@@ -167,7 +173,7 @@ L.Control.Search = L.Control.extend({
 		clearTimeout(this.timerAlert);
 		this.timerAlert = setTimeout(function() {
 			that._alert.style.display = 'none';
-		},this.options.timeAutoclose);
+		},this.options.autoCollapseTime);
 	},
 	
 	cancel: function() {
@@ -192,6 +198,7 @@ L.Control.Search = L.Control.extend({
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		this._markerLoc.hide();
+		//TODO optional markerLoc.hide in collapse()
 		this._map._container.focus();
 	},
 	
@@ -199,7 +206,7 @@ L.Control.Search = L.Control.extend({
 		var that = this;
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
-		}, this.options.timeAutoclose);
+		}, this.options.autoCollapseTime);
 	},
 
 	collapseDelayedStop: function() {
@@ -622,6 +629,7 @@ L.Control.Search = L.Control.extend({
 			if(this.options.animateLocation)
 				this._markerLoc.animate();
 			
+			//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 			if(this.options.autoCollapse)
 				this.collapse();			
 
