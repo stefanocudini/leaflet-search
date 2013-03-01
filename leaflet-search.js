@@ -143,9 +143,9 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
-		this._map.addLayer(this._layer);
 		this._markerLoc = new L.Control.SearchMarker([0,0],{marker: this.options.markerLocation});
 		this._layer.addLayer(this._markerLoc);
+		this._layer.addTo(map);
 		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._alert = this._createAlert('search-alert');		
