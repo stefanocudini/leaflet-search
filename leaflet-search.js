@@ -22,6 +22,7 @@ L.Control.SearchMarker = L.Marker.extend({
 		stroke: true,
 		fill: false,
 		title: '',
+//TODO add custom icon!		
 		marker: false	//show icon optional, show only circleLoc
 	},
 	
