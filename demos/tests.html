@@ -217,6 +217,49 @@ h4 {
 </script>
 </div>
 
+
+<div class="maptest_wrap">
+<h4>search in layer, Custom Tip</h4>
+<div id="map_customtip" class="maptest"></div>
+<script>
+
+	var map = new L.Map('map_customtip', {zoom: 9, center: new L.latLng(data[0].loc) });	//set center from first location
+
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	map.addLayer(markersLayer);
+
+	function customTip(text)
+	{
+		var tip = L.DomUtil.create('a', 'colortip');
+
+		tip.href = "#"+text;
+		tip.innerHTML = text;
+		
+		var subtip = L.DomUtil.create('em', 'subtip', tip);
+		subtip.style.display = 'inline-block';
+		subtip.style.float = 'right';
+		subtip.style.width = '14px';
+		subtip.style.height = '14px';
+		subtip.style.backgroundColor = text;
+		
+		return tip;
+	}
+
+	map.addControl( new L.Control.Search({layer: markersLayer, callTip: customTip, autoType: false }) );  //inizialize search control
+
+	////////////populate map with markers from sample data
+	for(i in data) {
+		var title = data[i].title,	//value searched
+			loc = data[i].loc,		//position found
+			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+		marker.bindPopup('title: '+ title );
+		markersLayer.addLayer(marker);
+	}
+</script>
+</div>
+
 <div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>
 </body>
 </html>

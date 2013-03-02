@@ -146,7 +146,7 @@ L.Control.Search = L.Control.extend({
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
-		this._delayType = 300;		//delay after searchCall
+		this._delayType = 350;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
