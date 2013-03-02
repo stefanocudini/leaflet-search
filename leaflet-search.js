@@ -210,6 +210,7 @@ L.Control.Search = L.Control.extend({
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
 		var that = this;
+		clearTimeout(this.timerCollapse);
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
 		}, this.options.autoCollapseTime);
@@ -241,6 +242,7 @@ L.Control.Search = L.Control.extend({
 		input.style.display = 'none';
 		
 		L.DomEvent
+			.disableClickPropagation(input)
 			.on(input, 'keyup', this._handleKeypress, this)
 			.on(input, 'keydown', this._handleAutoresize, this)
 			.on(input, 'blur', this.collapseDelayed, this)
