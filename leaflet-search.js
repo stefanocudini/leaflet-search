@@ -115,6 +115,7 @@ L.Control.Search = L.Control.extend({
 		layer: null,				//layer where search markers
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
+		//TODO add event callback onFound(latlng)
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
@@ -125,7 +126,7 @@ L.Control.Search = L.Control.extend({
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
-		//TODO add option for persist markerLoc after autoCollapse!
+		//TODO add option for persist markerLoc after collapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
@@ -152,30 +153,35 @@ L.Control.Search = L.Control.extend({
 		this._markerLoc = new L.Control.SearchMarker([0,0],{marker: this.options.markerLocation});
 		this._layer.addLayer(this._markerLoc);
 		this._layer.addTo(map);
-		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
-		this._alert = this._createAlert('search-alert');		
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._createButton(this.options.text, 'search-button');
+		this._alert = this._createAlert('search-alert');		
+		this._map.on('dragstart', this.collapse, this);
 		return this._container;
 	},
 
 	onRemove: function(map) {
 		this._recordsCache = {};
+		this._map.off('dragstart', this.collapse, this);
 	},
 	
 	showAlert: function(text) {
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
-		var that = this;
 		clearTimeout(this.timerAlert);
+		var that = this;		
 		this.timerAlert = setTimeout(function() {
-			that._alert.style.display = 'none';
+			that.hideAlert();
 		},this.options.autoCollapseTime);
 	},
 	
+	hideAlert: function() {
+		this._alert.style.display = 'none';
+	},
+		
 	cancel: function() {
 		this._input.value = '';
 		this._handleKeypress({keyCode:8});//simulate backspace keypress
@@ -198,8 +204,6 @@ L.Control.Search = L.Control.extend({
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		this._markerLoc.hide();
-		//TODO optional markerLoc.hide in collapse()
-		this._map._container.focus();
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
@@ -217,6 +221,11 @@ L.Control.Search = L.Control.extend({
 	_createAlert: function(className) {
 		var alert = L.DomUtil.create('div', className, this._container);
 		alert.style.display = 'none';
+
+		L.DomEvent
+			.on(alert, 'click', L.DomEvent.stop, this)
+			.on(alert, 'click', this.hideAlert, this);
+
 		return alert;
 	},
 
@@ -279,7 +288,7 @@ L.Control.Search = L.Control.extend({
 				L.DomEvent.stopPropagation(e);//disable zoom map
 			}, this)
 			.on(tool, 'mouseover', function(e) {
-				that._input.focus();//collapseDelayedStop
+				that.collapseDelayedStop();
 			}, this);
 		return tool;
 	},
@@ -297,9 +306,9 @@ L.Control.Search = L.Control.extend({
 			.on(tip, 'click', L.DomEvent.stop, this)
 			.on(tip, 'click', function(e) {
 				this._input.value = text;
+				this._handleAutoresize();
 				this._input.focus();
-				this._hideTooltip();
-				this._handleAutoresize();	
+				this._hideTooltip();	
 				if(this.options.tipAutoSubmit)//go to location at once
 					this._handleSubmit();
 			}, this);
@@ -569,6 +578,8 @@ L.Control.Search = L.Control.extend({
 			}
 			this._input.selectionStart = this._input.selectionEnd;
 		}
+		
+		this.hideAlert();
 
 		if(this._input.style.display == 'none')	//on first click show _input only
 			this.expand();
@@ -582,7 +593,7 @@ L.Control.Search = L.Control.extend({
 					this.showAlert( this.options.textErr );//location not found, alert!
 			}
 		}
-		this._input.focus();	//block collapseDelayed after _button blur
+		this.collapseDelayedStop();
 	},
 	
 	_animateCircle: function(circle, afterAnimCall) {
@@ -612,8 +623,23 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_findLocation: function(text) {	//get location from table _recordsCache and pan to map!
-	
-		if( this._recordsCache.hasOwnProperty(text) )
+	//FIXME implement case insesitive test for _recordsCache keys
+		/*var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
+			text = this._input.value.replace(regFilter,''),		//sanitize text
+			I = this.options.initial ? '^' : '',  //search for initial text
+			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
+			ntip = 0;
+		
+		this._tooltip.innerHTML = '';
+
+		for(var key in this._recordsCache)
+		{
+			if(regSearch.test(key))//search in records
+			{
+			...	
+			}
+		}*/	
+		if( this._recordsCache.hasOwnProperty(text) )//replace with case insesitive RegExp.test
 		{
 			var newCenter = this._recordsCache[text];//search in table key,value
 			

@@ -4,33 +4,33 @@
 
 . use create event animateEnd in L.Control.SearchMarker , row 102
 
-. add option searchLoc or searchLat,searchLon for remapping fields, row 117
+. add option searchLoc or searchLat,searchLon for remapping json data fields, row 117
 
-. add option for persist markerLoc after autoCollapse!, row 128
+. add event callback onFound(latlng), row 118
 
-. optional markerLoc.hide in collapse(), row 201
+. add option for persist markerLoc after collapse!, row 129
 
-. add new option: the callback for building the tip content from text argument, row 291
+. add new option: the callback for building the tip content from text argument, row 300
 
-. use: throw new Error("my message");on error, row 363
+. use: throw new Error("my message");on error, row 373
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 378
+. add rnd param or randomize callback name! in recordsFromJsonp, row 388
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 389
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 398
 
-. implement filter by element type: marker|polyline|circle..., row 390
+. implement filter by element type: marker|polyline|circle..., row 399
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 391
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 400
 
-. return also marker! in _recordsFromLayer, row 392
+. return also marker! in _recordsFromLayer, row 401
 
-. important optimization!!! always append data in this._recordsCache, row 479
+. important optimization!!! always append data in this._recordsCache, row 488
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 483
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 492
 
-. change structure of _recordsCache, row 487
+. change structure of _recordsCache, row 496
 
-. refact _handleAutoresize now is not accurate, row 522
+. refact _handleAutoresize now is not accurate, row 530
 
-. refact _animateCircle more smooth!, row 590
+. refact _animateCircle more smooth!, row 601
 
