@@ -118,6 +118,7 @@ L.Control.Search = L.Control.extend({
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
 		//TODO add event callback onFound(latlng)
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
+		callTip: null,				//function that return tip html node, receive text tooltip ion first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
@@ -295,11 +296,20 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_createTip: function(text) {
-		var tip = L.DomUtil.create('a', 'search-tip');
-		tip.href = '#';
-		tip.innerHTML = text;
-		//TODO add new option: the callback for building the tip content from text argument
-
+		var tip;
+		
+		if(this.options.callTip)
+		{
+			tip = this.options.callTip.call(this, text);
+			L.DomUtil.addClass(tip, 'search-tip');
+		}
+		else
+		{
+			tip = L.DomUtil.create('a', 'search-tip');
+			tip.href = '#';
+			tip.innerHTML = text;
+		}
+		
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		L.DomEvent
