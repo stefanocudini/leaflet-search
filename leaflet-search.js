@@ -159,13 +159,11 @@ L.Control.Search = L.Control.extend({
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');		
-		this._map.on('dragstart', this.collapse, this);
 		return this._container;
 	},
 
 	onRemove: function(map) {
 		this._recordsCache = {};
-		this._map.off('dragstart', this.collapse, this);
 	},
 	
 	showAlert: function(text) {
@@ -194,6 +192,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
+		this._map.on('dragstart', this.collapse, this);		
 	},
 
 	collapse: function() {
@@ -204,6 +203,7 @@ L.Control.Search = L.Control.extend({
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		this._markerLoc.hide();
+		this._map.off('dragstart', this.collapse, this);		
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
