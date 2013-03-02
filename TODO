@@ -1,36 +1,38 @@
 . start L.Control.SearchMarker.animation after setView or panTo, maybe with map.on('moveend')..., row 15
 
-. refact L.Control.SearchMarker.animate() more smooth! and use bringToFront(), row 80
+. add custom icon!		, row 25
 
-. use create event animateEnd in L.Control.SearchMarker , row 102
+. refact L.Control.SearchMarker.animate() more smooth! and use bringToFront(), row 81
 
-. add option searchLoc or searchLat,searchLon for remapping json data fields, row 117
+. use create event animateEnd in L.Control.SearchMarker , row 103
 
-. add event callback onFound(latlng), row 118
+. add option searchLoc or searchLat,searchLon for remapping json data fields, row 118
 
-. add option for persist markerLoc after collapse!, row 129
+. add event callback onFound(latlng), row 119
 
-. add new option: the callback for building the tip content from text argument, row 300
+. add option for persist markerLoc after collapse!, row 130
 
-. use: throw new Error("my message");on error, row 373
+. add new option: the callback for building the tip content from text argument, row 301
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 388
+. use: throw new Error("my message");on error, row 374
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 398
+. add rnd param or randomize callback name! in recordsFromJsonp, row 389
 
-. implement filter by element type: marker|polyline|circle..., row 399
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 399
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 400
+. implement filter by element type: marker|polyline|circle..., row 400
 
-. return also marker! in _recordsFromLayer, row 401
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 401
 
-. important optimization!!! always append data in this._recordsCache, row 488
+. return also marker! in _recordsFromLayer, row 402
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 492
+. important optimization!!! always append data in this._recordsCache, row 489
 
-. change structure of _recordsCache, row 496
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 493
 
-. refact _handleAutoresize now is not accurate, row 530
+. change structure of _recordsCache, row 497
+
+. refact _handleAutoresize now is not accurate, row 531
 
 . refact _animateCircle more smooth!, row 601
 
