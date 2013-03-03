@@ -311,8 +311,6 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomUtil.addClass(tip, 'search-tip');
 		tip._text = text; //value replaced in this._input and used by _autoType
-		
-		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		L.DomEvent
 			.disableClickPropagation(tip)		
@@ -330,28 +328,36 @@ L.Control.Search = L.Control.extend({
 	},
 
 //////end DOM creations
+
+	_filterRecords: function(text) {	//Filter this._recordsCache case insensitive and much more..
 	
-	_showTooltip: function() {	//Filter this._recordsCache with this._input.values and show tooltip
-
-		if(this._input.value.length < this.options.minLength)
-			return this._hideTooltip();
-
 		var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
-			text = this._input.value.replace(regFilter,''),		//sanitize text
-			I = this.options.initial ? '^' : '',  //search for initial text
-			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
-			ntip = 0;
-		
-		this._tooltip.innerHTML = '';
+			text = text.replace(regFilter,''),	  //sanitize text
+			I = this.options.initial ? '^' : '',  //search only initial text
+			regSearch = new RegExp(I + text,'i'),
+			//TODO add option for case sesitive search, also _showLocation
+			frecords = {};
 
-		for(var key in this._recordsCache)
+		for(var key in this._recordsCache)//use .filter or .map
+			if( regSearch.test(key) )
+				frecords[key]= this._recordsCache[key];
+		
+		return frecords;
+	},
+	
+	_showTooltip: function() {
+		
+		var filteredRecords = this._filterRecords( this._input.value );
+			ntip = 0;
+
+		this._tooltip.innerHTML = '';
+		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
+
+		for(var key in filteredRecords)//fill tooltip
 		{
-			if(regSearch.test(key))//search in records
-			{
-				if (ntip == this.options.tooltipLimit) break;
-				this._tooltip.appendChild( this._createTip(key) );
-				ntip++;
-			}
+			if(++ntip == this.options.tooltipLimit) break;
+			this._tooltip.appendChild( this._createTip(key) );
+			//TODO pass key and value to _createTip, when _recordsCache support properties
 		}
 		
 		if(ntip > 0)
@@ -423,6 +429,8 @@ L.Control.Search = L.Control.extend({
 
 	_autoType: function() {
 		
+		//TODO implements autype without selection(useful for mobile device)
+		
 		var start = this._input.value.length,
 			firstRecord = this._tooltip.firstChild._text,
 			end = firstRecord.length;
@@ -446,6 +454,20 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 
+	_hideAutoType: function() {	// deselect text:
+
+		var sel;
+		if ((sel = this._input.selection) && sel.empty) {
+			sel.empty();
+		}
+		else {
+			if (this._input.getSelection) {
+				this._input.getSelection().removeAllRanges();
+			}
+			this._input.selectionStart = this._input.selectionEnd;
+		}
+	},
+	
 	_handleKeypress: function (e) {	//run _input keyup event
 		
 		switch(e.keyCode)
@@ -510,7 +532,7 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.searchCall)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			this._recordsCache = this.options.searchCall.apply(this,[inputText]);
+			this._recordsCache = this.options.searchCall.apply(this, [inputText] );
 
 			this._showTooltip();
 
@@ -573,21 +595,12 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 
-	_handleSubmit: function() {
+	_handleSubmit: function() {	//button and tooltip click and enter submit
 
-		// deselect text:
-		var sel;
-		if ((sel = this._input.selection) && sel.empty) {
-			sel.empty();
-		}
-		else {
-			if (this._input.getSelection) {
-				this._input.getSelection().removeAllRanges();
-			}
-			this._input.selectionStart = this._input.selectionEnd;
-		}
+		this._hideAutoType();
 		
 		this.hideAlert();
+		this._hideTooltip();
 
 		if(this._input.style.display == 'none')	//on first click show _input only
 			this.expand();
@@ -597,79 +610,41 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			else
 			{
-				if( this._findLocation(this._input.value)===false )
-					this.showAlert( this.options.textErr );//location not found, alert!
+				var loc = this.getLocation(this._input.value);
+				
+				if(loc)
+					this._showLocation(loc,this._input.value);
+				else
+					this.showAlert();
+				//this.collapse();
+				//FIXME if collapse in _handleSubmit hide _markerLoc!
 			}
 		}
-		this.collapseDelayedStop();
 	},
-	
-	_animateCircle: function(circle, afterAnimCall) {
-	//TODO refact _animateCircle more smooth!
 
-		var tInt = 200,//time interval
-			ss = 10,//animation frames
-			mr = parseInt(circle._radius/ss),
-			newrad = circle._radius * 2,
-			acc = 0;
+	getLocation: function(key) {	//extract latlng from _recordsCache
 
-		circle._timerAnimLoc = setInterval(function() {  //animation
-			acc += 0.5;
-			mr += acc;	//adding acceleration
-			newrad -= mr;
-			
-			circle.setRadius(newrad);
-
-			if(newrad<2)//stop animation
-			{
-				clearInterval(circle._timerAnimLoc);
-				circle.setRadius(circle.options.radius);//reset radius
-				if(typeof afterAnimCall == 'function')
-					afterAnimCall();
-			}
-		}, tInt);
+		if( this._recordsCache.hasOwnProperty(key) )
+			return this._recordsCache[this._input.value];//then after use .loc attribute
+		else
+			return false;
 	},
-	
-	_findLocation: function(text) {	//get location from table _recordsCache and pan to map!
-	//FIXME implement case insesitive test for _recordsCache keys
-		/*var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
-			text = this._input.value.replace(regFilter,''),		//sanitize text
-			I = this.options.initial ? '^' : '',  //search for initial text
-			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
-			ntip = 0;
 
-		for(var key in this._recordsCache)
-		{
-			if(regSearch.test(key))//search in records
-			{
-			...	
-			}
-		}*/	
-		if( this._recordsCache.hasOwnProperty(text) )//replace with case insesitive RegExp.test
-		{
-			var newCenter = this._recordsCache[text];//search in table key,value
+	_showLocation: function(latlng, title) {	//set location on map from _recordsCache
 			
-			if(this.options.zoom)
-				this._map.setView(newCenter, this.options.zoom);
-			else
-				this._map.panTo(newCenter);
+		if(this.options.zoom)
+			this._map.setView(latlng, this.options.zoom);
+		else
+			this._map.panTo(latlng);
 
-			this._markerLoc.setLatLng(newCenter);  //show circle/marker in location found
-			this._markerLoc.setTitle(text);
-			this._markerLoc.show();
-			if(this.options.animateLocation)
-				this._markerLoc.animate();
-			//this.fire("locationfound");
-			//FIXME autoCollapse option hide this._markerLoc before that visualized!!
-			if(this.options.autoCollapse)
-				this.collapse();			
-
-			return newCenter;
-		}
-//		else
-//			this._markerLoc.hide();//remove this._circleLoc, this._markerLoc from map
-//maybe needless
-		
-		return false;
+		this._markerLoc.setLatLng(latlng);  //show circle/marker in location found
+		this._markerLoc.setTitle(title);
+		this._markerLoc.show();
+		if(this.options.animateLocation)
+			this._markerLoc.animate();
+		//this.fire("locationfound");
+		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+		if(this.options.autoCollapse)
+			this.collapse();
 	}
 });
