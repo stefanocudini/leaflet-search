@@ -10,29 +10,27 @@
 
 . add event callback onFound(latlng), row 119
 
-. add option for persist markerLoc after collapse!, row 130
+. add option for persist markerLoc after collapse!, row 131
 
-. add new option: the callback for building the tip content from text argument, row 301
+. use: throw new Error("my message");on error, row 386
 
-. use: throw new Error("my message");on error, row 374
+. add rnd param or randomize callback name! in recordsFromJsonp, row 401
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 389
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 411
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 399
+. implement filter by element type: marker|polyline|circle..., row 412
 
-. implement filter by element type: marker|polyline|circle..., row 400
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 413
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 401
+. return also marker! in _recordsFromLayer, row 414
 
-. return also marker! in _recordsFromLayer, row 402
+. important optimization!!! always append data in this._recordsCache, row 497
 
-. important optimization!!! always append data in this._recordsCache, row 489
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 500
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 493
+. change structure of _recordsCache, row 503
 
-. change structure of _recordsCache, row 497
+. refact _handleAutoresize now is not accurate, row 539
 
-. refact _handleAutoresize now is not accurate, row 531
-
-. refact _animateCircle more smooth!, row 601
+. refact _animateCircle more smooth!, row 608
 

@@ -301,16 +301,16 @@ L.Control.Search = L.Control.extend({
 		var tip;
 		
 		if(this.options.callTip)
-		{
-			tip = this.options.callTip.call(this, text);
-			L.DomUtil.addClass(tip, 'search-tip');
-		}
+			tip = this.options.callTip.call(this, text); //custom tip content
 		else
 		{
-			tip = L.DomUtil.create('a', 'search-tip');
+			tip = L.DomUtil.create('a', '');
 			tip.href = '#';
 			tip.innerHTML = text;
 		}
+		
+		L.DomUtil.addClass(tip, 'search-tip');
+		tip._text = text; //value replaced in this._input and used by _autoType
 		
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
@@ -424,8 +424,7 @@ L.Control.Search = L.Control.extend({
 	_autoType: function() {
 		
 		var start = this._input.value.length,
-			firstRecord = this._tooltip.getElementsByTagName('a')[0].innerHTML,
-			//FIXME _autoType find a way without innerHTML that also guarantees correct order (application developer may want images in tooltip)
+			firstRecord = this._tooltip.firstChild._text,
 			end = firstRecord.length;
 			
 		this._input.value = firstRecord;
@@ -546,9 +545,8 @@ L.Control.Search = L.Control.extend({
 	
 		var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
 			
-		for (i=0; i<searchTips.length; i++) {	// Erase all highlighting
+		for (i=0; i<searchTips.length; i++)
 			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
-		}
 		
 		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (searchTips.length - 1))) {// If at end of list.
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
@@ -561,7 +559,7 @@ L.Control.Search = L.Control.extend({
 			
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
 			
-			this._input.value = searchTips[this._tooltip.currentSelection].innerHTML;
+			this._input.value = searchTips[this._tooltip.currentSelection]._text;
 
 			// scroll:
 			var tipOffsetTop = searchTips[this._tooltip.currentSelection].offsetTop;
@@ -639,8 +637,6 @@ L.Control.Search = L.Control.extend({
 			I = this.options.initial ? '^' : '',  //search for initial text
 			regSearch = new RegExp(I + text,'i'),	//for search in _recordsCache
 			ntip = 0;
-		
-		this._tooltip.innerHTML = '';
 
 		for(var key in this._recordsCache)
 		{
