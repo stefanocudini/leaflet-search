@@ -1,12 +1,12 @@
-. option condition problem {autoCollapse: true, markerLocation: true} not show location, row 141
+. option condition problem {autoCollapse: true, markerLocation: true} not show location, row 142
 
-. option condition problem {autoCollapse:false }, row 142
+. option condition problem {autoCollapse:false }, row 143
 
-. removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!, row 518
+. removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!, row 541
 
-. _handleAutoresize Should resize max search box size when map is resized., row 537
+. _handleAutoresize Should resize max search box size when map is resized., row 560
 
-. implement case insesitive test for _recordsCache keys, row 634
+. if collapse in _handleSubmit hide _markerLoc!, row 621
 
-. autoCollapse option hide this._markerLoc before that visualized!!, row 663
+. autoCollapse option hide this._markerLoc before that visualized!!, row 647
 

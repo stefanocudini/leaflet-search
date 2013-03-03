@@ -1,36 +1,42 @@
-. start L.Control.SearchMarker.animation after setView or panTo, maybe with map.on('moveend')..., row 15
+. start animation after setView or panTo, maybe with map.on('moveend')..., row 16
 
-. add custom icon!		, row 25
+. add custom icon!		, row 26
 
-. refact L.Control.SearchMarker.animate() more smooth! and use bringToFront(), row 81
+. refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF, row 82
 
-. use create event animateEnd in L.Control.SearchMarker , row 103
+. use create event 'animateEnd' in SearchMarker , row 104
 
-. add option searchLoc or searchLat,searchLon for remapping json data fields, row 118
+. add option searchLoc or searchLat,searchLon for remapping json data fields, row 119
 
-. add event callback onFound(latlng), row 119
+. add event callback onFound(latlng), row 120
 
-. add option for persist markerLoc after collapse!, row 131
+. add option for persist markerLoc after collapse!, row 132
 
-. use: throw new Error("my message");on error, row 386
+. add option for case sesitive search, also _showLocation, row 339
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 401
+. pass key and value to _createTip, when _recordsCache support properties, row 361
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 411
+. use: throw new Error("my message");on error, row 393
 
-. implement filter by element type: marker|polyline|circle..., row 412
+. make new method for ajax requestes using XMLHttpRequest, row 396
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 413
+. add rnd param or randomize callback name! in recordsFromJsonp, row 408
 
-. return also marker! in _recordsFromLayer, row 414
+. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 418
 
-. important optimization!!! always append data in this._recordsCache, row 497
+. implement filter by element type: marker|polyline|circle..., row 419
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 500
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 420
 
-. change structure of _recordsCache, row 503
+. return also marker! in _recordsFromLayer, row 421
 
-. refact _handleAutoresize now is not accurate, row 539
+. implements autype without selection(useful for mobile device), row 433
 
-. refact _animateCircle more smooth!, row 608
+. important optimization!!! always append data in this._recordsCache, row 520
+
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 523
+
+. change structure of _recordsCache, row 526
+
+. refact _handleAutoresize now is not accurate, row 562
 

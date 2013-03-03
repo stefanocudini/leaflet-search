@@ -79,7 +79,7 @@ var SearchMarker = L.Marker.extend({
 	},
 
 	animate: function() {
-	//TODO refact animate() more smooth! and use bringToFront()
+	//TODO refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF
 		var circle = this._circleLoc,
 			tInt = 200,	//time interval
 			ss = 10,	//frames
@@ -114,7 +114,7 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
-		layer: null,				//layer where search markers
+		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
 		//TODO add event callback onFound(latlng)
