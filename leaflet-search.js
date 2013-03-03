@@ -8,11 +8,12 @@
  * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
  */
+(function (window, undefined) {//closure for hide SearchMarker
 
-L.Control.SearchMarker = L.Marker.extend({
+var SearchMarker = L.Marker.extend({
 //extended L.Marker for create new type of marker has animated circle around
 //and has new methods: .hide() .show() .setTitle() .animate()
-//TODO start L.Control.SearchMarker.animation after setView or panTo, maybe with map.on('moveend')...
+//TODO start animation after setView or panTo, maybe with map.on('moveend')...
 	includes: L.Mixin.Events,
 	
 	options: {
@@ -78,7 +79,7 @@ L.Control.SearchMarker = L.Marker.extend({
 	},
 
 	animate: function() {
-	//TODO refact L.Control.SearchMarker.animate() more smooth! and use bringToFront()
+	//TODO refact animate() more smooth! and use bringToFront()
 		var circle = this._circleLoc,
 			tInt = 200,	//time interval
 			ss = 10,	//frames
@@ -100,7 +101,7 @@ L.Control.SearchMarker = L.Marker.extend({
 				circle.setRadius(oldrad);//reset radius
 				//if(typeof afterAnimCall == 'function')
 					//afterAnimCall();
-					//TODO use create event animateEnd in L.Control.SearchMarker 
+					//TODO use create event 'animateEnd' in SearchMarker 
 			}
 		}, tInt);
 		
@@ -152,7 +153,7 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
-		this._markerLoc = new L.Control.SearchMarker([0,0],{marker: this.options.markerLocation});
+		this._markerLoc = new SearchMarker([0,0],{marker: this.options.markerLocation});
 		this._layer.addLayer(this._markerLoc);
 		this._layer.addTo(map);
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
@@ -392,7 +393,7 @@ L.Control.Search = L.Control.extend({
 		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
-	
+	//TODO make new method for ajax requestes using XMLHttpRequest
 	_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
 		
 		var that = this;
@@ -648,3 +649,6 @@ L.Control.Search = L.Control.extend({
 			this.collapse();
 	}
 });
+
+}(this));
+
