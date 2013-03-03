@@ -8,7 +8,7 @@
  * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
  */
-(function (window, undefined) {//closure for hide SearchMarker
+(function() {//closure for hide SearchMarker
 
 var SearchMarker = L.Marker.extend({
 //extended L.Marker for create new type of marker has animated circle around
@@ -650,5 +650,5 @@ L.Control.Search = L.Control.extend({
 	}
 });
 
-}(this));
+}).call(this);
 
