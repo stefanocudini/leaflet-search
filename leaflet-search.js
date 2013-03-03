@@ -118,7 +118,7 @@ L.Control.Search = L.Control.extend({
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
 		//TODO add event callback onFound(latlng)
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
-		callTip: null,				//function that return tip html node, receive text tooltip ion first param
+		callTip: null,				//function that return tip html node, receive text tooltip in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
@@ -495,21 +495,18 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_fillRecordsCache: function() {
-	
-		var inputText = this._input.value;
-
 //TODO important optimization!!! always append data in this._recordsCache
 //now _recordsCache content is emptied and replaced with new data founded
 //always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
-		
-		//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-		//run one of callbacks search(searchCall,jsonpUrl or options.layer)
-		//and run this._showTooltip
-
+//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+//run one of callbacks search(searchCall,jsonpUrl or options.layer)
+//and run this._showTooltip
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
 //	in this mode every record can have a free structure of attributes, only 'loc' is required
-//
+	
+		var inputText = this._input.value;
+		
 		L.DomUtil.addClass(this._container, 'search-load');
 
 		if(this.options.searchCall)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
@@ -547,8 +544,8 @@ L.Control.Search = L.Control.extend({
 
 	_handleArrowSelect: function(velocity) {
 	
-		var searchTips = this._tooltip.getElementsByTagName('a');
-		
+		var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
+			
 		for (i=0; i<searchTips.length; i++) {	// Erase all highlighting
 			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
 		}
@@ -666,7 +663,7 @@ L.Control.Search = L.Control.extend({
 			this._markerLoc.show();
 			if(this.options.animateLocation)
 				this._markerLoc.animate();
-			
+			//this.fire("locationfound");
 			//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 			if(this.options.autoCollapse)
 				this.collapse();			
