@@ -83,8 +83,8 @@ L.Control.SearchMarker = L.Marker.extend({
 			tInt = 200,	//time interval
 			ss = 10,	//frames
 			mr = parseInt(circle._radius/ss),
-			oldrad = circle._radius,
-			newrad = circle._radius * 2,
+			oldrad = this.options.radius,
+			newrad = circle._radius * 2.5,
 			acc = 0;
 
 		circle._timerAnimLoc = setInterval(function() {
@@ -97,7 +97,7 @@ L.Control.SearchMarker = L.Marker.extend({
 			if(newrad<oldrad)
 			{
 				clearInterval(circle._timerAnimLoc);
-				circle.setRadius(circle.options.radius);//reset radius
+				circle.setRadius(oldrad);//reset radius
 				//if(typeof afterAnimCall == 'function')
 					//afterAnimCall();
 					//TODO use create event animateEnd in L.Control.SearchMarker 
