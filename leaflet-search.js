@@ -123,7 +123,6 @@ L.Control.Search = L.Control.extend({
 		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
-		//TODO add event callback onFound(latlng)
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
 		callTip: null,				//function that return tip html node, receive text tooltip in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
@@ -192,6 +191,7 @@ L.Control.Search = L.Control.extend({
 		this._layer = layer;
 		this._layer.addTo(this._map);
 		this._layer.addLayer(this._markerLoc);
+		return this;
 	},
 	
 	showAlert: function(text) {
@@ -672,7 +672,7 @@ L.Control.Search = L.Control.extend({
 		this._markerLoc.show();
 		if(this.options.animateLocation)
 			this._markerLoc.animate();
-		//this.fire("locationfound");
+		//this.fire("searchlocationfound",{latlng: latlng});
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 		if(this.options.autoCollapse)
 			this.collapse();
