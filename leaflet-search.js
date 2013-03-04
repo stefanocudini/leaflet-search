@@ -453,7 +453,7 @@ L.Control.Search = L.Control.extend({
 		//TODO return also marker! in _recordsFromLayer
 		
 		this._layer.eachLayer(function(marker) {
-			if(marker.options.hasOwnProperty(propname) && marker.options[propname])
+			if(marker.options.hasOwnProperty(propname))
 				retRecords[ marker.options[propname] ] = marker.getLatLng();
 			else
 				throw new Error("propertyName '"+propname+"' not found in marker");				
