@@ -203,10 +203,12 @@ L.Control.Search = L.Control.extend({
 		this.timerAlert = setTimeout(function() {
 			that.hideAlert();
 		},this.options.autoCollapseTime);
+		return this;
 	},
 	
 	hideAlert: function() {
 		this._alert.style.display = 'none';
+		return this;
 	},
 		
 	cancel: function() {
@@ -215,13 +217,15 @@ L.Control.Search = L.Control.extend({
 		this._input.size = this._inputMinSize;
 		this._input.focus();
 		this._cancel.style.display = 'none';
+		return this;
 	},
 	
 	expand: function() {		
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
-		this._map.on('dragstart', this.collapse, this);		
+		this._map.on('dragstart', this.collapse, this);
+		return this;	
 	},
 
 	collapse: function() {
@@ -233,7 +237,8 @@ L.Control.Search = L.Control.extend({
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		this._markerLoc.hide();
-		this._map.off('dragstart', this.collapse, this);		
+		this._map.off('dragstart', this.collapse, this);
+		return this;			
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
@@ -242,10 +247,12 @@ L.Control.Search = L.Control.extend({
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
 		}, this.options.autoCollapseTime);
+		return this;		
 	},
 
 	collapseDelayedStop: function() {
 		clearTimeout(this.timerCollapse);
+		return this;		
 	},
 
 ////start DOM creations
@@ -363,7 +370,7 @@ L.Control.Search = L.Control.extend({
 			text = text.replace(regFilter,''),	  //sanitize text
 			I = this.options.initial ? '^' : '',  //search only initial text
 			regSearch = new RegExp(I + text,'i'),
-			//TODO add option for case sesitive search, also _showLocation
+			//TODO add option for case sesitive search, also showLocation
 			frecords = {};
 
 		for(var key in this._recordsCache)//use .filter or .map
@@ -640,10 +647,10 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			else
 			{
-				var loc = this.getLocation(this._input.value);
+				var loc = this._getLocation(this._input.value);
 				
 				if(loc)
-					this._showLocation(loc,this._input.value);
+					this.showLocation(loc,this._input.value);
 				else
 					this.showAlert();
 				//this.collapse();
@@ -652,7 +659,7 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 
-	getLocation: function(key) {	//extract latlng from _recordsCache
+	_getLocation: function(key) {	//extract latlng from _recordsCache
 
 		if( this._recordsCache.hasOwnProperty(key) )
 			return this._recordsCache[this._input.value];//then after use .loc attribute
@@ -660,7 +667,7 @@ L.Control.Search = L.Control.extend({
 			return false;
 	},
 
-	_showLocation: function(latlng, title) {	//set location on map from _recordsCache
+	showLocation: function(latlng, title) {	//set location on map from _recordsCache
 			
 		if(this.options.zoom)
 			this._map.setView(latlng, this.options.zoom);
@@ -676,6 +683,7 @@ L.Control.Search = L.Control.extend({
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 		if(this.options.autoCollapse)
 			this.collapse();
+		return this;
 	}
 });
 
