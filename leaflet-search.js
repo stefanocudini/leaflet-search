@@ -229,6 +229,7 @@ L.Control.Search = L.Control.extend({
 		this.cancel();
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
+		this._input.blur();
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		this._markerLoc.hide();
@@ -415,8 +416,9 @@ L.Control.Search = L.Control.extend({
 		{
 			if( jsonraw[i].hasOwnProperty(propname) )
 				jsonret[ jsonraw[i][propname] ]= L.latLng( jsonraw[i].loc );
+			else
+				throw new Error("propertyName '"+propname+"' not found in JSON");
 		}
-		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
 	//TODO make new method for ajax requestes using XMLHttpRequest
@@ -424,7 +426,7 @@ L.Control.Search = L.Control.extend({
 		
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that._filterJSON.apply(that,[data]);//defined in inizialize...
+			var fdata = that._filterJSON.apply(that,[data]);//_filterJSON defined in inizialize...
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
@@ -448,6 +450,8 @@ L.Control.Search = L.Control.extend({
 		this._layer.eachLayer(function(marker) {
 			if(marker.options.hasOwnProperty(propname) && marker.options[propname])
 				retRecords[ marker.options[propname] ] = marker.getLatLng();
+			else
+				throw new Error("propertyName '"+propname+"' not found in marker");				
 		},this);
 		
 		return retRecords;

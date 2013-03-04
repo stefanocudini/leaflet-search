@@ -16,25 +16,23 @@
 
 . pass key and value to _createTip, when _recordsCache support properties, row 387
 
-. use: throw new Error("my message");on error, row 419
+. make new method for ajax requestes using XMLHttpRequest, row 423
 
-. make new method for ajax requestes using XMLHttpRequest, row 422
+. add rnd param or randomize callback name! in recordsFromJsonp, row 435
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 434
+. implement filter by element type: marker|polyline|circle..., row 445
 
-. implement filter by element type: marker|polyline|circle..., row 444
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 446
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 445
+. return also marker! in _recordsFromLayer, row 447
 
-. return also marker! in _recordsFromLayer, row 446
+. implements autype without selection(useful for mobile device), row 459
 
-. implements autype without selection(useful for mobile device), row 458
+. important optimization!!! always append data in this._recordsCache, row 546
 
-. important optimization!!! always append data in this._recordsCache, row 545
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 549
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 548
+. change structure of _recordsCache, row 552
 
-. change structure of _recordsCache, row 551
-
-. refact _handleAutoresize now is not accurate, row 587
+. refact _handleAutoresize now is not accurate, row 588
 
