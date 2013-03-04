@@ -35,9 +35,14 @@ var SearchMarker = L.Marker.extend({
 
 	onAdd: function (map) {
 		L.Marker.prototype.onAdd.call(this, map);
-		this._circleLoc.addTo(map);
+		map.addLayer(this._circleLoc);
 		this.hide();
 	},
+
+	onRemove: function (map) {
+		L.Marker.prototype.onRemove.call(this, map);
+		map.removeLayer(this._circleLoc);
+	},	
 	
 	setLatLng: function (latlng) {
 		L.Marker.prototype.setLatLng.call(this, latlng);
@@ -47,7 +52,8 @@ var SearchMarker = L.Marker.extend({
 	
 	setTitle: function(title) {
 		this.options.title = title;
-		this._icon.title = title;
+		if(this._icon)
+			this._icon.title = title;
 		return this;
 	},
 
@@ -152,24 +158,44 @@ L.Control.Search = L.Control.extend({
 	},
 
 	onAdd: function (map) {
-		this._map = map;
-		this._markerLoc = new SearchMarker([0,0],{marker: this.options.markerLocation});
-		this._layer.addLayer(this._markerLoc);
-		this._layer.addTo(map);
+		this._map = map;		
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._createButton(this.options.text, 'search-button');
-		this._alert = this._createAlert('search-alert');		
+		this._alert = this._createAlert('search-alert');
+		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});
+		this.setLayer( this._layer );
+		this._map
+			.on('layeradd', this._onLayerAddRemove, this)
+		    .on('layerremove', this._onLayerAddRemove, this);				
 		return this._container;
 	},
 
 	onRemove: function(map) {
 		this._recordsCache = {};
+		this._map
+		    .off('layeradd', this._onLayerAddRemove)
+		    .off('layerremove', this._onLayerAddRemove);
+	},
+
+	_onLayerAddRemove: function(e) {
+		//console.info('_onLayerAddRemove');
+		if(e.layer instanceof L.LayerGroup)//without this, run setLayer also for each Markers!! to optimize!
+			if( L.stamp(e.layer) != L.stamp(this._layer) )
+				this.setLayer(e.layer);
+	},
+	
+	setLayer: function(layer) {	//set search layer at runtime
+		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
+		this._layer = layer;
+		this._layer.addTo(this._map);
+		this._layer.addLayer(this._markerLoc);
 	},
 	
 	showAlert: function(text) {
+		text = text || this.options.textErr;
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
 		clearTimeout(this.timerAlert);
@@ -415,7 +441,6 @@ L.Control.Search = L.Control.extend({
 		var retRecords = {},
 			propname = this.options.propertyName;
 		
-		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
 		//TODO implement filter by element type: marker|polyline|circle...
 		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
 		//TODO return also marker! in _recordsFromLayer

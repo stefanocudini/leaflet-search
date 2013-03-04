@@ -2,41 +2,39 @@
 
 . add custom icon!		, row 26
 
-. refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF, row 82
+. refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF, row 88
 
-. use create event 'animateEnd' in SearchMarker , row 104
+. use create event 'animateEnd' in SearchMarker , row 110
 
-. add option searchLoc or searchLat,searchLon for remapping json data fields, row 119
+. add option searchLoc or searchLat,searchLon for remapping json data fields, row 125
 
-. add event callback onFound(latlng), row 120
+. add event callback onFound(latlng), row 126
 
-. add option for persist markerLoc after collapse!, row 132
+. add option for persist markerLoc after collapse!, row 138
 
-. add option for case sesitive search, also _showLocation, row 339
+. add option for case sesitive search, also _showLocation, row 365
 
-. pass key and value to _createTip, when _recordsCache support properties, row 361
+. pass key and value to _createTip, when _recordsCache support properties, row 387
 
-. use: throw new Error("my message");on error, row 393
+. use: throw new Error("my message");on error, row 419
 
-. make new method for ajax requestes using XMLHttpRequest, row 396
+. make new method for ajax requestes using XMLHttpRequest, row 422
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 408
+. add rnd param or randomize callback name! in recordsFromJsonp, row 434
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 418
+. implement filter by element type: marker|polyline|circle..., row 444
 
-. implement filter by element type: marker|polyline|circle..., row 419
+. caching retRecords while layerSearch not change, controlling on 'load' event, row 445
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 420
+. return also marker! in _recordsFromLayer, row 446
 
-. return also marker! in _recordsFromLayer, row 421
+. implements autype without selection(useful for mobile device), row 458
 
-. implements autype without selection(useful for mobile device), row 433
+. important optimization!!! always append data in this._recordsCache, row 545
 
-. important optimization!!! always append data in this._recordsCache, row 520
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 548
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 523
+. change structure of _recordsCache, row 551
 
-. change structure of _recordsCache, row 526
-
-. refact _handleAutoresize now is not accurate, row 562
+. refact _handleAutoresize now is not accurate, row 587
 
