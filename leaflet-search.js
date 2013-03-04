@@ -11,9 +11,7 @@
 (function() {//closure for hide SearchMarker
 
 var SearchMarker = L.Marker.extend({
-//extended L.Marker for create new type of marker has animated circle around
-//and has new methods: .hide() .show() .setTitle() .animate()
-//TODO start animation after setView or panTo, maybe with map.on('moveend')...
+
 	includes: L.Mixin.Events,
 	
 	options: {
@@ -23,7 +21,7 @@ var SearchMarker = L.Marker.extend({
 		stroke: true,
 		fill: false,
 		title: '',
-//TODO add custom icon!		
+		//TODO add custom icon!		
 		marker: false	//show icon optional, show only circleLoc
 	},
 	
@@ -51,6 +49,7 @@ var SearchMarker = L.Marker.extend({
 	},
 	
 	setTitle: function(title) {
+		title = title || '';
 		this.options.title = title;
 		if(this._icon)
 			this._icon.title = title;
@@ -451,7 +450,6 @@ L.Control.Search = L.Control.extend({
 			propname = this.options.propertyName;
 		
 		//TODO implement filter by element type: marker|polyline|circle...
-		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
 		//TODO return also marker! in _recordsFromLayer
 		
 		this._layer.eachLayer(function(marker) {
@@ -650,7 +648,7 @@ L.Control.Search = L.Control.extend({
 				var loc = this._getLocation(this._input.value);
 				
 				if(loc)
-					this.showLocation(loc,this._input.value);
+					this.showLocation(loc);//, this._input.value);
 				else
 					this.showAlert();
 				//this.collapse();
@@ -679,7 +677,10 @@ L.Control.Search = L.Control.extend({
 		this._markerLoc.show();
 		if(this.options.animateLocation)
 			this._markerLoc.animate();
-		//this.fire("searchlocationfound",{latlng: latlng});
+		//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+			
+		this.fire("locationfound", {latlng: latlng, text: title});
+		
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 		if(this.options.autoCollapse)
 			this.collapse();

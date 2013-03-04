@@ -2,11 +2,11 @@
 
 . option condition problem {autoCollapse:false }, row 149
 
-. removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!, row 567
+. removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!, row 577
 
-. _handleAutoresize Should resize max search box size when map is resized., row 586
+. _handleAutoresize Should resize max search box size when map is resized., row 596
 
-. if collapse in _handleSubmit hide _markerLoc!, row 647
+. if collapse in _handleSubmit hide _markerLoc!, row 657
 
-. autoCollapse option hide this._markerLoc before that visualized!!, row 673
+. autoCollapse option hide this._markerLoc before that visualized!!, row 683
 

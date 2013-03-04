@@ -2,37 +2,33 @@
 
 . add custom icon!		, row 26
 
-. refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF, row 88
+. refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF, row 89
 
-. use create event 'animateEnd' in SearchMarker , row 110
+. use create event 'animateEnd' in SearchMarker , row 111
 
-. add option searchLoc or searchLat,searchLon for remapping json data fields, row 125
-
-. add event callback onFound(latlng), row 126
+. add option searchLoc or searchLat,searchLon for remapping json data fields, row 126
 
 . add option for persist markerLoc after collapse!, row 138
 
-. add option for case sesitive search, also _showLocation, row 365
+. add option for case sesitive search, also showLocation, row 374
 
-. pass key and value to _createTip, when _recordsCache support properties, row 387
+. pass key and value to _createTip, when _recordsCache support properties, row 396
 
-. make new method for ajax requestes using XMLHttpRequest, row 423
+. make new method for ajax requestes using XMLHttpRequest, row 432
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 435
+. add rnd param or randomize callback name! in recordsFromJsonp, row 444
 
-. implement filter by element type: marker|polyline|circle..., row 445
+. implement filter by element type: marker|polyline|circle..., row 454
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 446
+. return also marker! in _recordsFromLayer, row 455
 
-. return also marker! in _recordsFromLayer, row 447
+. implements autype without selection(useful for mobile device), row 469
 
-. implements autype without selection(useful for mobile device), row 459
+. important optimization!!! always append data in this._recordsCache, row 556
 
-. important optimization!!! always append data in this._recordsCache, row 546
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 559
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 549
+. change structure of _recordsCache, row 562
 
-. change structure of _recordsCache, row 552
-
-. refact _handleAutoresize now is not accurate, row 588
+. refact _handleAutoresize now is not accurate, row 598
 
