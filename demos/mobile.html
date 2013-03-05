@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="/leaflet/leaflet.css" />
+<link rel="stylesheet" href="../leaflet-search.css" />
+<link rel="stylesheet" href="../style.css" />
+<link rel="stylesheet" href="mobile.css" />
+</head>
+
+<body>
+<h3><a href="../">Leaflet.Control.Search</a> </h3> 
+
+<h4>&nbsp;&nbsp;Mobile example </h4>
+<div id="map"></div>
+
+<div id="post-it">
+<b>Search values:</b><br />
+aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, ...
+</div>
+
+<script src="/leaflet/leaflet.js"></script>
+<script src="../leaflet-search.js"></script>
+<script>
+
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]),zoomControl: false });
+
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	
+	var mobileOpts = {
+		jsonpUrl: 'search.php?q={s}&callback={c}',
+		text:'Color...',
+		tipAutoSubmit: true, minLength: 1, autoType: false,
+		autoCollapse: false, autoCollapseTime: 6000,
+		animateLocation: true,
+		markerLocation: true			
+	};
+	
+	map.addControl( new L.Control.Search(mobileOpts) );
+	//view source of search.php for more details
+	
+	map.addControl(new L.Control.Zoom());
+	
+</script>
+
+<div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>
+</body>
+</html>
