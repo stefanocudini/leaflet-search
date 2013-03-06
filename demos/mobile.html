@@ -31,11 +31,13 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, ...
 	
 	var mobileOpts = {
 		jsonpUrl: 'search.php?q={s}&callback={c}',
-		text:'Color...',
-		tipAutoSubmit: true, minLength: 1, autoType: false,
-		autoCollapse: false, autoCollapseTime: 6000,
+		text: 'Color...',
+		autoType: false,
+		tipAutoSubmit: true,
+		autoCollapse: false,
+		autoCollapseTime: 6000,
 		animateLocation: true,
-		markerLocation: true			
+		markerLocation: true		
 	};
 	
 	map.addControl( new L.Control.Search(mobileOpts) );
@@ -45,6 +47,6 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, ...
 	
 </script>
 
-<div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>
+<div id="copy">by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>
 </body>
 </html>
