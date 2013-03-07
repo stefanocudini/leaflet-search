@@ -84,7 +84,7 @@ var SearchMarker = L.Marker.extend({
 	},
 
 	animate: function() {
-	//TODO refact animate() more smooth! and use bringToFront(), look at: http://goo.gl/IVLjF
+	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
 		var circle = this._circleLoc,
 			tInt = 200,	//time interval
 			ss = 10,	//frames
