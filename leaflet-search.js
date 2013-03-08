@@ -333,11 +333,11 @@ L.Control.Search = L.Control.extend({
 		return tool;
 	},
 
-	_createTip: function(text) {
+	_createTip: function(text, loc) {
 		var tip;
 		
 		if(this.options.callTip)
-			tip = this.options.callTip.call(this, text); //custom tip content
+			tip = this.options.callTip.apply(this, arguments); //custom tip content
 		else
 		{
 			tip = L.DomUtil.create('a', '');
@@ -397,8 +397,7 @@ L.Control.Search = L.Control.extend({
 		for(var key in filteredRecords)//fill tooltip
 		{
 			if(++ntip == this.options.tooltipLimit) break;
-			this._tooltip.appendChild( this._createTip(key) );
-			//TODO pass key and value to _createTip, when _recordsCache support properties
+			this._tooltip.appendChild( this._createTip(key, filteredRecords[key] ) );
 		}
 		
 		if(ntip > 0)
