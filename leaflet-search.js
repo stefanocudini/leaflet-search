@@ -237,7 +237,7 @@ L.Control.Search = L.Control.extend({
 		this._input.blur();
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
-		this._markerLoc.hide();
+		//this._markerLoc.hide();//maybe unuseful
 		this._map.off('dragstart', this.collapse, this);
 		return this;			
 	},
