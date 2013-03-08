@@ -684,6 +684,9 @@ L.Control.Search = L.Control.extend({
 				this._tooltip.scrollTop = tipOffsetTop - 20; // TODO: Calculate total height of section headers and use it instead of "20"
 			}
 		}
+		else {
+			// TODO: Maybe optionally show available autocompletions or list of completions with "frecency" algorithm (frequency + recency) when the user uses down arrow with no text in input field.
+		}
 	},
 
 	_handleSubmit: function() {	//button and tooltip click and enter submit
