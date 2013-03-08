@@ -138,7 +138,7 @@ L.Control.Search = L.Control.extend({
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
-		tipHierarchy: [],
+		tipHierarchy: [], // hierarchy of sections corresponding to keys in the record object (i.e. [ "section", "subsection", "subsubsection" ]). Does not include the tip itself.
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
