@@ -158,18 +158,20 @@ L.Control.Search = L.Control.extend({
 	},
 
 	onAdd: function (map) {
-		this._map = map;		
+		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
-		this._createButton(this.options.text, 'search-button');
+		this._button = this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');
 		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});
 		this.setLayer( this._layer );
 		this._map
 			.on('layeradd', this._onLayerAddRemove, this)
-		    .on('layerremove', this._onLayerAddRemove, this);				
+		    .on('layerremove', this._onLayerAddRemove, this);
+		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
+		//TODO resize _input width map
 		return this._container;
 	},
 
