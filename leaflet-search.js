@@ -11,9 +11,7 @@
 (function() {//closure for hide SearchMarker
 
 var SearchMarker = L.Marker.extend({
-//extended L.Marker for create new type of marker has animated circle around
-//and has new methods: .hide() .show() .setTitle() .animate()
-//TODO start animation after setView or panTo, maybe with map.on('moveend')...
+
 	includes: L.Mixin.Events,
 	
 	options: {
@@ -23,7 +21,7 @@ var SearchMarker = L.Marker.extend({
 		stroke: true,
 		fill: false,
 		title: '',
-//TODO add custom icon!		
+		//TODO add custom icon!		
 		marker: false	//show icon optional, show only circleLoc
 	},
 	
@@ -35,9 +33,14 @@ var SearchMarker = L.Marker.extend({
 
 	onAdd: function (map) {
 		L.Marker.prototype.onAdd.call(this, map);
-		this._circleLoc.addTo(map);
+		map.addLayer(this._circleLoc);
 		this.hide();
 	},
+
+	onRemove: function (map) {
+		L.Marker.prototype.onRemove.call(this, map);
+		map.removeLayer(this._circleLoc);
+	},	
 	
 	setLatLng: function (latlng) {
 		L.Marker.prototype.setLatLng.call(this, latlng);
@@ -46,8 +49,10 @@ var SearchMarker = L.Marker.extend({
 	},
 	
 	setTitle: function(title) {
+		title = title || '';
 		this.options.title = title;
-		this._icon.title = title;
+		if(this._icon)
+			this._icon.title = title;
 		return this;
 	},
 
@@ -79,7 +84,7 @@ var SearchMarker = L.Marker.extend({
 	},
 
 	animate: function() {
-	//TODO refact animate() more smooth! and use bringToFront()
+	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
 		var circle = this._circleLoc,
 			tInt = 200,	//time interval
 			ss = 10,	//frames
@@ -114,10 +119,10 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
-		layer: null,				//layer where search markers
+		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
+		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
-		//TODO add event callback onFound(latlng)
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
 		callTip: null,				//function that return tip html node, receive text tooltip in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
@@ -139,6 +144,7 @@ L.Control.Search = L.Control.extend({
 		textCancel: 'Cancel',		//title in cancel button
 		textErr: 'Location not found',	//error message
 		position: 'topleft'
+		//TODO add option collapsed, like control.layers
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse:false }
@@ -148,29 +154,52 @@ L.Control.Search = L.Control.extend({
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
-		this._delayType = 350;
+		this._delayType = 400;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
 	onAdd: function (map) {
 		this._map = map;
-		this._markerLoc = new SearchMarker([0,0],{marker: this.options.markerLocation});
-		this._layer.addLayer(this._markerLoc);
-		this._layer.addTo(map);
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
-		this._createButton(this.options.text, 'search-button');
-		this._alert = this._createAlert('search-alert');		
+		this._button = this._createButton(this.options.text, 'search-button');
+		this._alert = this._createAlert('search-alert');
+		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});
+		this.setLayer( this._layer );
+		this._map
+			.on('layeradd', this._onLayerAddRemove, this)
+		    .on('layerremove', this._onLayerAddRemove, this);
+		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
+		//TODO resize _input width map
 		return this._container;
 	},
 
 	onRemove: function(map) {
 		this._recordsCache = {};
+		this._map
+		    .off('layeradd', this._onLayerAddRemove)
+		    .off('layerremove', this._onLayerAddRemove);
+	},
+
+	_onLayerAddRemove: function(e) {
+		//console.info('_onLayerAddRemove');
+		if(e.layer instanceof L.LayerGroup)//without this, run setLayer also for each Markers!! to optimize!
+			if( L.stamp(e.layer) != L.stamp(this._layer) )
+				this.setLayer(e.layer);
+	},
+	
+	setLayer: function(layer) {	//set search layer at runtime
+		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
+		this._layer = layer;
+		this._layer.addTo(this._map);
+		this._layer.addLayer(this._markerLoc);
+		return this;
 	},
 	
 	showAlert: function(text) {
+		text = text || this.options.textErr;
 		this._alert.style.display = 'block';
 		this._alert.innerHTML = text;
 		clearTimeout(this.timerAlert);
@@ -178,10 +207,12 @@ L.Control.Search = L.Control.extend({
 		this.timerAlert = setTimeout(function() {
 			that.hideAlert();
 		},this.options.autoCollapseTime);
+		return this;
 	},
 	
 	hideAlert: function() {
 		this._alert.style.display = 'none';
+		return this;
 	},
 		
 	cancel: function() {
@@ -190,13 +221,15 @@ L.Control.Search = L.Control.extend({
 		this._input.size = this._inputMinSize;
 		this._input.focus();
 		this._cancel.style.display = 'none';
+		return this;
 	},
 	
 	expand: function() {		
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
-		this._map.on('dragstart', this.collapse, this);		
+		this._map.on('dragstart', this.collapse, this);
+		return this;	
 	},
 
 	collapse: function() {
@@ -204,10 +237,12 @@ L.Control.Search = L.Control.extend({
 		this.cancel();
 		this._alert.style.display = 'none';
 		this._input.style.display = 'none';
+		this._input.blur();
 		this._cancel.style.display = 'none';
 		L.DomUtil.removeClass(this._container, 'search-exp');		
-		this._markerLoc.hide();
-		this._map.off('dragstart', this.collapse, this);		
+		//this._markerLoc.hide();//maybe unuseful
+		this._map.off('dragstart', this.collapse, this);
+		return this;			
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
@@ -216,10 +251,12 @@ L.Control.Search = L.Control.extend({
 		this.timerCollapse = setTimeout(function() {
 			that.collapse();
 		}, this.options.autoCollapseTime);
+		return this;		
 	},
 
 	collapseDelayedStop: function() {
 		clearTimeout(this.timerCollapse);
+		return this;		
 	},
 
 ////start DOM creations
@@ -299,7 +336,7 @@ L.Control.Search = L.Control.extend({
 		return tool;
 	},
 
-	_createTip: function(text) {
+	_createTip: function(text, loc) {
 		var tip;
 
 		if(this.options.callTip)
@@ -384,7 +421,7 @@ L.Control.Search = L.Control.extend({
 			text = text.replace(regFilter,''),	  //sanitize text
 			I = this.options.initial ? '^' : '',  //search only initial text
 			regSearch = new RegExp(I + text,'i'),
-			//TODO add option for case sesitive search, also _showLocation
+			//TODO add option for case sesitive search, also showLocation
 			frecords = {};
 
 		for(var key in this._recordsCache)//use .filter or .map
@@ -395,10 +432,15 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_showTooltip: function() {
+		var filteredRecords;
+		this._ntip = 0;
 		
-		var filteredRecords = this._filterRecords( this._input.value );
-			this._ntip = 0;
-
+	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
+		if(this.options.layer)
+			filteredRecords = this._filterRecords( this._input.value );
+		else
+			filteredRecords = this._recordsCache;
+			
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
@@ -432,16 +474,17 @@ L.Control.Search = L.Control.extend({
 		{
 			if( jsonraw[i].hasOwnProperty(propname) )
 				jsonret[ jsonraw[i][propname] ]= L.latLng( jsonraw[i].loc );
+			else
+				throw new Error("propertyName '"+propname+"' not found in JSON");
 		}
-		//TODO use: throw new Error("my message");on error
 		return jsonret;
 	},
 	//TODO make new method for ajax requestes using XMLHttpRequest
 	_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
-		
+		//TODO remove script node after call run
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that._filterJSON.apply(that,[data]);//defined in inizialize...
+			var fdata = that._filterJSON.apply(that,[data]);//_filterJSON defined in inizialize...
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
@@ -458,14 +501,14 @@ L.Control.Search = L.Control.extend({
 		var retRecords = {},
 			propname = this.options.propertyName;
 		
-		//TODO bind _recordsFromLayer to map events: layeradd layerremove update ecc
 		//TODO implement filter by element type: marker|polyline|circle...
-		//TODO caching retRecords while layerSearch not change, controlling on 'load' event
 		//TODO return also marker! in _recordsFromLayer
 		
 		this._layer.eachLayer(function(marker) {
-			if(marker.options.hasOwnProperty(propname) && marker.options[propname])
+			if(marker.options.hasOwnProperty(propname))
 				retRecords[ marker.options[propname] ] = marker.getLatLng();
+			else
+				throw new Error("propertyName '"+propname+"' not found in marker");				
 		},this);
 		
 		return retRecords;
@@ -475,12 +518,13 @@ L.Control.Search = L.Control.extend({
 		
 		//TODO implements autype without selection(useful for mobile device)
 		
+		//console.log(this._tooltip.firstChild,this._tooltip.getElementsByClassName('search-tip')[0].text);
 		var start = this._input.value.length,
 			//firstRecord = this._tooltip.firstChild._text,
-			firstRecord = this._tooltip.getElementsByClassName('search-tip')[0],
+			firstRecord = this._tooltip.getElementsByClassName('search-tip')[0].text,
 			end = firstRecord.length;
 			
-		this._input.value = firstRecord.text;
+		this._input.value = firstRecord;
 		this._handleAutoresize();
 		
 		if (this._input.createTextRange) {
@@ -609,6 +653,8 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_handleArrowSelect: function(velocity) {
+	
+		//var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
 		var searchTips = this._tooltip.getElementsByClassName('search-tip');
 			
 		for (i=0; i<searchTips.length; i++)
@@ -625,6 +671,7 @@ L.Control.Search = L.Control.extend({
 			
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
 			
+			//this._input.value = searchTips[this._tooltip.currentSelection]._text;
 			this._input.value = this._tooltip.getElementsByClassName('search-tip-select')[0].text;
 
 			// scroll:
@@ -654,10 +701,10 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			else
 			{
-				var loc = this.getLocation(this._input.value);
+				var loc = this._getLocation(this._input.value);
 				
 				if(loc)
-					this._showLocation(loc,this._input.value);
+					this.showLocation(loc);//, this._input.value);
 				else
 					this.showAlert();
 				//this.collapse();
@@ -666,7 +713,7 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 
-	getLocation: function(key) {	//extract latlng from _recordsCache
+	_getLocation: function(key) {	//extract latlng from _recordsCache
 
 		if( this._recordsCache.hasOwnProperty(key) )
 			return this._recordsCache[this._input.value];//then after use .loc attribute
@@ -674,7 +721,7 @@ L.Control.Search = L.Control.extend({
 			return false;
 	},
 
-	_showLocation: function(latlng, title) {	//set location on map from _recordsCache
+	showLocation: function(latlng, title) {	//set location on map from _recordsCache
 			
 		if(this.options.zoom)
 			this._map.setView(latlng, this.options.zoom);
@@ -686,10 +733,14 @@ L.Control.Search = L.Control.extend({
 		this._markerLoc.show();
 		if(this.options.animateLocation)
 			this._markerLoc.animate();
-		//this.fire("locationfound");
+		//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+		
+		this.fire("locationfound", {latlng: latlng, text: title});
+		
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 		if(this.options.autoCollapse)
 			this.collapse();
+		return this;
 	}
 });
 

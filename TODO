@@ -1,36 +1,36 @@
-. start L.Control.SearchMarker.animation after setView or panTo, maybe with map.on('moveend')..., row 15
+. add custom icon!		, row 24
 
-. add custom icon!		, row 25
+. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 87
 
-. refact L.Control.SearchMarker.animate() more smooth! and use bringToFront(), row 81
+. use create event 'animateEnd' in SearchMarker , row 109
 
-. use create event animateEnd in L.Control.SearchMarker , row 103
+. add option searchLoc or searchLat,searchLon for remapping json data fields, row 124
 
-. add option searchLoc or searchLat,searchLon for remapping json data fields, row 118
+. add option for persist markerLoc after collapse!, row 136
 
-. add event callback onFound(latlng), row 119
+. add option collapsed, like control.layers, row 145
 
-. add option for persist markerLoc after collapse!, row 131
+. add option for case sesitive search, also showLocation, row 373
 
-. use: throw new Error("my message");on error, row 386
+. pass key and value to _createTip, when _recordsCache support properties, row 395
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 401
+. make new method for ajax requestes using XMLHttpRequest, row 431
 
-. bind _recordsFromLayer to map events: layeradd layerremove update ecc, row 411
+. add rnd param or randomize callback name! in recordsFromJsonp, row 443
 
-. implement filter by element type: marker|polyline|circle..., row 412
+. implement filter by element type: marker|polyline|circle..., row 453
 
-. caching retRecords while layerSearch not change, controlling on 'load' event, row 413
+. return also marker! in _recordsFromLayer, row 454
 
-. return also marker! in _recordsFromLayer, row 414
+. implements autype without selection(useful for mobile device), row 468
 
-. important optimization!!! always append data in this._recordsCache, row 497
+. important optimization!!! always append data in this._recordsCache, row 555
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 500
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 558
 
-. change structure of _recordsCache, row 503
+. change structure of _recordsCache, row 561
 
-. refact _handleAutoresize now is not accurate, row 539
+. refact _handleAutoresize now is not accurate, row 597
 
-. refact _animateCircle more smooth!, row 608
+. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 681
 
