@@ -138,7 +138,7 @@ L.Control.Search = L.Control.extend({
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
-		tipHierarchy: ["key"],
+		tipHierarchy: [],
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
@@ -340,7 +340,7 @@ L.Control.Search = L.Control.extend({
 		var tip;
 
 		if(this.options.callTip)
-			tip = this.options.callTip.call(this, this._recordsCache[text]); //custom tip content
+			tip = this.options.callTip.call(this,this._recordsCache[text],text); //custom tip content
 		else
 		{
 			tip = L.DomUtil.create('a', '');
@@ -367,7 +367,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 //////end DOM creations
-	_groupBy: function( records, tipHierarchy ) {
+	_groupBy: function( records ) {
 		var groups = {},
 		group,
 		values,
@@ -375,21 +375,22 @@ L.Control.Search = L.Control.extend({
 		j,
 		key;
 
-		if( !tipHierarchy ) { return records; } // TODO: If hierarchy is not defined or is of length 1, just return flat json with no section.
+		if( !this.options.tipHierarchy ) { return records; } // TODO: If hierarchy is not defined or is of length 1, just return flat json with no section.
 		for ( var key in records ) {
 				values = [];
-				i = tipHierarchy.length;
+				i = 0;
 
-			while (--i >= 0) {
-				values.push(records[key][this.options.tipHierarchy[i]]);
+			while (i < this.options.tipHierarchy.length) {
+				values.push(records[key][this.options.tipHierarchy[i++]]);
 			}
+			values.push(key);
 			// group
 			group = groups;
 			for( j = 0; j < values.length; j++ ) { // Vertical search. # of sections
 				key = values[j];
 				group = ( group[key] || ( group[key] = j === values.length - 1 && [] || {} ) );
 			}
-			// for the last group, push the actual record onto the array
+			// For the last group, push the actual record.
 			group = ( group instanceof Array && group || [] ).push( records[key] );
 		}
 
@@ -444,7 +445,7 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
-		var groups = this._groupBy( filteredRecords, this.options.tipHierarchy );
+		var groups = this._groupBy( filteredRecords );
 		this._tooltip.appendChild(this._toTree(groups));
 		
 		if(this._ntip > 0)
@@ -518,7 +519,6 @@ L.Control.Search = L.Control.extend({
 		
 		//TODO implements autype without selection(useful for mobile device)
 		
-		//console.log(this._tooltip.firstChild,this._tooltip.getElementsByClassName('search-tip')[0].text);
 		var start = this._input.value.length,
 			//firstRecord = this._tooltip.firstChild._text,
 			firstRecord = this._tooltip.getElementsByClassName('search-tip')[0].text,
