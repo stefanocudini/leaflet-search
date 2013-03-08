@@ -11,7 +11,7 @@
 <body>
 <h3><a href="../">Leaflet.Control.Search</a></h3>
 
-<h4>Multi-Section Tooltip Example: <em>display results under headers by type of geographic feature.</em></h4>
+<h4>Multi-Section Tooltip Example: <em>display results under sections by type of geographic feature.</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
@@ -20,6 +20,8 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 <small><a href="http://open.mapquestapi.com/nominatim/">open.mapquestapi.com</a></small>
 </div>
 
+<div id="jsonresp">native JSON</div>
+
 <script src="/leaflet/leaflet.js"></script>
 <script src="../leaflet-search.js"></script>
 <script>
@@ -27,27 +29,56 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 	
-	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?json_callback={c}&q={s}&format=json&osm_type=N&limit=100';
+	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?json_callback={c}&q={s}'+
+				   '&format=json&osm_type=N&limit=100&addressdetails=0';
 	//third party jsonp service	
 
-	function filter(rawjson) {	//callback that remap fields name
-		var json = {},
-			key, loc, section;
+	function customTip(record)
+	{
+		var tip = L.DomUtil.create('a', 'colortip');
+
+		tip.href = "#"+record.key;
+		tip.innerHTML = "<img src=" + record.icon + ">" + record.key;
 		
-		for(var i in rawjson)
-		{
-			key = rawjson[i].display_name;	//search key
+		return tip;
+	}
+
+
+	function filterJSONCall(rawjson) {	//callback that remap fields name
+		var json = {},
+			key, loc, disp = [];
+
+		for(var i in rawjson) {
+			disp = rawjson[i].display_name.split(',');
+
+			key = disp[0] +', '+ disp[1];
+
 			loc = L.latLng( rawjson[i].lat, rawjson[i].lon );
-			section = rawjson[i].class;
+
 			json[ key ]= loc;	//key,value format
-			json[key].section = section;	//search key
-			//json[key].formatted = key + ' -- <b>' + section + '</b>';
+
+			json[ key ].section = rawjson[i].type; //tip category
+			json[ key ].key = key; //tip text
+			json[ key ].icon = rawjson[i].icon; //tip icon
 		}
-	
+
 		return json;
 	}
 
-	map.addControl( new L.Control.Search({searchJsonpUrl: jsonpurl, searchJsonpFilter: filter, searchLimit: 5 }) ); // TODO: pass hierarchy array here..or somewhere.
+	var searchOpts = {
+			jsonpUrl: jsonpurl,
+			filterJSON: filterJSONCall,
+			animateLocation: false,
+			markerLocation: true,
+			zoom: 10,
+			minLength: 2,
+			autoType: true,
+			tipHierarchy: [ "key", "section" ],
+			callTip: customTip,
+			tooltipLimit: 5
+		};
+
+	map.addControl( new L.Control.Search(searchOpts) );
 
 </script>
 
