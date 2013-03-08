@@ -121,6 +121,7 @@ L.Control.Search = L.Control.extend({
 	options: {
 		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
+		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
 		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
 		callTip: null,				//function that return tip html node, receive text tooltip in first param
@@ -152,7 +153,7 @@ L.Control.Search = L.Control.extend({
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
-		this._delayType = 350;
+		this._delayType = 400;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
@@ -381,10 +382,15 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_showTooltip: function() {
-		
-		var filteredRecords = this._filterRecords( this._input.value );
+		var filteredRecords,
 			ntip = 0;
-
+		
+	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
+		if(this.options.layer)
+			filteredRecords = this._filterRecords( this._input.value );
+		else
+			filteredRecords = this._recordsCache;
+			
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
@@ -430,7 +436,7 @@ L.Control.Search = L.Control.extend({
 	},
 	//TODO make new method for ajax requestes using XMLHttpRequest
 	_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
-		
+		//TODO remove script node after call run
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
 			var fdata = that._filterJSON.apply(that,[data]);//_filterJSON defined in inizialize...
@@ -679,7 +685,7 @@ L.Control.Search = L.Control.extend({
 		if(this.options.animateLocation)
 			this._markerLoc.animate();
 		//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-			
+		
 		this.fire("locationfound", {latlng: latlng, text: title});
 		
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
