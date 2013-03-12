@@ -1,119 +1,17 @@
 /*
  * Leaflet Search Control 1.3.5
+ * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
+ * Licensed under the MIT license.
+ *
+ * Demo:
  * http://labs.easyblog.it/maps/leaflet-search
  *
+ * Repositories:
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search
  *
- * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
- * Licensed under the MIT license.
  */
-(function() {//closure for hide SearchMarker
-
-var SearchMarker = L.Marker.extend({
-
-	includes: L.Mixin.Events,
-	
-	options: {
-		radius: 10,
-		weight: 3,
-		color: '#e03',
-		stroke: true,
-		fill: false,
-		title: '',
-		//TODO add custom icon!		
-		marker: false	//show icon optional, show only circleLoc
-	},
-	
-	initialize: function (latlng, options) {
-		L.setOptions(this, options);
-		L.Marker.prototype.initialize.call(this, latlng, options);
-		this._circleLoc = new L.CircleMarker(latlng, this.options);
-	},
-
-	onAdd: function (map) {
-		L.Marker.prototype.onAdd.call(this, map);
-		map.addLayer(this._circleLoc);
-		this.hide();
-	},
-
-	onRemove: function (map) {
-		L.Marker.prototype.onRemove.call(this, map);
-		map.removeLayer(this._circleLoc);
-	},	
-	
-	setLatLng: function (latlng) {
-		L.Marker.prototype.setLatLng.call(this, latlng);
-		this._circleLoc.setLatLng(latlng);
-		return this;
-	},
-	
-	setTitle: function(title) {
-		title = title || '';
-		this.options.title = title;
-		if(this._icon)
-			this._icon.title = title;
-		return this;
-	},
-
-	show: function() {
-		if(this.options.marker)
-		{
-			if(this._icon)
-				this._icon.style.display = 'block';
-			if(this._shadow)
-				this._shadow.style.display = 'block';
-			//this._bringToFront();
-		}
-		if(this._circleLoc)
-		{
-			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
-			//this._circleLoc.bringToFront();
-		}
-		return this;
-	},
-
-	hide: function() {
-		if(this._icon)
-			this._icon.style.display = 'none';
-		if(this._shadow)
-			this._shadow.style.display = 'none';
-		if(this._circleLoc)			
-			this._circleLoc.setStyle({fill: false, stroke: false});
-		return this;
-	},
-
-	animate: function() {
-	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-		var circle = this._circleLoc,
-			tInt = 200,	//time interval
-			ss = 10,	//frames
-			mr = parseInt(circle._radius/ss),
-			oldrad = this.options.radius,
-			newrad = circle._radius * 2.5,
-			acc = 0;
-
-		circle._timerAnimLoc = setInterval(function() {
-			acc += 0.5;
-			mr += acc;	//adding acceleration
-			newrad -= mr;
-			
-			circle.setRadius(newrad);
-
-			if(newrad<oldrad)
-			{
-				clearInterval(circle._timerAnimLoc);
-				circle.setRadius(oldrad);//reset radius
-				//if(typeof afterAnimCall == 'function')
-					//afterAnimCall();
-					//TODO use create event 'animateEnd' in SearchMarker 
-			}
-		}, tInt);
-		
-		return this;
-	 }
-});
-
+(function() {
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
@@ -122,7 +20,7 @@ L.Control.Search = L.Control.extend({
 		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
-		//TODO add option searchLoc or searchLat,searchLon for remapping json data fields
+		//TODO add option propertyLoc or propertyLat,propertyLon for remapping json data fields
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
 		callTip: null,				//function that return tip html node, receive text tooltip in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
@@ -165,7 +63,7 @@ L.Control.Search = L.Control.extend({
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._button = this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');
-		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});
+		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
 		this.setLayer( this._layer );
 		this._map
 			.on('layeradd', this._onLayerAddRemove, this)
@@ -694,6 +592,117 @@ L.Control.Search = L.Control.extend({
 			this.collapse();
 		return this;
 	}
+});
+
+var SearchMarker = L.Marker.extend({
+
+	includes: L.Mixin.Events,
+	
+	options: {
+		radius: 10,
+		weight: 3,
+		color: '#e03',
+		stroke: true,
+		fill: false,
+		title: '',
+		//TODO add custom icon!	
+		marker: false	//show icon optional, show only circleLoc
+	},
+	
+	initialize: function (latlng, options) {
+		L.setOptions(this, options);
+		L.Marker.prototype.initialize.call(this, latlng, options);
+		this._circleLoc = new L.CircleMarker(latlng, this.options);
+	},
+
+	onAdd: function (map) {
+		L.Marker.prototype.onAdd.call(this, map);
+		map.addLayer(this._circleLoc);
+		this.hide();
+	},
+
+	onRemove: function (map) {
+		L.Marker.prototype.onRemove.call(this, map);
+		map.removeLayer(this._circleLoc);
+	},	
+	
+	setLatLng: function (latlng) {
+		L.Marker.prototype.setLatLng.call(this, latlng);
+		this._circleLoc.setLatLng(latlng);
+		return this;
+	},
+	
+	setTitle: function(title) {
+		title = title || '';
+		this.options.title = title;
+		if(this._icon)
+			this._icon.title = title;
+		return this;
+	},
+
+	show: function() {
+		if(this.options.marker)
+		{
+			if(this._icon)
+				this._icon.style.display = 'block';
+			if(this._shadow)
+				this._shadow.style.display = 'block';
+			//this._bringToFront();
+		}
+		if(this._circleLoc)
+		{
+			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
+			//this._circleLoc.bringToFront();
+		}
+		return this;
+	},
+
+	hide: function() {
+		if(this._icon)
+			this._icon.style.display = 'none';
+		if(this._shadow)
+			this._shadow.style.display = 'none';
+		if(this._circleLoc)			
+			this._circleLoc.setStyle({fill: false, stroke: false});
+		return this;
+	},
+
+	animate: function() {
+	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+		var circle = this._circleLoc,
+			tInt = 200,	//time interval
+			ss = 10,	//frames
+			mr = parseInt(circle._radius/ss),
+			oldrad = this.options.radius,
+			newrad = circle._radius * 2.5,
+			acc = 0;
+
+		circle._timerAnimLoc = setInterval(function() {
+			acc += 0.5;
+			mr += acc;	//adding acceleration
+			newrad -= mr;
+			
+			circle.setRadius(newrad);
+
+			if(newrad<oldrad)
+			{
+				clearInterval(circle._timerAnimLoc);
+				circle.setRadius(oldrad);//reset radius
+				//if(typeof afterAnimCall == 'function')
+					//afterAnimCall();
+					//TODO use create event 'animateEnd' in SearchMarker 
+			}
+		}, tInt);
+		
+		return this;
+	 }
+});
+
+L.Map.addInitHook(function () {
+    if (this.options.searchControl) {
+        this.searchControl = L.control.search();
+        this.addControl(this.searchControl);
+    }
 });
 
 L.control.search = function (options) {
