@@ -15,7 +15,11 @@
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
-	
+	//
+	//Managed Events:
+	//	Event			Data passed			Description
+	//	locationfound	{latlng, title}		fired after moved and show markerLocation
+	//
 	options: {
 		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
@@ -43,6 +47,7 @@ L.Control.Search = L.Control.extend({
 		position: 'topleft'
 		//TODO add option collapsed, like control.layers
 	},
+	
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse:false }
 	initialize: function(options) {
@@ -139,7 +144,7 @@ L.Control.Search = L.Control.extend({
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		//this._markerLoc.hide();//maybe unuseful
 		this._map.off('dragstart', this.collapse, this);
-		return this;			
+		return this;
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
@@ -613,6 +618,7 @@ var SearchMarker = L.Marker.extend({
 		L.setOptions(this, options);
 		L.Marker.prototype.initialize.call(this, latlng, options);
 		this._circleLoc = new L.CircleMarker(latlng, this.options);
+		//TODO add inner circle
 	},
 
 	onAdd: function (map) {
