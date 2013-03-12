@@ -171,7 +171,7 @@ L.Control.Search = L.Control.extend({
 			.on('layeradd', this._onLayerAddRemove, this)
 		    .on('layerremove', this._onLayerAddRemove, this);
 		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
-		//TODO resize _input width map
+		//TODO resize _input on map resize
 		return this._container;
 	},
 
