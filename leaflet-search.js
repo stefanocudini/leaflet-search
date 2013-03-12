@@ -696,5 +696,9 @@ L.Control.Search = L.Control.extend({
 	}
 });
 
+L.control.search = function (options) {
+    return new L.Control.Search(options);
+};
+
 }).call(this);
 
