@@ -26,12 +26,14 @@ L.Control.Search = L.Control.extend({
 		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
 		//TODO add option propertyLoc or propertyLat,propertyLon for remapping json data fields
 		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
+		//TODO rename to sourceCall
 		callTip: null,				//function that return tip html node, receive text tooltip in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
 		autoType: true,				//complete input with first suggested result and select this filled-in text.
+		delayType: 400,				//delay while typing for show tooltip
 		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
@@ -56,7 +58,6 @@ L.Control.Search = L.Control.extend({
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
-		this._delayType = 400;
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
@@ -238,7 +239,7 @@ L.Control.Search = L.Control.extend({
 		return tool;
 	},
 
-	_createTip: function(text, loc) {
+	_createTip: function(text, val) {//val is object in recordCache, usually is Latlng
 		var tip;
 		
 		if(this.options.callTip)
@@ -454,7 +455,7 @@ L.Control.Search = L.Control.extend({
 
 						that._fillRecordsCache();
 					
-					}, this._delayType);
+					}, this.options.delayType);
 				}
 				else
 					this._hideTooltip();
