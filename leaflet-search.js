@@ -348,14 +348,41 @@ L.Control.Search = L.Control.extend({
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
-			url = L.Util.template(this.options.jsonpUrl, {s: text, c:"L.Control.Search.callJsonp"});
-			//parsing url
+			url = L.Util.template(this.options.jsonpUrl, {s: text, c:"L.Control.Search.callJsonp"}); //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 		script.type = 'text/javascript';
 		script.src = url;
 		return this;
 	},
+
+	_recordsFromAjax: function(text, callAfter) {	//Ajax request
+		if (window.XMLHttpRequest === undefined) {
+			window.XMLHttpRequest = function() {
+				try { return new ActiveXObject("Microsoft.XMLHTTP.6.0"); }
+				catch  (e1) {
+					try { return new ActiveXObject("Microsoft.XMLHTTP.3.0"); }
+					catch (e2) { throw new Error("XMLHttpRequest is not supported"); }
+				}
+			};
+		}
+		var request = new XMLHttpRequest(),
+			url = L.Util.template(this.options.ajaxUrl, {s: text}), //parsing url
+			response = {};
+
+		request.open("GET", url);
+		request.onreadystatechange = function() {
+		    if (request.readyState === 4 && request.status === 200) {
+		    	if(window.JSON)
+		            response = JSON.parse(request.responseText);
+		    	else
+		    		response = eval("("+ request.responseText + ")");
+		        callAfter(response);
+		    }
+		};
+		request.send();
+		return this;   
+	},	
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
