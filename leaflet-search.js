@@ -25,8 +25,7 @@ L.Control.Search = L.Control.extend({
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
 		//TODO add option propertyLoc or propertyLat,propertyLon for remapping json data fields
-		searchCall: null,			//function that fill _recordsCache, receive searching text in first param
-		//TODO rename to sourceCall
+		callData: null,				//function that fill _recordsCache, passed searching text by first param
 		callTip: null,				//function that return tip html node, receive text tooltip in first param
 		jsonpUrl: '',				//url for search by jsonp service, ex: "search.php?q={s}&callback={c}"
 		filterJSON: null,			//callback for filtering data to _recordsCache
@@ -52,6 +51,7 @@ L.Control.Search = L.Control.extend({
 	
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse:false }
+//TODO maybe hide location on map dragend!
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
@@ -467,7 +467,7 @@ L.Control.Search = L.Control.extend({
 //now _recordsCache content is emptied and replaced with new data founded
 //always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-//run one of callbacks search(searchCall,jsonpUrl or options.layer)
+//run one of callbacks search(callData,jsonpUrl or options.layer)
 //and run this._showTooltip
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
@@ -477,14 +477,14 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomUtil.addClass(this._container, 'search-load');
 
-		if(this.options.searchCall)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
+		if(this.options.callData)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			this._recordsCache = this.options.searchCall.apply(this, [inputText] );
+			this._recordsCache = this.options.callData.apply(this, [inputText] );
 
 			this._showTooltip();
 
 			L.DomUtil.removeClass(this._container, 'search-load');
-			//FIXME removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!
+			//FIXME removeClass .search-load apparently executed before callData!! A BIG MYSTERY!
 		}
 		else if(this.options.jsonpUrl)	//JSONP SERVICE REQUESTING
 		{

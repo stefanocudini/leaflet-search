@@ -84,7 +84,7 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
-<h4>searchCall AJAX</h4>
+<h4>callData AJAX</h4>
 <div id="map_ajax" class="maptest"></div>
 <script>
 
@@ -115,7 +115,7 @@ h4 {
 		return results;
 	}
 
-	map.addControl( new L.Control.Search({searchCall: searchByAjax, text:'Color...', markerLocation: true}) );
+	map.addControl( new L.Control.Search({callData: searchByAjax, text:'Color...', markerLocation: true}) );
 
 </script>
 </div>
@@ -181,7 +181,7 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
-<h4>searchCall ajax bulk, Cities</h4>
+<h4>callData ajax bulk, Cities</h4>
 <div id="map_ajaxbulk" class="maptest"></div>
 <script>
 
@@ -212,7 +212,7 @@ h4 {
 		return results;
 	}
 
-	map.addControl( new L.Control.Search({ searchCall: searchByAjax, text:'City name...', markerLocation: true }) );
+	map.addControl( new L.Control.Search({ callData: searchByAjax, text:'City name...', markerLocation: true }) );
 
 </script>
 </div>

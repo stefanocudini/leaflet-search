@@ -2,7 +2,7 @@
 
 . option condition problem {autoCollapse:false }, row 148
 
-. removeClass .search-load apparently executed before searchCall!! A BIG MYSTERY!, row 576
+. removeClass .search-load apparently executed before callData!! A BIG MYSTERY!, row 576
 
 . _handleAutoresize Should resize max search box size when map is resized., row 595
 
