@@ -11,7 +11,7 @@
 <body>
 <h3><a href="../">Leaflet.Control.Search</a></h3>
 
-<h4>Bulk Data Example(Ajax by jQuery): <em>search locations by City name</em></h4>
+<h4>Bulk Data Example: <em>search locations by City name</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
@@ -21,7 +21,6 @@ Cities having more than 15000 inhabitants<br />
 </small>
 </div>
 
-<script src="/js/jquery-1.7.2.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
 <script src="../leaflet-search.js"></script>
 <script>
@@ -30,30 +29,7 @@ Cities having more than 15000 inhabitants<br />
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	function searchByAjax(text) {	//definition of callback for syncronous ajax serching
-
-		var resultsraw = {},
-			results = {};
-	
-		$.ajax({
-			url: 'search.php',	//read comments in search.php for more information usage
-			async: false,		//must be syncronous request! or not return ajax results
-			type: 'GET',
-			data: {q : text, cities: 1},
-			dataType: 'json',
-			success: function(json) {
-				if(json)
-					resultsraw = json;
-			}
-		});
-	
-		for(i in resultsraw)	//reformatting results in key,value
-			results[ resultsraw[i].title ] = resultsraw[i].loc;
-
-		return results;
-	}
-
-	map.addControl( new L.Control.Search({ callData: searchByAjax, text:'City name...', markerLocation: true }) );
+	map.addControl( new L.Control.Search({ url: 'search.php?cities=1&q={s}', text:'City name...', markerLocation: true }) );
 
 </script>
 

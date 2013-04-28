@@ -6,7 +6,7 @@ What ?
 
 A leaflet control that search markers location by property, with ajax/jsonp autocomplete feature
 
-Tested in Leaflet 0.5
+Tested in Leaflet 0.5.1
 
 
 How ?

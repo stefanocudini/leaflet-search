@@ -43,16 +43,17 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 	
-	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?json_callback={c}&q={s}'+
-				   '&format=json&osm_type=N&limit=100&addressdetails=0';
+	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?q={s}'+
+				   '&format=json&osm_type=N&limit=100&addressdetails=0',
+		jsonpName = 'json_callback';
 	//third party jsonp service	
 
 	function filterJSONCall(rawjson) {	//callback that remap fields name
 		var json = {},
 			key, loc, disp = [];
-			
+
 		for(var i in rawjson)
-		{	
+		{
 			disp = rawjson[i].display_name.split(',');	
 
 			key = disp[0] +', '+ disp[1];
@@ -66,7 +67,8 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 	}
 	
 	var searchOpts = {
-			jsonpUrl: jsonpurl,
+			url: jsonpurl,
+			jsonpParam: jsonpName,
 			filterJSON: filterJSONCall,
 			animateLocation: false,
 			markerLocation: true,

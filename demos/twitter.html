@@ -71,7 +71,8 @@
 	}
 	
 	var searchOpts = {
-			jsonpUrl: 'http://search.twitter.com/search.json?callback={c}&q={s}',
+			url: 'http://search.twitter.com/search.json?q={s}',
+			jsonpParam: 'callback',
 			filterJSON: filterJSON,
 			callTip: makeTip,
 			animateLocation: true,

@@ -29,8 +29,9 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?json_callback={c}&q={s}'+
-				   '&format=json&osm_type=N&limit=100&addressdetails=0';
+	var jsonpurl = 'http://open.mapquestapi.com/nominatim/v1/search.php?q={s}'+
+				   '&format=json&osm_type=N&limit=100&addressdetails=0',
+		jsonpName = 'json_callback';
 	//third party jsonp service
 	
 	function filterJSONCall(rawjson) {	//callback that remap fields name
@@ -52,7 +53,8 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 	}
 			
 	var mobileOpts = {
-		jsonpUrl: jsonpurl,
+		url: jsonpurl,
+		jsonpParam: jsonpName,
 		filterJSON: filterJSONCall,		
 		text: 'Color...',
 		autoType: false,
