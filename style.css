@@ -18,6 +18,10 @@ h2, h3, h4 {
 	white-space:nowrap;
 	margin:1em 0 0 0;
 }
+h3 a,
+h3 a:hover {
+	text-decoration:none;
+}
 #desc {
 	white-space:nowrap;
 	font-size:1em;
