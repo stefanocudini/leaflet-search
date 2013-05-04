@@ -30,9 +30,12 @@ Where ?
 ------
 
 Source code:
+
 	https://github.com/stefanocudini/leaflet-search
+
 	https://bitbucket.org/zakis_/leaflet-search
 
 Demos:
+
 	http://labs.easyblog.it/maps/leaflet-search/
 

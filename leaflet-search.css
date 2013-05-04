@@ -1,12 +1,15 @@
 /*
  * Leaflet Search Control 1.4.0
+ * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
+ * Licensed under the MIT license.
+ *
+ * Demo:
  * http://labs.easyblog.it/maps/leaflet-search
  *
+ * Repositories:
  * https://github.com/stefanocudini/leaflet-search
  * https://bitbucket.org/zakis_/leaflet-search
  *
- * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
- * Licensed under the MIT license.
  */
  
 .leaflet-container .leaflet-control-search {
