@@ -21,13 +21,13 @@ L.Control.Search = L.Control.extend({
 	//	search_locationfound	{latlng, title}		fired after moved and show markerLocation
 	//
 	options: {
-		layer: null,				//layer where search markers(is a L.LayerGroup)
+		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
+		layer: null,				//layer where search markers(is a L.LayerGroup)		
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
-		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
 		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
+		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"
 		callData: null,				//function that fill _recordsCache, passed searching text by first param
 		callTip: null,				//function that return row tip html node, receive text tooltip in first param
-		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
@@ -46,7 +46,7 @@ L.Control.Search = L.Control.extend({
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
 		textErr: 'Location not found',	//error message
-		position: 'topleft'
+		position: 'topleft',
 		//TODO add option collapsed, like control.layers
 	},
 	
@@ -405,10 +405,14 @@ L.Control.Search = L.Control.extend({
 		//TODO return also marker! in _recordsFromLayer
 		
 		this._layer.eachLayer(function(marker) {
-			if(marker.options.hasOwnProperty(propName))
+
+			//TODO write support for GeoJson Layer features
+		
+			if(marker.hasOwnProperty('options') && marker.options.hasOwnProperty(propName))
 				retRecords[ marker.options[propName] ] = marker.getLatLng();
+				//TODO for GeoJSON not using: getLatLng()
 			else
-				throw new Error("propertyName '"+propName+"' not found in marker");				
+				console.log("propertyName '"+propName+"' not found in marker");				
 		},this);
 		
 		return retRecords;

@@ -1,4 +1,4 @@
-. implement sub property filter for propertyName option like this value:  "pro1.subprop.title", row 26
+. implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title", row 28
 
 . add option for persist markerLoc after collapse!, row 41
 
@@ -26,23 +26,27 @@
 
 . return also marker! in _recordsFromLayer, row 405
 
-. implements autype without selection(useful for mobile device), row 419
+. write support for GeoJson Layer features, row 409
 
-. important optimization!!! always append data in this._recordsCache, row 506
+. for GeoJSON not using: getLatLng(), row 413
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 509
+. implements autype without selection(useful for mobile device), row 423
 
-. change structure of _recordsCache, row 512
+. important optimization!!! always append data in this._recordsCache, row 510
 
-. refact _handleAutoresize now is not accurate, row 560
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 513
 
-. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 644
+. change structure of _recordsCache, row 516
 
-. add custom icon!	, row 666
+. refact _handleAutoresize now is not accurate, row 564
 
-. add inner circle, row 674
+. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 648
 
-. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 730
+. add custom icon!	, row 670
 
-. use create event 'animateEnd' in SearchMarker , row 752
+. add inner circle, row 678
+
+. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 734
+
+. use create event 'animateEnd' in SearchMarker , row 756
 

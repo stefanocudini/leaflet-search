@@ -4,11 +4,11 @@
 
 . problem with jsonp/ajax when remote filter has different behavior of this._filterRecords, row 296
 
-. removeClass .search-load apparently executed before callData!! A BIG MYSTERY!, row 527
+. removeClass .search-load apparently executed before callData!! A BIG MYSTERY!, row 531
 
-. _handleAutoresize Should resize max search box size when map is resized., row 558
+. _handleAutoresize Should resize max search box size when map is resized., row 562
 
-. if collapse in _handleSubmit hide _markerLoc!, row 619
+. if collapse in _handleSubmit hide _markerLoc!, row 623
 
-. autoCollapse option hide this._markerLoc before that visualized!!, row 648
+. autoCollapse option hide this._markerLoc before that visualized!!, row 652
 
