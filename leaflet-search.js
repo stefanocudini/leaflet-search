@@ -18,7 +18,7 @@ L.Control.Search = L.Control.extend({
 	//
 	//Managed Events:
 	//	Event			Data passed			Description
-	//	locationfound	{latlng, title}		fired after moved and show markerLocation
+	//	search_locationfound	{latlng, title}		fired after moved and show markerLocation
 	//
 	options: {
 		layer: null,				//layer where search markers(is a L.LayerGroup)
@@ -633,7 +633,7 @@ L.Control.Search = L.Control.extend({
 			this._markerLoc.animate();
 		//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
 		
-		this.fire("locationfound", {latlng: latlng, text: title});
+		this.fire("search_locationfound", {latlng: latlng, text: title});
 		
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 		if(this.options.autoCollapse)
