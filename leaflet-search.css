@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.4.0
+ * Leaflet Search Control 1.4.2
  * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
  *
