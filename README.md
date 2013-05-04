@@ -1,41 +1,41 @@
 Leaflet.Control.Search
 ============
 
-What ?
-------
-
-A leaflet control that search markers location by property, with ajax/jsonp autocomplete feature
+#What
+A leaflet control that search markers location by property
+with ajax/jsonp autocomplete feature and json fields complete re-mapping
 
 Tested in Leaflet 0.5.1
 
-
-How ?
-------
+#How
+Insert leaflet-search.css styles to your css page
 
 Adding the search control to the map:
 
 ```
-
-map.addControl(new L.Control.Search({layer: searchLayer}));
-//searchLayer contains searched markers
-
-map.addControl(new L.Control.Search({searchJsonpUrl: 'search.php?q={s}&callback={c}'}) );
-//searchJsonpUrl is jsonp service for retrieve elements locations
-
-and insert leaflet-search.css styles to your css page
-
+map.addControl( new L.Control.Search({layer: searchLayer}) );
+//searchLayer if a L.LayerGroup contains searched markers
 ```
 
-Where ?
-------
+other examples:
+```
+map.addControl( new L.Control.Search({url: 'search.php?q={s}', jsonpParam: 'callback'}) );
+//searchJsonpUrl is jsonp service for retrieve elements locations
 
+map.addControl( new L.Control.Search({
+		url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
+		jsonpParam: 'json_callback',
+		propertyName: 'display_name',
+		propertyLoc: ['lat','lon']
+	}) );
+//implements Geocode Searching using OSM API
+```
+
+#Where
 Source code:
-
-	https://github.com/stefanocudini/leaflet-search
-
-	https://bitbucket.org/zakis_/leaflet-search
+[github](https://github.com/stefanocudini/leaflet-search)
+[bitbucket](https://bitbucket.org/zakis_/leaflet-search)
 
 Demos:
-
-	http://labs.easyblog.it/maps/leaflet-search/
+[labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
