@@ -19,8 +19,8 @@ map.addControl( new L.Control.Search({layer: searchLayer}) );
 
 other examples:
 ```
-map.addControl( new L.Control.Search({url: 'search.php?q={s}', jsonpParam: 'callback'}) );
-//searchJsonpUrl is jsonp service for retrieve elements locations
+map.addControl( new L.Control.Search({url: 'search.php?q={s}'}) );
+//ajax request to search.php for retrieve elements locations
 
 map.addControl( new L.Control.Search({
 		url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
@@ -28,7 +28,7 @@ map.addControl( new L.Control.Search({
 		propertyName: 'display_name',
 		propertyLoc: ['lat','lon']
 	}) );
-//implements Geocode Searching using OSM API
+//jsonp request to 3rd party service, implements Geocode Searching using OSM API
 ```
 
 #Where
