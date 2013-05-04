@@ -1,12 +1,14 @@
-. option condition problem {autoCollapse: true, markerLocation: true} not show location, row 147
+. option condition problem {autoCollapse: true, markerLocation: true} not show location, row 53
 
-. option condition problem {autoCollapse:false }, row 148
+. option condition problem {autoCollapse:false }, row 54
 
-. removeClass .search-load apparently executed before callData!! A BIG MYSTERY!, row 576
+. problem with jsonp/ajax when remote filter has different behavior of this._filterRecords, row 296
 
-. _handleAutoresize Should resize max search box size when map is resized., row 595
+. removeClass .search-load apparently executed before callData!! A BIG MYSTERY!, row 527
 
-. if collapse in _handleSubmit hide _markerLoc!, row 656
+. _handleAutoresize Should resize max search box size when map is resized., row 558
 
-. autoCollapse option hide this._markerLoc before that visualized!!, row 685
+. if collapse in _handleSubmit hide _markerLoc!, row 619
+
+. autoCollapse option hide this._markerLoc before that visualized!!, row 648
 

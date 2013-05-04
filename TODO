@@ -1,36 +1,48 @@
-. add custom icon!		, row 24
+. implement sub property filter for propertyName option like this value:  "pro1.subprop.title", row 26
 
-. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 87
+. add option for persist markerLoc after collapse!, row 41
 
-. use create event 'animateEnd' in SearchMarker , row 109
+. add option collapsed, like control.layers, row 50
 
-. add option searchLoc or searchLat,searchLon for remapping json data fields, row 124
+. maybe hide location on map dragend!, row 55
 
-. add option for persist markerLoc after collapse!, row 136
+. writ enew demo: using http://nominatim.openstreetmap.org/search?q=text&format=json, row 56
 
-. add option collapsed, like control.layers, row 145
+. resize _input on map resize, row 80
 
-. add option for case sesitive search, also showLocation, row 373
+. add option for case sesitive search, also showLocation, row 282
 
-. pass key and value to _createTip, when _recordsCache support properties, row 395
+. patch! remove on Leaflet stable update include isArray() method, row 336
 
-. make new method for ajax requestes using XMLHttpRequest, row 431
+. verify json[i].hasOwnProperty(propName), row 350
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 443
+. remove script node after call run, row 356
 
-. implement filter by element type: marker|polyline|circle..., row 453
+. add rnd param or randomize callback name! in recordsFromJsonp, row 365
 
-. return also marker! in _recordsFromLayer, row 454
+. add rnd param or randomize callback name! in recordsFromAjax			, row 384
 
-. implements autype without selection(useful for mobile device), row 468
+. implement filter by element type: marker|polyline|circle..., row 404
 
-. important optimization!!! always append data in this._recordsCache, row 555
+. return also marker! in _recordsFromLayer, row 405
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 558
+. implements autype without selection(useful for mobile device), row 419
 
-. change structure of _recordsCache, row 561
+. important optimization!!! always append data in this._recordsCache, row 506
 
-. refact _handleAutoresize now is not accurate, row 597
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 509
 
-. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 681
+. change structure of _recordsCache, row 512
+
+. refact _handleAutoresize now is not accurate, row 560
+
+. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 644
+
+. add custom icon!	, row 666
+
+. add inner circle, row 674
+
+. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 730
+
+. use create event 'animateEnd' in SearchMarker , row 752
 
