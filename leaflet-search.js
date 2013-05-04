@@ -24,7 +24,7 @@ L.Control.Search = L.Control.extend({
 		layer: null,				//layer where search markers(is a L.LayerGroup)
 		propertyName: 'title',		//property in marker.options trough filter elements in layer
 		//TODO implement sub property filter for propertyName option like this value:  "pro1.subprop.title"
-		//TODO add option propertyLoc or propertyLat,propertyLon for remapping json data fields, now is 'loc'
+		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		callData: null,				//function that fill _recordsCache, passed searching text by first param
 		callTip: null,				//function that return row tip html node, receive text tooltip in first param
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
@@ -328,17 +328,27 @@ L.Control.Search = L.Control.extend({
 		return 0;
 	},
 
-	_defaultFilterJSON: function(jsonraw) {	//default callback for filter data
+	_defaultFilterJSON: function(json) {	//default callback for filter data
 		var jsonret = {},
-			propname = this.options.propertyName;
+			propName = this.options.propertyName,
+			propLoc = this.options.propertyLoc;
 
-		for(var i in jsonraw)
+		//TODO patch! remove on Leaflet stable update include isArray() method
+		if(!L.Util.isArray)
 		{
-			if( jsonraw[i].hasOwnProperty(propname) )
-				jsonret[ jsonraw[i][propname] ]= L.latLng( jsonraw[i].loc );
-			else
-				throw new Error("propertyName '"+propname+"' not found in JSON");
+			L.Util.isArray = function (obj) {
+				return (Object.prototype.toString.call(obj) === '[object Array]');
+			};
 		}
+		
+		if( L.Util.isArray(propLoc) )
+			for(var i in json)
+				jsonret[ json[i][propName] ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
+		else
+			for(var i in json)
+				jsonret[ json[i][propName] ]= L.latLng( json[i][ propLoc ] );
+		//TODO verify json[i].hasOwnProperty(propName)
+		//throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
 	},
 
@@ -389,16 +399,16 @@ L.Control.Search = L.Control.extend({
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
-			propname = this.options.propertyName;
+			propName = this.options.propertyName;
 		
 		//TODO implement filter by element type: marker|polyline|circle...
 		//TODO return also marker! in _recordsFromLayer
 		
 		this._layer.eachLayer(function(marker) {
-			if(marker.options.hasOwnProperty(propname))
-				retRecords[ marker.options[propname] ] = marker.getLatLng();
+			if(marker.options.hasOwnProperty(propName))
+				retRecords[ marker.options[propName] ] = marker.getLatLng();
 			else
-				throw new Error("propertyName '"+propname+"' not found in marker");				
+				throw new Error("propertyName '"+propName+"' not found in marker");				
 		},this);
 		
 		return retRecords;

@@ -9,7 +9,10 @@
 <style>
 .search-input {
 	font-family:Courier
-
+}
+.search-input,
+.leaflet-control-search {
+	max-width:400px;
 }
 </style>
 </head>
@@ -36,19 +39,12 @@ OpenStreetMap Data offer by <br />
 	map.addControl( new L.Control.Search({
 			url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
 			jsonpParam: 'json_callback',
+			propertyName: 'display_name',
+			propertyLoc: ['lat','lon'],
 			markerLocation: true,
 			autoType: false,
 			autoCollapse: true,
-			minLength: 2,
-			zoom: 10,
-			filterJSON: function(json) {	//callback that remap fields name
-				var rjson = {};
-
-				for(var i in json)
-					rjson[ json[i].display_name ]= L.latLng( json[i].lat, json[i].lon );
-		
-				return rjson;
-			}
+			minLength: 2
 		}) );
 
 </script>
