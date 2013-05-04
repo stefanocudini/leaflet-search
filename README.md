@@ -7,6 +7,16 @@ with ajax/jsonp autocomplete feature and json fields complete re-mapping
 
 Tested in Leaflet 0.5.1
 
+#Where
+Source code:
+[Github](https://github.com/stefanocudini/leaflet-search)
+
+[Bitbucket](https://bitbucket.org/zakis_/leaflet-search)
+
+Demos:
+[labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
+
+
 #How
 Insert leaflet-search.css styles to your css page
 
@@ -30,12 +40,4 @@ map.addControl( new L.Control.Search({
 	}) );
 //jsonp request to 3rd party service, implements Geocode Searching using OSM API
 ```
-
-#Where
-Source code:
-[github](https://github.com/stefanocudini/leaflet-search)
-[bitbucket](https://bitbucket.org/zakis_/leaflet-search)
-
-Demos:
-[labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
