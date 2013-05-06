@@ -1,0 +1,14 @@
+{
+	"name": "leaflet-search",
+	"version": "1.4.2",
+	"description": "Leaflet Control for searching markers in map or remote searching in jsonp/ajax",
+	"dependencies": {
+		"leaflet": "*"
+	},
+	"main": "leaflet-search.js",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:stefanocudini/leaflet-search.git"
+	},
+	"keywords": ["gis", "map"]
+}
