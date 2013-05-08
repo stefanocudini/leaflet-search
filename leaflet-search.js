@@ -73,9 +73,10 @@ L.Control.Search = L.Control.extend({
 		this._alert = this._createAlert('search-alert');
 		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
 		this.setLayer( this._layer );
-		this._map
-			.on('layeradd', this._onLayerAddRemove, this)
-		    .on('layerremove', this._onLayerAddRemove, this);
+		this._map.on({
+				'layeradd': this._onLayerAddRemove,
+				'layerremove': this._onLayerAddRemove
+			}, this);
 		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
 		//TODO resize _input on map resize
 		return this._container;
@@ -83,9 +84,10 @@ L.Control.Search = L.Control.extend({
 
 	onRemove: function(map) {
 		this._recordsCache = {};
-		this._map
-		    .off('layeradd', this._onLayerAddRemove)
-		    .off('layerremove', this._onLayerAddRemove);
+		this._map.off({
+				'layeradd': this._onLayerAddRemove,
+				'layerremove': this._onLayerAddRemove
+			}, this);
 	},
 
 	_onLayerAddRemove: function(e) {
@@ -403,6 +405,7 @@ L.Control.Search = L.Control.extend({
 		
 		//TODO implement filter by element type: marker|polyline|circle...
 		//TODO return also marker! in _recordsFromLayer
+		//using: isPrototypeOf
 		
 		this._layer.eachLayer(function(marker) {
 
