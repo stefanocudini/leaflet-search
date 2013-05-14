@@ -47,6 +47,7 @@ L.Control.Search = L.Control.extend({
 		textCancel: 'Cancel',		//title in cancel button
 		textErr: 'Location not found',	//error message
 		position: 'topleft',
+		searchAppend: null //allows for assisting in search params.
 		//TODO add option collapsed, like control.layers
 	},
 	
@@ -360,6 +361,9 @@ L.Control.Search = L.Control.extend({
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
 			var fdata = that._filterJSON.apply(that,[data]);//_filterJSON defined in inizialize...
 			callAfter(fdata);
+		}
+		if (this.options.searchAppend) {
+			text = text + ' ' + this.options.searchAppend;
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
 			url = L.Util.template(this.options.url+'&'+this.options.jsonpParam+'=L.Control.Search.callJsonp', {s: text}); //parsing url
