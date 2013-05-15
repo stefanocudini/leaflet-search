@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.4.2
+ * Leaflet Search Control 1.4.5
  * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
  *
@@ -23,7 +23,7 @@ L.Control.Search = L.Control.extend({
 	options: {
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
 		layer: null,				//layer where search markers(is a L.LayerGroup)		
-		propertyName: 'title',		//property in marker.options trough filter elements in layer
+		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
 		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"
 		callData: null,				//function that fill _recordsCache, passed searching text by first param
@@ -368,6 +368,7 @@ L.Control.Search = L.Control.extend({
 		script.type = 'text/javascript';
 		script.src = url;
 		return this;
+		//may be return {abort: function() { script.parentNode.removeChild(script); } };
 	},
 
 	_recordsFromAjax: function(text, callAfter) {	//Ajax request
@@ -403,19 +404,25 @@ L.Control.Search = L.Control.extend({
 		var retRecords = {},
 			propName = this.options.propertyName;
 		
-		//TODO implement filter by element type: marker|polyline|circle...
-		//TODO return also marker! in _recordsFromLayer
-		//using: isPrototypeOf
-		
-		this._layer.eachLayer(function(marker) {
+		this._layer.eachLayer(function(layer) {
 
-			//TODO write support for GeoJson Layer features
-		
-			if(marker.hasOwnProperty('options') && marker.options.hasOwnProperty(propName))
-				retRecords[ marker.options[propName] ] = marker.getLatLng();
-				//TODO for GeoJSON not using: getLatLng()
-			else
-				console.log("propertyName '"+propName+"' not found in marker");				
+			if(layer instanceof SearchMarker) return;
+
+			if(layer instanceof L.Marker)
+			{
+				if(layer.options.hasOwnProperty(propName))
+					retRecords[ layer.options[propName] ] = layer.getLatLng();
+				else
+					console.log("propertyName '"+propName+"' not found in marker", layer);	
+			}
+			else if(layer instanceof L.Path)
+			{
+				if(layer.feature.properties.hasOwnProperty(propName))
+					retRecords[ layer.feature.properties[propName] ] = layer.getBounds().getCenter();
+				else
+					console.log("propertyName '"+propName+"' not found in feature", layer);			
+			}
+			
 		},this);
 		
 		return retRecords;
@@ -619,7 +626,7 @@ L.Control.Search = L.Control.extend({
 				var loc = this._getLocation(this._input.value);
 				
 				if(loc)
-					this.showLocation(loc);//, this._input.value);
+					this.showLocation(loc, this._input.value);
 				else
 					this.showAlert();
 				//this.collapse();
@@ -631,7 +638,7 @@ L.Control.Search = L.Control.extend({
 	_getLocation: function(key) {	//extract latlng from _recordsCache
 
 		if( this._recordsCache.hasOwnProperty(key) )
-			return this._recordsCache[this._input.value];//then after use .loc attribute
+			return this._recordsCache[key];//then after use .loc attribute
 		else
 			return false;
 	},

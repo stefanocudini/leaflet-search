@@ -2,8 +2,8 @@ Leaflet.Control.Search
 ============
 
 #What
-A leaflet control that search markers location by property
-with ajax/jsonp autocomplete feature and json fields complete re-mapping
+A leaflet control that search markers/features location by cutstom property.
+With ajax/jsonp autocompletion and json fields re-mapping
 
 Tested in Leaflet 0.5.1
 

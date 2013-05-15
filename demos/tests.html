@@ -84,6 +84,27 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
+<h4>search in GeoJSON</h4>
+<div id="map_vector" class="maptest"></div>
+<script src="us-states.js"></script>
+<script>
+
+	var map = new L.Map('map_vector', {zoom: 5, center: new L.latLng([37.8, -96]) });
+
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+	var featuresLayer = new L.GeoJSON(us_states, {
+			style: function(f) { return {color: f.properties.color }; }
+		});
+
+	map.addLayer(featuresLayer);
+
+	map.addControl( new L.Control.Search({layer: featuresLayer, propertyName: 'name'}) );  //inizialize search control
+
+</script>
+</div>
+
+<div class="maptest_wrap">
 <h4>Ajax</h4>
 <div id="map_ajax" class="maptest"></div>
 <script>

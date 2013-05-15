@@ -8,45 +8,37 @@
 
 . writ enew demo: using http://nominatim.openstreetmap.org/search?q=text&format=json, row 56
 
-. resize _input on map resize, row 80
+. resize _input on map resize, row 81
 
-. add option for case sesitive search, also showLocation, row 282
+. add option for case sesitive search, also showLocation, row 284
 
-. patch! remove on Leaflet stable update include isArray() method, row 336
+. patch! remove on Leaflet stable update include isArray() method, row 338
 
-. verify json[i].hasOwnProperty(propName), row 350
+. verify json[i].hasOwnProperty(propName), row 352
 
-. remove script node after call run, row 356
+. remove script node after call run, row 358
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 365
+. add rnd param or randomize callback name! in recordsFromJsonp, row 367
 
-. add rnd param or randomize callback name! in recordsFromAjax			, row 384
+. add rnd param or randomize callback name! in recordsFromAjax			, row 387
 
-. implement filter by element type: marker|polyline|circle..., row 404
+. implements autype without selection(useful for mobile device), row 433
 
-. return also marker! in _recordsFromLayer, row 405
+. important optimization!!! always append data in this._recordsCache, row 520
 
-. write support for GeoJson Layer features, row 409
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 523
 
-. for GeoJSON not using: getLatLng(), row 413
+. change structure of _recordsCache, row 526
 
-. implements autype without selection(useful for mobile device), row 423
+. refact _handleAutoresize now is not accurate, row 574
 
-. important optimization!!! always append data in this._recordsCache, row 510
+. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 658
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 513
+. add custom icon!	, row 680
 
-. change structure of _recordsCache, row 516
+. add inner circle, row 688
 
-. refact _handleAutoresize now is not accurate, row 564
+. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 744
 
-. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 648
-
-. add custom icon!	, row 670
-
-. add inner circle, row 678
-
-. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 734
-
-. use create event 'animateEnd' in SearchMarker , row 756
+. use create event 'animateEnd' in SearchMarker , row 766
 
