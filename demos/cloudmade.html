@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<link rel="stylesheet" href="/leaflet/leaflet.css" />
+<link rel="stylesheet" href="../leaflet-search.css" />
+<link rel="stylesheet" href="../style.css" />
+<style>
+.search-input {
+	font-family:Courier
+}
+.search-input,
+.leaflet-control-search {
+	max-width:400px;
+}
+</style>
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
+
+<h4>GeoCode Cloudmade Example: <em>search locations name by Geocoding Cloudmade jsonp Service</em></h4>
+<div id="map"></div>
+
+<div id="post-it">
+<b>Search values:</b><br />
+Geocoding API by <br />
+<small><a href="http://geocoding.cloudmade.com">geocoding.cloudmade.com</a></small>
+</div>
+
+<script src="/leaflet/leaflet.js"></script>
+<script src="../leaflet-search.js"></script>
+<script>
+
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	
+	var apiKey = 'ccf7b09213284d9391e2b001c7ce2103';
+	//cloudmade api key for this demo
+	
+	L.control.search({
+			url: 'http://geocoding.cloudmade.com/'+apiKey+'/geocoding/v2/find.js?query={s}',
+			jsonpParam: 'callback',
+			autoCollapse: true,
+			zoom:10,
+			markerLocation: true,
+			filterJSON: function(json) {
+				var key, loc, rjson = {},
+					features = json.features;
+					
+				for(var i in features)
+				{
+					key = features[i].properties.name;
+					loc = L.latLng(features[i].centroid.coordinates);
+					
+					loc.props = features[i].properties;
+					//val must be L.Latlng... or an extension of L.Latlng
+					//	which may contain arbitrary properties
+					
+					rjson[ key ]= loc;
+				}	
+				return rjson;
+			}
+		})
+		.on('search_locationfound', function(e) {
+			var loc = e.latlng,
+				title = e.text,
+				props = loc.props,
+				popup = '<h4>'+title+'</h4>';
+				
+			for(var i in props)
+				popup += '<b>'+i+':</b> '+ props[i] +'<br>';
+			//stringify feature properties
+
+			L.marker(loc,{title: title}).addTo(map).bindPopup(popup).openPopup();
+			
+		})
+		.addTo(map);
+
+</script>
+
+<div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>
+</body>
+</html>
