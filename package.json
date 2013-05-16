@@ -1,6 +1,6 @@
 {
 	"name": "leaflet-search",
-	"version": "1.4.2",
+	"version": "1.4.5",
 	"description": "Leaflet Control for searching markers in map or remote searching in jsonp/ajax",
 	"dependencies": {
 		"leaflet": "*"

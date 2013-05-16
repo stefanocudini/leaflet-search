@@ -13,6 +13,8 @@ Source code:
 
 [Bitbucket](https://bitbucket.org/zakis_/leaflet-search)
 
+[NPM](https://npmjs.org/package/leaflet-search)
+
 Demos:
 [labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
