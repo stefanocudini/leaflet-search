@@ -84,7 +84,7 @@ L.Control.Search = L.Control.extend({
 
 	onRemove: function(map) {
 		this._recordsCache = {};
-		this._map.off({
+		map.off({
 				'layeradd': this._onLayerAddRemove,
 				'layerremove': this._onLayerAddRemove
 			}, this);
