@@ -29,7 +29,7 @@ Cities having more than 15000 inhabitants<br />
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	map.addControl( new L.Control.Search({ url: 'search.php?cities=1&q={s}', text:'City name...', markerLocation: true, initial: false }) );
+	map.addControl( new L.Control.Search({ url: 'search.php?cities=1&q={s}', text:'City name...', markerLocation: true }) );
 
 </script>
 

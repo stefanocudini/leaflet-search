@@ -252,9 +252,9 @@ L.Control.Search = L.Control.extend({
 		{
 			tip = L.DomUtil.create('a', '');
 			tip.href = '#';
-			var record_prefix = text.substring(0,text.toUpperCase().indexOf(this._input.value.toUpperCase()));
-			var record_suffix = text.substring(this._input.value.length + record_prefix.length, text.length);
-			var record_substring = text.substring(record_prefix.length, this._input.value.length + record_prefix.length);
+			var record_prefix = text.substring(0,text.toUpperCase().indexOf(this._input.value.toUpperCase())),
+				record_suffix = text.substring(this._input.value.length + record_prefix.length, text.length),
+				record_substring = text.substring(record_prefix.length, this._input.value.length + record_prefix.length);
 			tip.innerHTML = record_prefix + '<span class=substring>' + record_substring + '<\/span>' + record_suffix;
 		}
 		
@@ -437,10 +437,9 @@ L.Control.Search = L.Control.extend({
 		
 		var start = this._input.value.length,
 			firstRecord = this._tooltip.firstChild._text,
-			end = firstRecord.length,
-			originalText = this._input.value;
+			end = firstRecord.length;
 
-		if (firstRecord.indexOf(originalText) === 0) { // If prefix match
+		if (firstRecord.indexOf(this._input.value) == 0) { // If prefix match
 			this._input.value = firstRecord;
 			this._handleAutoresize();
 
