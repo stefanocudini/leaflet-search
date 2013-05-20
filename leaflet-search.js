@@ -437,10 +437,10 @@ L.Control.Search = L.Control.extend({
 		
 		var start = this._input.value.length,
 			firstRecord = this._tooltip.firstChild._text,
-			end = firstRecord.length;
-			
-		var originalText = this._input.value;
-		if (firstRecord.indexOf(this._originalText) === 0) {
+			end = firstRecord.length,
+			originalText = this._input.value;
+
+		if (firstRecord.indexOf(originalText) === 0) { // If prefix match
 			this._input.value = firstRecord;
 			this._handleAutoresize();
 
