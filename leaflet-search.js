@@ -440,8 +440,8 @@ L.Control.Search = L.Control.extend({
 			end = firstRecord.length;
 			
 		var originalText = this._input.value;
-		this._input.value = firstRecord;
 		if (firstRecord.indexOf(this._originalText) === 0) {
+			this._input.value = firstRecord;
 			this._handleAutoresize();
 
 			if (this._input.createTextRange) {
