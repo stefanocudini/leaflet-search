@@ -252,7 +252,10 @@ L.Control.Search = L.Control.extend({
 		{
 			tip = L.DomUtil.create('a', '');
 			tip.href = '#';
-			tip.innerHTML = text;
+			var record_prefix = text.substring(0,text.toUpperCase().indexOf(this._input.value.toUpperCase())),
+				record_suffix = text.substring(this._input.value.length + record_prefix.length, text.length),
+				record_substring = text.substring(record_prefix.length, this._input.value.length + record_prefix.length);
+			tip.innerHTML = record_prefix + '<span class=substring>' + record_substring + '<\/span>' + record_suffix;
 		}
 		
 		L.DomUtil.addClass(tip, 'search-tip');
@@ -435,23 +438,25 @@ L.Control.Search = L.Control.extend({
 		var start = this._input.value.length,
 			firstRecord = this._tooltip.firstChild._text,
 			end = firstRecord.length;
-			
-		this._input.value = firstRecord;
-		this._handleAutoresize();
-		
-		if (this._input.createTextRange) {
-			var selRange = this._input.createTextRange();
-			selRange.collapse(true);
-			selRange.moveStart('character', start);
-			selRange.moveEnd('character', end);
-			selRange.select();
-		}
-		else if(this._input.setSelectionRange) {
-			this._input.setSelectionRange(start, end);
-		}
-		else if(this._input.selectionStart) {
-			this._input.selectionStart = start;
-			this._input.selectionEnd = end;
+
+		if (firstRecord.indexOf(this._input.value) == 0) { // If prefix match
+			this._input.value = firstRecord;
+			this._handleAutoresize();
+
+			if (this._input.createTextRange) {
+				var selRange = this._input.createTextRange();
+				selRange.collapse(true);
+				selRange.moveStart('character', start);
+				selRange.moveEnd('character', end);
+				selRange.select();
+			}
+			else if(this._input.setSelectionRange) {
+				this._input.setSelectionRange(start, end);
+			}
+			else if(this._input.selectionStart) {
+				this._input.selectionStart = start;
+				this._input.selectionEnd = end;
+			}
 		}
 	},
 
