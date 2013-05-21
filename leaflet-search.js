@@ -73,18 +73,18 @@ L.Control.Search = L.Control.extend({
 		this._alert = this._createAlert('search-alert');
 		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
 		this.setLayer( this._layer );
-		this._map.on({
-				'layeradd': this._onLayerAddRemove,
-				'layerremove': this._onLayerAddRemove
-			}, this);
 		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
 		//TODO resize _input on map resize
+		map.on({
+				'layeradd': this._onLayerAddRemove,
+				'layerremove': this._onLayerAddRemove
+			}, this);		
 		return this._container;
 	},
 
 	onRemove: function(map) {
 		this._recordsCache = {};
-		this._map.off({
+		map.off({
 				'layeradd': this._onLayerAddRemove,
 				'layerremove': this._onLayerAddRemove
 			}, this);
