@@ -115,6 +115,9 @@
 	font-size:.85em;
 	vertical-align:center;
 }
+.leaflet-control-search .search-tip .substring {
+	font-weight:900;
+}
 .leaflet-control-search .search-tip-select,
 .leaflet-control-search .search-tip:hover,
 .leaflet-control-search .search-button:hover {
