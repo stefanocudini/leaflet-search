@@ -57,7 +57,7 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 	var markersLayer = new L.LayerGroup();	//layer contain searched elements
 	map.addLayer(markersLayer);
 	
-	function customTip(text)
+	function customTip(record,text)
 	{
 		var tip = L.DomUtil.create('a', 'colortip');
 

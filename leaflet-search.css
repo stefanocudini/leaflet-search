@@ -83,6 +83,10 @@
 .leaflet-control-search .search-button:hover {
 	background: url('images/search-icon.png') no-repeat 0 -21px;
 }
+.leaflet-control-search .tooltip-section {
+	background: #ccc;
+	border: solid 0;
+}
 .leaflet-control-search .search-tooltip {
 	position:absolute;
 	top:100%;
