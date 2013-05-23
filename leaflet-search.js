@@ -42,7 +42,6 @@ L.Control.Search = L.Control.extend({
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
 		markerLocation: false,		//draw a marker in location found
-		tipHierarchy: [], // hierarchy of sections corresponding to keys in the record object (i.e. [ "section", "subsection", "subsubsection" ]). Does not include the tip itself.
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
@@ -248,7 +247,7 @@ L.Control.Search = L.Control.extend({
 		var tip;
 		
 		if(this.options.callTip)
-			tip = this.options.callTip.call(this, this._recordsCache[text],text); //custom tip content
+			tip = this.options.callTip.apply(this, arguments); //custom tip content
 		else
 		{
 			tip = L.DomUtil.create('a', '');
@@ -294,59 +293,10 @@ L.Control.Search = L.Control.extend({
 		
 		return frecords;
 	},
-
-	_groupBy: function( records ) {
-		var groups = {},
-		group,
-		values,
-		i,
-		j,
-		key;
-
-		if( !this.options.tipHierarchy ) { return records; }
-		for ( var key in records ) {
-				values = [];
-				i = 0;
-
-			while (i < this.options.tipHierarchy.length) {
-				values.push(records[key][this.options.tipHierarchy[i++]]);
-			}
-			values.push(key);
-			// group
-			group = groups;
-			for( j = 0; j < values.length; j++ ) { // Vertical search. # of sections
-				key = values[j];
-				group = ( group[key] || ( group[key] = j === values.length - 1 && [] || {} ) );
-			}
-			// For the last group, push the actual record.
-			group = ( group instanceof Array && group || [] ).push( records[key] );
-		}
-
-		return groups;
-	},
-
-	_toTree: function(treeObj) {
-		var section = document.createElement("div");
-		for(var obj in treeObj) {
-			if(this._ntip != this.options.tooltipLimit) {
-				if (treeObj[obj] instanceof Array) { // leaf.
-					section.appendChild(this._createTip(obj));
-					++this._ntip;
-					continue;
-				}
-				else { // branch
-					section.innerHTML += obj;
-					section.className = "tooltip-section";
-				}
-				section.appendChild(this._toTree(treeObj[obj]));
-			}
-		}
-		return section;
-	},
-
+	
 	_showTooltip: function() {
-		var filteredRecords;
-		this._ntip = 0;
+		var filteredRecords,
+			ntip = 0;
 		
 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
 		if(this.options.layer)
@@ -357,10 +307,13 @@ L.Control.Search = L.Control.extend({
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
-		var groups = this._groupBy( filteredRecords );
-		this._tooltip.appendChild(this._toTree(groups));
-
-		if(this._ntip > 0)
+		for(var key in filteredRecords)//fill tooltip
+		{
+			if(++ntip == this.options.tooltipLimit) break;
+			this._tooltip.appendChild( this._createTip(key, filteredRecords[key] ) );
+		}
+		
+		if(ntip > 0)
 		{
 			this._tooltip.style.display = 'block';
 			if(this._autoTypeTmp)
@@ -371,6 +324,7 @@ L.Control.Search = L.Control.extend({
 			this._hideTooltip();
 
 		this._tooltip.scrollTop = 0;
+		return ntip;
 	},
 
 	_hideTooltip: function() {
@@ -482,7 +436,7 @@ L.Control.Search = L.Control.extend({
 		//TODO implements autype without selection(useful for mobile device)
 		
 		var start = this._input.value.length,
-			firstRecord = this._tooltip.querySelectorAll('.search-tip')[0].innerText || this._tooltip.querySelectorAll('.search-tip')[0].textContent,
+			firstRecord = this._tooltip.firstChild._text,
 			end = firstRecord.length;
 
 		if (firstRecord.indexOf(this._input.value) == 0) { // If prefix match
@@ -629,7 +583,7 @@ L.Control.Search = L.Control.extend({
 
 	_handleArrowSelect: function(velocity) {
 	
-		var searchTips = this._tooltip.getElementsByClassName('search-tip');
+		var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
 			
 		for (i=0; i<searchTips.length; i++)
 			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
@@ -645,7 +599,7 @@ L.Control.Search = L.Control.extend({
 			
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
 			
-			this._input.value = this._tooltip.getElementsByClassName('search-tip-select')[0].text;
+			this._input.value = searchTips[this._tooltip.currentSelection]._text;
 
 			// scroll:
 			var tipOffsetTop = searchTips[this._tooltip.currentSelection].offsetTop;
@@ -654,7 +608,7 @@ L.Control.Search = L.Control.extend({
 				this._tooltip.scrollTop = tipOffsetTop - this._tooltip.clientHeight + searchTips[this._tooltip.currentSelection].clientHeight;
 			}
 			else if (tipOffsetTop <= this._tooltip.scrollTop) {
-				this._tooltip.scrollTop = tipOffsetTop - 20; // TODO: Calculate total height of section headers and use it instead of just using "20".
+				this._tooltip.scrollTop = tipOffsetTop;
 			}
 		}
 	},
