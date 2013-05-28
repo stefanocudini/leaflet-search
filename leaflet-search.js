@@ -49,11 +49,9 @@ L.Control.Search = L.Control.extend({
 		position: 'topleft',
 		//TODO add option collapsed, like control.layers
 	},
-	
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse:false }
-//TODO maybe hide location on map dragend!
-//TODO writ enew demo: using http://nominatim.openstreetmap.org/search?q=text&format=json
+
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
@@ -538,7 +536,7 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.callData)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			this._recordsCache = this.options.callData.apply(this, [inputText] );
+			this._recordsCache = this.options.callData(inputText);
 
 			this._showTooltip();
 
