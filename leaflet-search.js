@@ -291,8 +291,8 @@ L.Control.Search = L.Control.extend({
 		
 		return frecords;
 	},
-	
-	_showTooltip: function() {
+
+	showTooltip: function() {
 		var filteredRecords,
 			ntip = 0;
 		
@@ -525,7 +525,7 @@ L.Control.Search = L.Control.extend({
 //always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
 //run one of callbacks search(callData,jsonpUrl or options.layer)
-//and run this._showTooltip
+//and run this.showTooltip
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
 //	in this mode every record can have a free structure of attributes, only 'loc' is required
@@ -538,7 +538,7 @@ L.Control.Search = L.Control.extend({
 		{
 			this._recordsCache = this.options.callData(inputText);
 
-			this._showTooltip();
+			this.showTooltip();
 
 			L.DomUtil.removeClass(this._container, 'search-load');
 			//FIXME removeClass .search-load apparently executed before callData!! A BIG MYSTERY!
@@ -550,7 +550,7 @@ L.Control.Search = L.Control.extend({
 				var that = this;
 				this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
 					that._recordsCache = data;
-					that._showTooltip();
+					that.showTooltip();
 					L.DomUtil.removeClass(that._container, 'search-load');
 				});
 			}
@@ -559,7 +559,7 @@ L.Control.Search = L.Control.extend({
 				var that = this;
 				this._recordsFromAjax(inputText, function(data) {// is async request then it need callback
 					that._recordsCache = data;
-					that._showTooltip();
+					that.showTooltip();
 					L.DomUtil.removeClass(that._container, 'search-load');
 				});
 			}
@@ -567,7 +567,7 @@ L.Control.Search = L.Control.extend({
 		else if(this.options.layer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 		{
 			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into layer				
-			this._showTooltip();
+			this.showTooltip();
 			L.DomUtil.removeClass(this._container, 'search-load');
 		}
 	},
