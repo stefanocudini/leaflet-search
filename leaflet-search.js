@@ -359,7 +359,7 @@ L.Control.Search = L.Control.extend({
 		//TODO remove script node after call run
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that._filterJSON.apply(that,[data]);//_filterJSON defined in inizialize...
+			var fdata = that._filterJSON(data);//_filterJSON defined in inizialize...
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
@@ -393,7 +393,7 @@ L.Control.Search = L.Control.extend({
 		request.onreadystatechange = function() {
 		    if(request.readyState === 4 && request.status === 200) {
 		    	response = window.JSON ? JSON.parse(request.responseText) : eval("("+ request.responseText + ")");
-		    	var fdata = that._filterJSON.apply(that,[response]);//_filterJSON defined in inizialize...
+		    	var fdata = that._filterJSON(response);//_filterJSON defined in inizialize...
 		        callAfter(fdata);
 		    }
 		};
@@ -521,11 +521,12 @@ L.Control.Search = L.Control.extend({
 	
 	_fillRecordsCache: function() {
 //TODO important optimization!!! always append data in this._recordsCache
-//now _recordsCache content is emptied and replaced with new data founded
-//always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
+//  now _recordsCache content is emptied and replaced with new data founded
+//  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
+//
 //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-//run one of callbacks search(callData,jsonpUrl or options.layer)
-//and run this.showTooltip
+//  run one of callbacks search(callData,jsonpUrl or options.layer) and run this.showTooltip
+//
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
 //	in this mode every record can have a free structure of attributes, only 'loc' is required
@@ -536,7 +537,9 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.callData)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			this._recordsCache = this.options.callData(inputText);
+			var jsonraw = this.options.callData(inputText);
+
+			this._recordsCache = this._filterJSON(jsonraw);
 
 			this.showTooltip();
 

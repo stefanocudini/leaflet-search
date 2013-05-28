@@ -30,8 +30,7 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 
 	function searchByAjax(text) {	//definition of callback for syncronous ajax serching
 
-		var resultsraw = {},
-			results = {};
+		var results = {};
 	
 		$.ajax({
 			url: 'search.php',	//read comments in search.php for more information usage
@@ -41,12 +40,9 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 			dataType: 'json',
 			success: function(json) {
 				if(json)
-					resultsraw = json;
+					results = json;
 			}
 		});
-	
-		for(i in resultsraw)	//reformatting results in key,value
-			results[ resultsraw[i].title ] = resultsraw[i].loc;
 
 		return results;
 	}
