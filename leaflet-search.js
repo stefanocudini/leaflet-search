@@ -1,5 +1,5 @@
 /*
- * Leaflet Search Control 1.4.5
+ * Leaflet Search Control 1.4.6
  * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
  * Licensed under the MIT license.
  *
@@ -17,18 +17,19 @@ L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	//
 	//Managed Events:
-	//	Event			Data passed			Description
+	//	Event					Data passed			Description
 	//	search_locationfound	{latlng, title}		fired after moved and show markerLocation
 	//
 	options: {
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
+		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		layer: null,				//layer where search markers(is a L.LayerGroup)		
+		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
+		//TODO important! implements uniq option 'source' that recognizes source type: url,array,callback or layer		
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
 		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"
-		callData: null,				//function that fill _recordsCache, passed searching text by first param
 		callTip: null,				//function that return row tip html node, receive text tooltip in first param
-		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
@@ -537,14 +538,15 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.callData)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			var jsonraw = this.options.callData(inputText);
+			var that = this;
+			this.options.callData(inputText, function(jsonraw) {
 
-			this._recordsCache = this._filterJSON(jsonraw);
+				that._recordsCache = that._filterJSON(jsonraw);
 
-			this.showTooltip();
+				that.showTooltip();
 
-			L.DomUtil.removeClass(this._container, 'search-load');
-			//FIXME removeClass .search-load apparently executed before callData!! A BIG MYSTERY!
+				L.DomUtil.removeClass(that._container, 'search-load');
+			});
 		}
 		else if(this.options.url)	//JSONP/AJAX REQUEST
 		{
