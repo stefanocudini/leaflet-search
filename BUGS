@@ -2,13 +2,11 @@
 
 . option condition problem {autoCollapse:false }, row 54
 
-. problem with jsonp/ajax when remote filter has different behavior of this._filterRecords, row 298
+. problem with jsonp/ajax when remote filter has different behavior of this._filterRecords, row 300
 
-. removeClass .search-load apparently executed before callData!! A BIG MYSTERY!, row 541
+. _handleAutoresize Should resize max search box size when map is resized., row 580
 
-. _handleAutoresize Should resize max search box size when map is resized., row 572
+. if collapse in _handleSubmit hide _markerLoc!, row 641
 
-. if collapse in _handleSubmit hide _markerLoc!, row 633
-
-. autoCollapse option hide this._markerLoc before that visualized!!, row 662
+. autoCollapse option hide this._markerLoc before that visualized!!, row 670
 
