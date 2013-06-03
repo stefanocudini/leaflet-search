@@ -57,19 +57,19 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 	var markersLayer = new L.LayerGroup();	//layer contain searched elements
 	map.addLayer(markersLayer);
 	
-	function customTip(text)
+	function customTip(text,val)
 	{
 		var tip = L.DomUtil.create('a', 'colortip');
 
 		tip.href = "#"+text;
 		tip.innerHTML = text;
-		
-		var subtip = L.DomUtil.create('em', 'subtip', tip);
-		subtip.style.display = 'inline-block';
-		subtip.style.float = 'right';
-		subtip.style.width = '14px';
-		subtip.style.height = '14px';
-		subtip.style.backgroundColor = text;
+
+		var colortip = L.DomUtil.create('em', 'subtip', tip);
+		colortip.style.display = 'inline-block';
+		colortip.style.float = 'right';
+		colortip.style.width = '14px';
+		colortip.style.height = '14px';
+		colortip.style.backgroundColor = text;
 		
 		return tip;
 	}

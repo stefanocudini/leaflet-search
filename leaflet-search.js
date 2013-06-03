@@ -246,15 +246,12 @@ L.Control.Search = L.Control.extend({
 		var tip;
 		
 		if(this.options.callTip)
-			tip = this.options.callTip.apply(this, arguments); //custom tip content
+			tip = this.options.callTip(text,val); //custom tip content
 		else
 		{
 			tip = L.DomUtil.create('a', '');
 			tip.href = '#';
-			var record_prefix = text.substring(0,text.toUpperCase().indexOf(this._input.value.toUpperCase())),
-				record_suffix = text.substring(this._input.value.length + record_prefix.length, text.length),
-				record_substring = text.substring(record_prefix.length, this._input.value.length + record_prefix.length);
-			tip.innerHTML = record_prefix + '<span class=substring>' + record_substring + '<\/span>' + record_suffix;
+			tip.innerHTML = text;
 		}
 		
 		L.DomUtil.addClass(tip, 'search-tip');
@@ -295,7 +292,7 @@ L.Control.Search = L.Control.extend({
 
 	showTooltip: function() {
 		var filteredRecords,
-			ntip = 0;
+			ntip = 0, newTip;
 		
 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
 		if(this.options.layer)
@@ -309,7 +306,10 @@ L.Control.Search = L.Control.extend({
 		for(var key in filteredRecords)//fill tooltip
 		{
 			if(++ntip == this.options.tooltipLimit) break;
-			this._tooltip.appendChild( this._createTip(key, filteredRecords[key] ) );
+
+			newTip = this._createTip(key, filteredRecords[key] );
+
+			this._tooltip.appendChild(newTip);
 		}
 		
 		if(ntip > 0)
