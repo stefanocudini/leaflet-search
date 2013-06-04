@@ -29,7 +29,7 @@ L.Control.Search = L.Control.extend({
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
 		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"
-		callTip: null,				//function that return row tip html node, receive text tooltip in first param
+		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
@@ -246,7 +246,15 @@ L.Control.Search = L.Control.extend({
 		var tip;
 		
 		if(this.options.callTip)
-			tip = this.options.callTip(text,val); //custom tip content
+		{
+			tip = this.options.callTip(text,val); //custom tip node or html string
+			if(typeof tip === 'string')
+			{
+				var tmpNode = L.DomUtil.create('div');
+				tmpNode.innerHTML = tip;
+				tip = tmpNode.firstChild;
+			}
+		}
 		else
 		{
 			tip = L.DomUtil.create('a', '');
