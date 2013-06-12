@@ -7,17 +7,16 @@ With ajax/jsonp autocompletion and json fields re-mapping
 
 Tested in Leaflet 0.5.1
 
+
 #Where
-Source code:
-[Github](https://github.com/stefanocudini/leaflet-search)
 
-[Bitbucket](https://bitbucket.org/zakis_/leaflet-search)
-
-[NPM](https://npmjs.org/package/leaflet-search)
-
-Demos:
+**Demos:**  
 [labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
+**Source code:**  
+[Github](https://github.com/stefanocudini/leaflet-search)  
+[Bitbucket](https://bitbucket.org/zakis_/leaflet-search)  
+[NPM](https://npmjs.org/package/leaflet-search)  
 
 #How
 Insert leaflet-search.css styles to your css page
