@@ -69,13 +69,9 @@ li {
 	-moz-opacity: .7;
 	opacity: .7;		
 }
-#content {
+.contents {
 	float:left;
-	margin:0 3em 3em 0;	
-}
-#refs {
-	float:left;
-	margin:0 3em 3em 0;	
+	margin:0 2em 2em 0;
 }
 #comments {
 	clear:both;
