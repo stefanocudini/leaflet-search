@@ -42,6 +42,7 @@ L.Control.Search = L.Control.extend({
 		//TODO add option for persist markerLoc after collapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		animateLocation: true,		//animate a circle over location found
+		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
@@ -70,7 +71,10 @@ L.Control.Search = L.Control.extend({
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._button = this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');
-		this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
+		
+		if(this.options.circleLocation || this.options.markerLocation)
+			this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
+		
 		this.setLayer( this._layer );
 		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
 		//TODO resize _input on map resize
@@ -100,7 +104,8 @@ L.Control.Search = L.Control.extend({
 		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
 		this._layer = layer;
 		this._layer.addTo(this._map);
-		this._layer.addLayer(this._markerLoc);
+		if(this._markerLoc)
+			this._layer.addLayer(this._markerLoc);
 		return this;
 	},
 	
@@ -666,13 +671,16 @@ L.Control.Search = L.Control.extend({
 		else
 			this._map.panTo(latlng);
 
-		this._markerLoc.setLatLng(latlng);  //show circle/marker in location found
-		this._markerLoc.setTitle(title);
-		this._markerLoc.show();
-		if(this.options.animateLocation)
-			this._markerLoc.animate();
-		//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-		
+		if(this._markerLoc)
+		{
+			this._markerLoc.setLatLng(latlng);  //show circle/marker in location found
+			this._markerLoc.setTitle(title);
+			this._markerLoc.show();
+			if(this.options.animateLocation)
+				this._markerLoc.animate();
+			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+		}
+
 		this.fire("search_locationfound", {latlng: latlng, text: title});
 		
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
