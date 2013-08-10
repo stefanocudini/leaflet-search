@@ -85,9 +85,8 @@ if(isset($_GET['cities']))	//SIMULATE A BIG DATABASE, for ajax-bulk.html example
 
 function searchInit($text)	//search initial text in titles
 {
-	$qreg = $_GET['q'];
-	$reg = "/^$qreg/i";	//initial case insensitive searching
-	return (bool)preg_match($reg, $text['title']);
+	$reg = "/^".$_GET['q']."/i";	//initial case insensitive searching
+	return (bool)@preg_match($reg, $text['title']);
 }
 $fdata = array_filter($data, 'searchInit');	//filter data
 $fdata = array_values($fdata);	//reset $fdata indexs
