@@ -32,15 +32,20 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 	var featuresLayer = new L.GeoJSON(data, {
-			style: function(f) { return {color: f.properties.color }; }
+			style: function(f) {
+				return {color: f.properties.color };
+			}
 		});
 
 	map.addLayer(featuresLayer);
 
-	map.addControl( new L.Control.Search({layer: featuresLayer, propertyName: 'name', circleLocation:false}) );  //inizialize search control
+	var searchControl = new L.Control.Search({layer: featuresLayer, propertyName: 'name', circleLocation:false});
+	
+	map.addControl( searchControl );  //inizialize search control
 
 </script>
 
-<div id="copy">powered by <a href="mailto:stefano.cudini@gmail.com">Stefano Cudini</a></div>
+<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+	
 </body>
 </html>

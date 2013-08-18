@@ -57,17 +57,22 @@ li {
 	position:fixed;
 	z-index:1000;
 	right:150px;
-	top:-6px;
-	font-style:italic;
+	top:-8px;
 	font-size:.85em;
-	padding:5px 8px;
-	background: #ccc;
-	border: 2px solid #3e5585;		
+	padding:8px 8px 2px 8px;
+	background: #323b44;
+	border: 2px solid #737c85;		
 	border-radius:.7em;
-	opacity: 0.8;		
+	opacity: 0.9;
+	box-shadow:0 0 8px #5f7182;
+	color:#eee
 }
 #copy a {
-	color:#285585
+	color:#ccc;
+	text-decoration:none
+}
+#copy a:hover {
+	color:#fff
 }
 #ribbon {
 	position: absolute;
