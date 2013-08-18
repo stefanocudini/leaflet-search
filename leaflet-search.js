@@ -16,9 +16,14 @@
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	//
+	//	Name					Data passed			Description
+	//
 	//Managed Events:
-	//	Event					Data passed			Description
-	//	search_locationfound	{latlng, title}		fired after moved and show markerLocation
+	//	search_locationfound	{latlng, title}     fired after moved and show markerLocation
+	//
+	//Public methods:
+	//  setLayer()				L.LayerGroup()      set layer search at runtime
+	//  showAlert()             'Text message'      Show alert message
 	//
 	options: {
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
@@ -78,27 +83,28 @@ L.Control.Search = L.Control.extend({
 		this.setLayer( this._layer );
 		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
 		//TODO resize _input on map resize
-		map.on({
-				'layeradd': this._onLayerAddRemove,
-				'layerremove': this._onLayerAddRemove
-			}, this);		
+		// map.on({
+		// 		'layeradd': this._onLayerAddRemove,
+		// 		'layerremove': this._onLayerAddRemove
+		// 	}, this);		
 		return this._container;
 	},
 
 	onRemove: function(map) {
 		this._recordsCache = {};
-		map.off({
-				'layeradd': this._onLayerAddRemove,
-				'layerremove': this._onLayerAddRemove
-			}, this);
+		// map.off({
+		// 		'layeradd': this._onLayerAddRemove,
+		// 		'layerremove': this._onLayerAddRemove
+		// 	}, this);
 	},
 
-	_onLayerAddRemove: function(e) {
-		//console.info('_onLayerAddRemove');
-		if(e.layer instanceof L.LayerGroup)//without this, run setLayer also for each Markers!! to optimize!
-			if( L.stamp(e.layer) != L.stamp(this._layer) )
-				this.setLayer(e.layer);
-	},
+	// _onLayerAddRemove: function(e) {
+	// 	//console.info('_onLayerAddRemove');
+	// 	//without this, run setLayer also for each Markers!! to optimize!
+	// 	if(e.layer instanceof L.LayerGroup)
+	// 		if( L.stamp(e.layer) != L.stamp(this._layer) )
+	// 			this.setLayer(e.layer);
+	// },
 	
 	setLayer: function(layer) {	//set search layer at runtime
 		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
