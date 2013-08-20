@@ -205,19 +205,6 @@ h4 {
 </script>
 </div>
 
-<div class="maptest_wrap">
-<h4>callData ajax bulk, Cities(by jQuery)</h4>
-<div id="map_ajaxbulk" class="maptest"></div>
-<script>
-
-	var map = new L.Map('map_ajaxbulk', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
-	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
-
-	map.addControl( new L.Control.Search({ url: 'search.php?cities=1&q={s}', text:'City name...', markerLocation: true }) );
-
-</script>
-</div>
-
 
 <div class="maptest_wrap">
 <h4>search in layer, Custom Tip</h4>
