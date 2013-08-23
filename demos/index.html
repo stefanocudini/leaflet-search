@@ -99,7 +99,20 @@ h4 {
 
 	map.addLayer(featuresLayer);
 
-	map.addControl( new L.Control.Search({layer: featuresLayer, propertyName: 'name', circleLocation:false}) );  //inizialize search control
+	var searchControl = new L.Control.Search({layer: featuresLayer, propertyName: 'name', circleLocation:false});
+
+	searchControl.on('search_locationfound', function(e) {
+		
+		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
+
+	}).on('search_collapsed', function(e) {
+
+		featuresLayer.eachLayer(function(layer) {	//restore feature color
+			featuresLayer.resetStyle(layer);
+		});	
+	});
+
+	map.addControl( searchControl );  //inizialize search control
 
 </script>
 </div>
