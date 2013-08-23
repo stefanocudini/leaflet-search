@@ -20,6 +20,7 @@ L.Control.Search = L.Control.extend({
 	//
 	//Managed Events:
 	//	search_locationfound	{latlng, title}     fired after moved and show markerLocation
+	//  search_collapsed		{}					fired after control was collapsed
 	//
 	//Public methods:
 	//  setLayer()				L.LayerGroup()      set layer search at runtime
@@ -30,7 +31,7 @@ L.Control.Search = L.Control.extend({
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		layer: null,				//layer where search markers(is a L.LayerGroup)		
 		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
-		//TODO important! implements uniq option 'source' that recognizes source type: url,array,callback or layer		
+		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
 		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"
@@ -159,6 +160,7 @@ L.Control.Search = L.Control.extend({
 		L.DomUtil.removeClass(this._container, 'search-exp');		
 		//this._markerLoc.hide();//maybe unuseful
 		this._map.off('dragstart', this.collapse, this);
+		this.fire('search_collapsed');
 		return this;
 	},
 	
@@ -423,7 +425,8 @@ L.Control.Search = L.Control.extend({
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var retRecords = {},
-			propName = this.options.propertyName;
+			propName = this.options.propertyName,
+			loc;
 		
 		this._layer.eachLayer(function(layer) {
 
@@ -432,14 +435,22 @@ L.Control.Search = L.Control.extend({
 			if(layer instanceof L.Marker)
 			{
 				if(layer.options.hasOwnProperty(propName))
-					retRecords[ layer.options[propName] ] = layer.getLatLng();
+				{
+					loc = layer.getLatLng();
+					loc.layer = layer;
+					retRecords[ layer.options[propName] ] = loc;
+				}
 				else
 					console.log("propertyName '"+propName+"' not found in marker", layer);	
 			}
 			else if(layer instanceof L.Path)
 			{
 				if(layer.feature.properties.hasOwnProperty(propName))
-					retRecords[ layer.feature.properties[propName] ] = layer.getBounds().getCenter();
+				{
+					loc = layer.getBounds().getCenter();
+					loc.layer = layer;			
+					retRecords[ layer.feature.properties[propName] ] = loc;
+				}
 				else
 					console.log("propertyName '"+propName+"' not found in feature", layer);			
 			}
@@ -652,10 +663,17 @@ L.Control.Search = L.Control.extend({
 			{
 				var loc = this._getLocation(this._input.value);
 				
-				if(loc)
-					this.showLocation(loc, this._input.value);
-				else
+				if(loc===false)
 					this.showAlert();
+				else
+				{
+					this.showLocation(loc, this._input.value);
+					this.fire('search_locationfound', {
+							latlng: loc,
+							text: this._input.value,
+							layer: loc.layer ? loc.layer : null
+						});
+				}
 				//this.collapse();
 				//FIXME if collapse in _handleSubmit hide _markerLoc!
 			}
@@ -686,8 +704,6 @@ L.Control.Search = L.Control.extend({
 				this._markerLoc.animate();
 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
 		}
-
-		this.fire("search_locationfound", {latlng: latlng, text: title});
 		
 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
 		if(this.options.autoCollapse)
