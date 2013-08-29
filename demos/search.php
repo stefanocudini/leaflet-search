@@ -6,7 +6,7 @@
  *
  * http://labs.easyblog.it/maps/leaflet-search
  *
- * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
+ * Copyright 2013, Stefano Cudini - http://labs.easyblog.it/stefano-cudini/
  * Licensed under the MIT license.
  
  What's:

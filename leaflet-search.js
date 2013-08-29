@@ -1,6 +1,6 @@
 /*
  * Leaflet Search Control 1.4.6
- * Copyright 2013, Stefano Cudini - stefano.cudini@gmail.com
+ * Copyright 2013, Stefano Cudini - http://labs.easyblog.it/stefano-cudini/
  * Licensed under the MIT license.
  *
  * Demo:

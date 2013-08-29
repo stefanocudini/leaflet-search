@@ -23,6 +23,9 @@ h3 a:hover {
 	text-decoration:none;
 }
 #desc {
+	float: left;
+	margin-bottom: 1em;
+	position: relative;
 	white-space:nowrap;
 	font-size:1em;
 }

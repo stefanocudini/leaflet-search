@@ -72,11 +72,13 @@ h3,h4 {
 .leaflet-touch .leaflet-control-zoom-out {
 	line-height: 24px;	
 }
-.leaflet-control-zoom a;hover,
+.leaflet-control-zoom a:hover,
 .leaflet-touch .leaflet-control-zoom a:hover,
 .leaflet-bar a:hover,
 .leaflet-touch .leaflet-bar a:hover {
 	background-color: #fff;
+	width: 32px;
+	height: 28px;	
 }
 
 .leaflet-touch .leaflet-bar a:first-child {
