@@ -3,6 +3,7 @@
 	"version": "1.4.6",
 	"description": "Leaflet Control for searching markers in map or remote searching in jsonp/ajax",
 	"author": "Stefano Cudini <stefano.cudini@gmail.com>",
+	"homepage": "http://labs.easyblog.it/maps/leaflet-search/",
 	"dependencies": {
 		"leaflet": "*"
 	},
