@@ -1,14 +1,19 @@
 {
 	"name": "leaflet-search",
-	"version": "1.4.5",
+	"version": "1.4.6",
 	"description": "Leaflet Control for searching markers in map or remote searching in jsonp/ajax",
+	"author": "Stefano Cudini <stefano.cudini@gmail.com>",
 	"dependencies": {
 		"leaflet": "*"
 	},
 	"main": "leaflet-search.js",
+	"directories": {
+		"example": "examples"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git@github.com:stefanocudini/leaflet-search.git"
 	},
-	"keywords": ["gis", "map"]
+	"keywords": ["leaflet", "gis", "map"],
+	"license": "MIT"
 }
