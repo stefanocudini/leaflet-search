@@ -9,7 +9,7 @@
     "bower_components",
     "test",
     "tests",
-    "demos",
+    "examples",
     "tools"
   ]
 }
