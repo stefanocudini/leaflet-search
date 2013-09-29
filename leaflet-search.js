@@ -66,6 +66,7 @@ L.Control.Search = L.Control.extend({
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
+		this._countertips = 0;		//number of tips items
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
 	},
 
@@ -73,7 +74,7 @@ L.Control.Search = L.Control.extend({
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
-		this._tooltip = this._createTooltip('search-tooltip');		
+		this._tooltip = this._createTooltip('search-tooltip');
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._button = this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');
@@ -304,7 +305,8 @@ L.Control.Search = L.Control.extend({
 			//TODO add option for case sesitive search, also showLocation
 			frecords = {};
 
-		for(var key in this._recordsCache)//use .filter or .map
+		//TODO use .filter or .map
+		for(var key in this._recordsCache)
 			if( regSearch.test(key) )
 				frecords[key]= this._recordsCache[key];
 		
@@ -312,8 +314,9 @@ L.Control.Search = L.Control.extend({
 	},
 
 	showTooltip: function() {
-		var filteredRecords,
-			ntip = 0, newTip;
+		var filteredRecords, newTip;
+
+		this._countertips = 0;
 		
 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
 		if(this.options.layer)
@@ -326,14 +329,14 @@ L.Control.Search = L.Control.extend({
 
 		for(var key in filteredRecords)//fill tooltip
 		{
-			if(++ntip == this.options.tooltipLimit) break;
+			if(++this._countertips == this.options.tooltipLimit) break;
 
 			newTip = this._createTip(key, filteredRecords[key] );
 
 			this._tooltip.appendChild(newTip);
 		}
 		
-		if(ntip > 0)
+		if(this._countertips > 0)
 		{
 			this._tooltip.style.display = 'block';
 			if(this._autoTypeTmp)
@@ -344,7 +347,7 @@ L.Control.Search = L.Control.extend({
 			this._hideTooltip();
 
 		this._tooltip.scrollTop = 0;
-		return ntip;
+		return this._countertips;
 	},
 
 	_hideTooltip: function() {
@@ -511,6 +514,8 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			break;
 			case 13: //Enter
+				if(this._countertips == 1)
+					this._handleArrowSelect(1);
 				this._handleSubmit();	//do search
 			break;
 			case 38://Up
