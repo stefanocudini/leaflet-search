@@ -50,11 +50,12 @@ L.Control.Search = L.Control.extend({
 		animateLocation: true,		//animate a circle over location found
 		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
+		markerDraggable: false,		// If marker should be draggable or not.
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
 		textErr: 'Location not found',	//error message
-		position: 'topleft',
+		position: 'topleft'
 		//TODO add option collapsed, like control.layers
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
@@ -74,13 +75,16 @@ L.Control.Search = L.Control.extend({
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
 		this._input = this._createInput(this.options.text, 'search-input');
-		this._tooltip = this._createTooltip('search-tooltip');
+		this._tooltip = this._createTooltip('search-tooltip');		
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._button = this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');
 		
 		if(this.options.circleLocation || this.options.markerLocation)
-			this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
+			this._markerLoc = new SearchMarker([0,0], {
+				marker: this.options.markerLocation,
+				draggable: this.options.markerDraggable
+			});//see below
 		
 		this.setLayer( this._layer );
 		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
@@ -722,6 +726,7 @@ var SearchMarker = L.Marker.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
+		draggable:false,
 		radius: 10,
 		weight: 3,
 		color: '#e03',
