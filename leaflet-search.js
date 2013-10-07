@@ -32,6 +32,7 @@ L.Control.Search = L.Control.extend({
 		layer: null,				//layer where search markers(is a L.LayerGroup)		
 		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+		//TODO implement can do research on multiple sources
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
 		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"

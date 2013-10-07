@@ -1,42 +1,46 @@
-. important! implements uniq option 'source' that recognizes source type: url,array,callback or layer		, row 28
+. important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		, row 34
 
-. implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title", row 31
+. implement can do research on multiple sources, row 35
 
-. add option for persist markerLoc after collapse!, row 42
+. implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title", row 38
 
-. add option collapsed, like control.layers, row 51
+. add option for persist markerLoc after collapse!, row 49
 
-. resize _input on map resize, row 76
+. add option collapsed, like control.layers, row 59
 
-. add option for case sesitive search, also showLocation, row 286
+. resize _input on map resize, row 88
 
-. patch! remove on Leaflet stable update include isArray() method, row 340
+. add option for case sesitive search, also showLocation, row 306
 
-. verify json[i].hasOwnProperty(propName), row 354
+. use .filter or .map, row 309
 
-. remove script node after call run, row 360
+. patch! remove on Leaflet stable update include isArray() method, row 365
 
-. add rnd param or randomize callback name! in recordsFromJsonp, row 369
+. verify json[i].hasOwnProperty(propName), row 379
 
-. add rnd param or randomize callback name! in recordsFromAjax			, row 389
+. remove script node after call run, row 385
 
-. implements autype without selection(useful for mobile device), row 435
+. add rnd param or randomize callback name! in recordsFromJsonp, row 394
 
-. important optimization!!! always append data in this._recordsCache, row 524
+. add rnd param or randomize callback name! in recordsFromAjax			, row 414
 
-. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 528
+. implements autype without selection(useful for mobile device), row 469
 
-. change structure of _recordsCache, row 531
+. important optimization!!! always append data in this._recordsCache, row 560
 
-. refact _handleAutoresize now is not accurate, row 582
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 564
 
-. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 666
+. change structure of _recordsCache, row 567
 
-. add custom icon!	, row 688
+. refact _handleAutoresize now is not accurate, row 618
 
-. add inner circle, row 696
+. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 711
 
-. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 752
+. add custom icon!	, row 732
 
-. use create event 'animateEnd' in SearchMarker , row 774
+. add inner circle, row 740
+
+. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 796
+
+. use create event 'animateEnd' in SearchMarker , row 818
 
