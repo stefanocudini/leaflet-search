@@ -27,6 +27,10 @@ Adding the search control to the map:
 map.addControl( new L.Control.Search({layer: searchLayer}) );
 //searchLayer if a L.LayerGroup contains searched markers
 ```
+short way:
+```
+var map = new L.Map('map', { searchControl: {layer: searchLayer} });
+```
 
 other examples:
 ```

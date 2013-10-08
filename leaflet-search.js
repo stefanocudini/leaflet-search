@@ -59,10 +59,10 @@ L.Control.Search = L.Control.extend({
 		//TODO add option collapsed, like control.layers
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
-//FIXME option condition problem {autoCollapse:false }
+//FIXME option condition problem {autoCollapse: false }
 
 	initialize: function(options) {
-		L.Util.setOptions(this, options);
+		L.Util.setOptions(this, options || {});
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
@@ -89,7 +89,7 @@ L.Control.Search = L.Control.extend({
 		// map.on({
 		// 		'layeradd': this._onLayerAddRemove,
 		// 		'layerremove': this._onLayerAddRemove
-		// 	}, this);		
+		// 	}, this);
 		return this._container;
 	},
 
@@ -825,7 +825,7 @@ var SearchMarker = L.Marker.extend({
 
 L.Map.addInitHook(function () {
     if (this.options.searchControl) {
-        this.searchControl = L.control.search();
+        this.searchControl = L.control.search(this.options.searchControl);
         this.addControl(this.searchControl);
     }
 });
