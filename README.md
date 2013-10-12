@@ -17,6 +17,7 @@ Tested in Leaflet 0.6.4
 [Github](https://github.com/stefanocudini/leaflet-search)  
 [Bitbucket](https://bitbucket.org/zakis_/leaflet-search)  
 [NPM](https://npmjs.org/package/leaflet-search)  
+[Atmosphere](https://atmosphere.meteor.com/package/leaflet-search)
 
 #How
 Insert leaflet-search.css styles to your css page
