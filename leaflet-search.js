@@ -499,7 +499,8 @@ L.Control.Search = L.Control.extend({
 		if ((sel = this._input.selection) && sel.empty) {
 			sel.empty();
 		}
-		else if (sel = this._input.createTextRange()) {
+		else if (this._input.createTextRange) {
+			sel = this._input.createTextRange();
 			sel.collapse(true);
 			var end = this._input.value.length;
 			sel.moveStart('character', end);
