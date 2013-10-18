@@ -447,7 +447,7 @@ L.Control.Search = L.Control.extend({
 				else
 					console.log("propertyName '"+propName+"' not found in marker", layer);	
 			}
-			else if(layer instanceof L.Path)
+			else if(layer.hasOwnProperty('feature'))//GeoJSON layer
 			{
 				if(layer.feature.properties.hasOwnProperty(propName))
 				{
