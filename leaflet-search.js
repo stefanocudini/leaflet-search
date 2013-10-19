@@ -362,14 +362,6 @@ L.Control.Search = L.Control.extend({
 			propName = this.options.propertyName,
 			propLoc = this.options.propertyLoc;
 
-		//TODO patch! remove on Leaflet stable update include isArray() method
-		if(!L.Util.isArray)
-		{
-			L.Util.isArray = function (obj) {
-				return (Object.prototype.toString.call(obj) === '[object Array]');
-			};
-		}
-		
 		if( L.Util.isArray(propLoc) )
 			for(var i in json)
 				jsonret[ json[i][propName] ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
