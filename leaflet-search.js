@@ -84,12 +84,11 @@ L.Control.Search = L.Control.extend({
 			this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
 		
 		this.setLayer( this._layer );
-		this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container,'width');
-		//TODO resize _input on map resize
-		// map.on({
+		 map.on({
 		// 		'layeradd': this._onLayerAddRemove,
 		// 		'layerremove': this._onLayerAddRemove
-		// 	}, this);
+		     'resize':this._handleAutoresize()
+		 	}, this);
 		return this._container;
 	},
 
@@ -613,9 +612,11 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 	
-	//FIXME _handleAutoresize Should resize max search box size when map is resized.
 	_handleAutoresize: function() {	//autoresize this._input
-	//TODO refact _handleAutoresize now is not accurate
+	    //TODO refact _handleAutoresize now is not accurate
+	    if (this._input.style.maxWidth != this._map._container.offsetWidth) //If maxWidth isn't the same as when first set, reset to current Map width
+	        this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container, 'width');
+
 		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
 			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
 	},
