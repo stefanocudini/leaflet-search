@@ -53,7 +53,7 @@ Google Geocoding API <br />
 		{
 			key = rawjson[i].formatted_address;
 			
-			loc = L.latLng( rawjson[i].geometry.location.mb, rawjson[i].geometry.location.nb );
+			loc = L.latLng( rawjson[i].geometry.location.lat(), rawjson[i].geometry.location.lng() );
 			
 			json[ key ]= loc;	//key,value format
 		}
