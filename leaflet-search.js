@@ -434,10 +434,17 @@ L.Control.Search = L.Control.extend({
 				{
 					loc = layer.getLatLng();
 					loc.layer = layer;
-					retRecords[ layer.options[propName] ] = loc;
+					retRecords[ layer.options[propName] ] = loc;			
+					
+				}else if(layer.feature.properties.hasOwnProperty(propName)){
+
+					loc = layer.getLatLng();
+					loc.layer = layer;
+					retRecords[ layer.feature.properties[propName] ] = loc;
+					
+				}else{
+					console.log("propertyName '"+propName+"' not found in marker", layer);
 				}
-				else
-					console.log("propertyName '"+propName+"' not found in marker", layer);	
 			}
 			else if(layer.hasOwnProperty('feature'))//GeoJSON layer
 			{
