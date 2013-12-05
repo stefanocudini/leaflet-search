@@ -166,6 +166,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	collapseDelayed: function() {	//collapse after delay, used on_input blur
+		if (!this.options.autoCollapse) return this;
 		var that = this;
 		clearTimeout(this.timerCollapse);
 		this.timerCollapse = setTimeout(function() {
