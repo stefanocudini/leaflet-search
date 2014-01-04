@@ -2,6 +2,10 @@
 	"name": "leaflet-search",
 	"version": "1.4.6",
 	"description": "Leaflet Control for searching markers/features by attribute on map or remote searching in jsonp/ajax",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:stefanocudini/leaflet-search.git"
+	},
 	"repositories": [
 		{
 			"type": "git",
