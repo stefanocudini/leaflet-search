@@ -1,16 +1,21 @@
-/*
- * Leaflet Search Control 1.4.6
- * Copyright 2013, Stefano Cudini - http://labs.easyblog.it/stefano-cudini/
- * Licensed under the MIT license.
- *
- * Demo:
- * http://labs.easyblog.it/maps/leaflet-search
- *
- * Repositories:
- * https://github.com/stefanocudini/leaflet-search
- * https://bitbucket.org/zakis_/leaflet-search
- *
+/* 
+ * Leaflet Search Control v1.4.6 - 2014-01-04 
+ * 
+ * Copyright 2014 Stefano Cudini 
+ * stefano.cudini@gmail.com 
+ * http://labs.easyblog.it/ 
+ * 
+ * Licensed under the MIT license. 
+ * 
+ * Demo: 
+ * http://labs.easyblog.it/maps/leaflet-search/ 
+ * 
+ * Source: 
+ * git@github.com:stefanocudini/leaflet-search.git 
+ * https://bitbucket.org/zakis_/leaflet-search 
+ * 
  */
+
 (function() {
 
 L.Control.Search = L.Control.extend({
@@ -300,11 +305,13 @@ L.Control.Search = L.Control.extend({
 	_filterRecords: function(text) {	//Filter this._recordsCache case insensitive and much more..
 	
 		var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
-			text = text.replace(regFilter,''),	  //sanitize text
-			I = this.options.initial ? '^' : '',  //search only initial text
-			regSearch = new RegExp(I + text,'i'),
-			//TODO add option for case sesitive search, also showLocation
+			I, regSearch,
 			frecords = {};
+
+		text = text.replace(regFilter,'');	  //sanitize text
+		I = this.options.initial ? '^' : '';  //search only initial text
+		//TODO add option for case sesitive search, also showLocation
+		regSearch = new RegExp(I + text,'i');
 
 		//TODO use .filter or .map
 		for(var key in this._recordsCache)
@@ -366,9 +373,9 @@ L.Control.Search = L.Control.extend({
 			for(var i in json)
 				jsonret[ json[i][propName] ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
 		else
-			for(var i in json)
-				jsonret[ json[i][propName] ]= L.latLng( json[i][ propLoc ] );
-		//TODO verify json[i].hasOwnProperty(propName)
+			for(var n in json)
+				jsonret[ json[n][propName] ]= L.latLng( json[n][ propLoc ] );
+		//TODO verify json[n].hasOwnProperty(propName)
 		//throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
 	},
@@ -410,7 +417,7 @@ L.Control.Search = L.Control.extend({
 		var that = this;
 		request.onreadystatechange = function() {
 		    if(request.readyState === 4 && request.status === 200) {
-		    	response = window.JSON ? JSON.parse(request.responseText) : eval("("+ request.responseText + ")");
+		    	response = JSON.parse(request.responseText);
 		    	var fdata = that._filterJSON(response);//_filterJSON defined in inizialize...
 		        callAfter(fdata);
 		    }
@@ -471,7 +478,7 @@ L.Control.Search = L.Control.extend({
 			firstRecord = this._tooltip.firstChild._text,
 			end = firstRecord.length;
 
-		if (firstRecord.indexOf(this._input.value) == 0) { // If prefix match
+		if (firstRecord.indexOf(this._input.value) === 0) { // If prefix match
 			this._input.value = firstRecord;
 			this._handleAutoresize();
 
@@ -541,6 +548,7 @@ L.Control.Search = L.Control.extend({
 			case 8://backspace
 			case 46://delete
 				this._autoTypeTmp = false;//disable temporarily autoType
+			break;
 			default://All keys
 
 				if(this._input.value.length)
@@ -575,13 +583,14 @@ L.Control.Search = L.Control.extend({
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
 //	in this mode every record can have a free structure of attributes, only 'loc' is required
 	
-		var inputText = this._input.value;
+		var inputText = this._input.value,
+			that;
 		
 		L.DomUtil.addClass(this._container, 'search-load');
 
 		if(this.options.callData)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
 		{
-			var that = this;
+			that = this;
 			this.options.callData(inputText, function(jsonraw) {
 
 				that._recordsCache = that._filterJSON(jsonraw);
@@ -595,7 +604,7 @@ L.Control.Search = L.Control.extend({
 		{
 			if(this.options.jsonpParam)
 			{
-				var that = this;
+				that = this;
 				this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
 					that._recordsCache = data;
 					that.showTooltip();
@@ -604,7 +613,7 @@ L.Control.Search = L.Control.extend({
 			}
 			else
 			{
-				var that = this;
+				that = this;
 				this._recordsFromAjax(inputText, function(data) {// is async request then it need callback
 					that._recordsCache = data;
 					that.showTooltip();
@@ -672,7 +681,7 @@ L.Control.Search = L.Control.extend({
 			this.expand();
 		else
 		{
-			if(this._input.value == '')	//hide _input only
+			if(this._input.value === '')	//hide _input only
 				this.collapse();
 			else
 			{

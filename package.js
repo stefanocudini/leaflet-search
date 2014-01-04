@@ -3,9 +3,9 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
-	api.add_files('leaflet-search.js', 'client');
-	//TODO server side searching...
-	api.add_files('leaflet-search.css', 'client');
+	api.add_files('dist/leaflet-search.min.js', 'client');
+	api.add_files('dist/leaflet-search.css', 'client');
 	api.add_files('images/search-icon.png', 'client');
 	api.add_files('images/loader.gif', 'client');
+	//TODO server-side searching...	
 });

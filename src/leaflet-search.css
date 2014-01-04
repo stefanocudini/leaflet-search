@@ -1,16 +1,3 @@
-/*
- * Leaflet Search Control 1.4.6
- * Copyright 2013, Stefano Cudini - http://labs.easyblog.it/stefano-cudini/
- * Licensed under the MIT license.
- *
- * Demo:
- * http://labs.easyblog.it/maps/leaflet-search
- *
- * Repositories:
- * https://github.com/stefanocudini/leaflet-search
- * https://bitbucket.org/zakis_/leaflet-search
- *
- */
  
 .leaflet-container .leaflet-control-search {
 	position:relative;
@@ -41,7 +28,7 @@
 	margin:3px 0 3px 3px;
 }
 .leaflet-control-search.search-load .search-input {
-	background: url('images/loader.gif') no-repeat center right #fff;
+	background: url('../images/loader.gif') no-repeat center right #fff;
 }
 .leaflet-control-search.search-load .search-cancel {
 	visibility:hidden;
@@ -53,7 +40,7 @@
 	position:absolute;
 	right:22px;
 	margin:3px 0;
-	background: url('images/search-icon.png') no-repeat 0 -46px;
+	background: url('../images/search-icon.png') no-repeat 0 -46px;
 	text-decoration:none;
 	filter: alpha(opacity=80);
 	opacity: 0.8;		
@@ -77,11 +64,11 @@
 	float:left;
 	width:26px;
 	height:26px;	
-	background: url('images/search-icon.png') no-repeat 2px 2px;
+	background: url('../images/search-icon.png') no-repeat 2px 2px;
 	border-radius:4px;
 }
 .leaflet-control-search .search-button:hover {
-	background: url('images/search-icon.png') no-repeat 2px -22px;
+	background: url('../images/search-icon.png') no-repeat 2px -22px;
 }
 .leaflet-control-search .search-tooltip {
 	position:absolute;
