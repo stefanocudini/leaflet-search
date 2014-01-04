@@ -6,16 +6,6 @@
 		"type": "git",
 		"url": "git@github.com:stefanocudini/leaflet-search.git"
 	},
-	"repositories": [
-		{
-			"type": "git",
-			"url": "git@github.com:stefanocudini/leaflet-search.git"
-		},
-		{
-			"type": "mercurial",
-			"url": "https://bitbucket.org/zakis_/leaflet-search"
-		}
-	],
 	"homepage": "http://labs.easyblog.it/maps/leaflet-search/",
 	"author": {
 		"name": "Stefano Cudini",

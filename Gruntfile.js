@@ -27,8 +27,7 @@ grunt.initConfig({
 		' * <%= pkg.homepage %> \n'+
 		' * \n'+
 		' * Source: \n'+
-		' * <%= pkg.repositories[0].url %> \n'+
-		' * <%= pkg.repositories[1].url %> \n'+
+		' * <%= pkg.repository.url %> \n'+
 		' * \n'+
 		' */\n'
 	},
