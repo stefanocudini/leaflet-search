@@ -19,6 +19,16 @@ Tested in Leaflet 0.6.4
 [NPM](https://npmjs.org/package/leaflet-search)  
 [Atmosphere](https://atmosphere.meteor.com/package/leaflet-search)
 
+#Build
+
+Since Version 1.4.7 this plugin support [Grunt](http://gruntjs.com/) for building process.
+Therefore the deployment require [NPM](https://npmjs.org/) installed in your system.
+After you've made sure to have npm working, run this in command line:
+```
+npm install
+grunt
+```
+
 #How
 Insert leaflet-search.css styles to your css page
 
