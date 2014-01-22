@@ -5,7 +5,7 @@ Leaflet.Control.Search
 A leaflet control that search markers/features location by cutstom property.
 With ajax/jsonp autocompletion and json fields re-mapping
 
-Tested in Leaflet 0.6.4
+Tested in Leaflet 0.7
 
 
 #Where
