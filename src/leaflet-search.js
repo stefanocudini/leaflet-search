@@ -1,4 +1,3 @@
-
 (function() {
 
 L.Control.Search = L.Control.extend({
@@ -75,7 +74,7 @@ L.Control.Search = L.Control.extend({
 		 map.on({
 		// 		'layeradd': this._onLayerAddRemove,
 		// 		'layerremove': this._onLayerAddRemove
-		     'resize':this._handleAutoresize()
+		     'resize': this._handleAutoresize
 		 	}, this);
 		return this._container;
 	},
