@@ -1,5 +1,5 @@
 /* 
- * Leaflet Search Control v1.4.7 - 2014-01-04 
+ * Leaflet Search Control v1.4.7 - 2014-02-07 
  * 
  * Copyright 2014 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -14,7 +14,6 @@
  * git@github.com:stefanocudini/leaflet-search.git 
  * 
  */
-
 (function() {
 
 L.Control.Search = L.Control.extend({
@@ -91,7 +90,7 @@ L.Control.Search = L.Control.extend({
 		 map.on({
 		// 		'layeradd': this._onLayerAddRemove,
 		// 		'layerremove': this._onLayerAddRemove
-		     'resize':this._handleAutoresize()
+		     'resize': this._handleAutoresize
 		 	}, this);
 		return this._container;
 	},
