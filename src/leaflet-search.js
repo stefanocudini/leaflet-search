@@ -21,8 +21,8 @@ L.Control.Search = L.Control.extend({
 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
 		//TODO implement can do research on multiple sources
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
-		propertyLoc: 'loc',			//field name for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
-		//TODO implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title"
+		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
+		//support dotted format 'prop.subprop.title'
 		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
@@ -94,7 +94,22 @@ L.Control.Search = L.Control.extend({
 	// 		if( L.stamp(e.layer) != L.stamp(this._layer) )
 	// 			this.setLayer(e.layer);
 	// },
-	
+
+	_getPath: function(obj, prop) {
+		var parts = prop.split('.'),
+			last = parts.pop(),
+			len = parts.length,
+			cur = parts[0],
+			i = 1;
+
+		if(len > 0)
+			while((obj = obj[cur]) && i < len)
+				cur = parts[i++];
+
+		if(obj)
+			return obj[last];
+	},
+
 	setLayer: function(layer) {	//set search layer at runtime
 		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
 		this._layer = layer;
@@ -347,18 +362,17 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_defaultFilterJSON: function(json) {	//default callback for filter data
-		var jsonret = {},
+		var jsonret = {}, i,
 			propName = this.options.propertyName,
 			propLoc = this.options.propertyLoc;
 
 		if( L.Util.isArray(propLoc) )
-			for(var i in json)
-				jsonret[ json[i][propName] ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
+			for(i in json)
+				jsonret[ this._getPath(json[i],propName) ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
 		else
-			for(var n in json)
-				jsonret[ json[n][propName] ]= L.latLng( json[n][ propLoc ] );
-		//TODO verify json[n].hasOwnProperty(propName)
-		//throw new Error("propertyName '"+propName+"' not found in JSON data");
+			for(i in json)
+				jsonret[ this._getPath(json[i],propName) ]= L.latLng( this._getPath(json[i],propLoc) );
+		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
 	},
 
@@ -409,7 +423,8 @@ L.Control.Search = L.Control.extend({
 	},	
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
-		var retRecords = {},
+		var that = this,
+			retRecords = {},
 			propName = this.options.propertyName,
 			loc;
 		
@@ -419,17 +434,17 @@ L.Control.Search = L.Control.extend({
 
 			if(layer instanceof L.Marker)
 			{
-				if(layer.options.hasOwnProperty(propName))
+				if(that._getPath(layer.options,propName))
 				{
 					loc = layer.getLatLng();
 					loc.layer = layer;
-					retRecords[ layer.options[propName] ] = loc;			
+					retRecords[ that._getPath(layer.options,propName) ] = loc;			
 					
-				}else if(layer.feature.properties.hasOwnProperty(propName)){
+				}else if(that._getPath(layer.feature.properties,propName)){
 
 					loc = layer.getLatLng();
 					loc.layer = layer;
-					retRecords[ layer.feature.properties[propName] ] = loc;
+					retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
 					
 				}else{
 					console.log("propertyName '"+propName+"' not found in marker", layer);
@@ -820,7 +835,7 @@ var SearchMarker = L.Marker.extend({
 		}, tInt);
 		
 		return this;
-	 }
+	}
 });
 
 L.Map.addInitHook(function () {
