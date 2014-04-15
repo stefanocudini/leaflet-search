@@ -6,12 +6,33 @@
 <link rel="stylesheet" href="/maps/leaflet/dist/leaflet.css" />
 <link rel="stylesheet" href="../src/leaflet-search.css" />
 <link rel="stylesheet" href="../style.css" />
+<style>
+#findbox {
+	background: #eee;
+	border-radius:.125em;
+	border:2px solid #1978cf;
+	box-shadow: 0 0 8px #999;	
+	margin-bottom: 10px;
+	padding: 2px 0;
+	width: 600px;
+	height: 26px;
+}
+.search-tooltip {
+	width: 200px;
+}
+.leaflet-control-search .search-cancel {
+	position: static;
+	float: left;
+	margin-left: -22px;
+}
+</style>
 </head>
 
 <body>
 <h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
 
-<h4>Outside Div Example: <em>move Seach Control outside of map div</em></h4>
+<h4>Outside Div Example: <em>move Seach Control outside the map div</em></h4>
+<div id="findbox"></div>
 <div id="map"></div>
 
 <div id="post-it">
@@ -57,7 +78,7 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 	var markersLayer = new L.LayerGroup();	//layer contain searched elements
 	map.addLayer(markersLayer);
 
-	map.addControl( new L.Control.Search({layer: markersLayer, initial: false}) );  //inizialize search control
+	map.addControl( new L.Control.Search({wrapper: 'findbox', layer: markersLayer, initial: false}) );  //inizialize search control
 
 	////////////populate map with markers from sample data
 	for(i in data) {

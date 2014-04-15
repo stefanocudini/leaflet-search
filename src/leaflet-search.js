@@ -14,6 +14,7 @@ L.Control.Search = L.Control.extend({
 	//  showAlert()             'Text message'      Show alert message
 	//
 	options: {
+		wrapper: '',				//container id to insert Search Control
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		layer: null,				//layer where search markers(is a L.LayerGroup)		
@@ -77,6 +78,19 @@ L.Control.Search = L.Control.extend({
 		     'resize': this._handleAutoresize
 		 	}, this);
 		return this._container;
+	},
+	addTo: function (map) {
+
+		if(this.options.wrapper) {
+			this._container = this.onAdd(map);
+			this._wrapper = L.DomUtil.get(this.options.wrapper);
+			this._wrapper.style.position = 'relative';
+			this._wrapper.appendChild(this._container);
+		}
+		else
+			L.Control.prototype.addTo.call(this, map);
+
+		return this;
 	},
 
 	onRemove: function(map) {
