@@ -20,9 +20,9 @@ L.Control.Search = L.Control.extend({
 		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
 		//TODO implement can do research on multiple sources
-		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer
+		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
-		//support dotted format 'prop.subprop.title'
+									// support dotted format: 'prop.subprop.title'
 		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
