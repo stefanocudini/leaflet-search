@@ -3,15 +3,15 @@
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
 	//
-	//	Name					Data passed			Description
+	//	Name					Data passed			   Description
 	//
 	//Managed Events:
-	//	search_locationfound	{latlng, title}     fired after moved and show markerLocation
-	//  search_collapsed		{}					fired after control was collapsed
+	//	search_locationfound	{latlng, title, layer} fired after moved and show markerLocation
+	//  search_collapsed		{}					   fired after control was collapsed
 	//
 	//Public methods:
-	//  setLayer()				L.LayerGroup()      set layer search at runtime
-	//  showAlert()             'Text message'      Show alert message
+	//  setLayer()				L.LayerGroup()         set layer search at runtime
+	//  showAlert()             'Text message'         Show alert message
 	//
 	options: {
 		wrapper: '',				//container id to insert Search Control
@@ -48,7 +48,18 @@ L.Control.Search = L.Control.extend({
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse: false }
-
+//
+//TODO important optimization!!! always append data in this._recordsCache
+//  now _recordsCache content is emptied and replaced with new data founded
+//  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
+//
+//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+//  run one of callbacks search(callData,jsonpUrl or options.layer) and run this.showTooltip
+//
+//TODO change structure of _recordsCache
+//	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
+//	in this mode every record can have a free structure of attributes, only 'loc' is required
+	
 	initialize: function(options) {
 		L.Util.setOptions(this, options || {});
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
@@ -599,7 +610,7 @@ L.Control.Search = L.Control.extend({
 		
 		L.DomUtil.addClass(this._container, 'search-load');
 
-		if(this.options.callData)	//CUSTOM SEARCH CALLBACK(USUALLY FOR AJAX SEARCHING)
+		if(this.options.callData)	//CUSTOM SEARCH CALLBACK
 		{
 			that = this;
 			this.options.callData(inputText, function(jsonraw) {

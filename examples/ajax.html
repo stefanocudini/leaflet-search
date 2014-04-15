@@ -26,8 +26,8 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
-
-	map.addControl( new L.Control.Search({url: 'search.php?q={s}', text:'Color...', markerLocation: true}) );
+	
+	map.addControl(new L.Control.Search({url: 'search.php?q={s}', text:'Color...', markerLocation: true}));
 
 </script>
 
