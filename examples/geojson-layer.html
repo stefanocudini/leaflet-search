@@ -32,8 +32,11 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 	var featuresLayer = new L.GeoJSON(data, {
-			style: function(f) {
-				return {color: f.properties.color };
+			style: function(feature) {
+				return {color: feature.properties.color };
+			},
+			onEachFeature: function(feature, marker) {
+				marker.bindPopup('<h4 style="color:'+feature.properties.color+'">'+ feature.properties.name +'</h4>');
 			}
 		});
 
@@ -44,6 +47,8 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 	searchControl.on('search_locationfound', function(e) {
 		
 		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
+		if(e.layer._popup)
+			e.layer.openPopup();
 
 	}).on('search_collapsed', function(e) {
 

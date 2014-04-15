@@ -59,10 +59,6 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 
 	var controlSearch = new L.Control.Search({layer: markersLayer, initial: false});
 
-	controlSearch.on('search_locationfound', function(e) {
-		e.layer.openPopup();
-	});
-
 	map.addControl( controlSearch );
 
 	////////////populate map with markers from sample data
