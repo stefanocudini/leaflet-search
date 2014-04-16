@@ -35,7 +35,9 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 			type: 'GET',
 			data: {q: text},
 			dataType: 'json',
-			success: callResponse
+			success: function(json) {
+				callResponse(json);
+			}
 		});
 	}
 
