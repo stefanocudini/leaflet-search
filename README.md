@@ -77,3 +77,22 @@ searchControl.on('search_locationfound', function(e) {
 map.addControl(searchControl);
 ```
 
+Static data source:
+```
+var data = [
+	{"loc":[41.575330,13.102411], "title":"aquamarine"},
+	{"loc":[41.575730,13.002411], "title":"black"},
+	{"loc":[41.219190,13.062145], "title":"cyan"}
+];
+
+map.addControl(new L.Control.Search({
+	markerLocation: true,
+	callData: function(text, callResponse) {
+		
+		//here can use custom criteria or merge data from multiple layers
+
+		callResponse(data);
+	}
+}) );
+```
+
