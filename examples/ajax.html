@@ -23,11 +23,18 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 <script src="../src/leaflet-search.js"></script>
 <script>
 
-	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]), zoomControl:false });
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 	
-	map.addControl(new L.Control.Search({url: 'search.php?q={s}', text:'Color...', markerLocation: true}));
+	L.control.search({
+		url: 'search.php?q={s}',
+		text:'Color...',
+		collapsed: false,		
+		markerLocation: true
+	}).addTo(map);
+
+	L.control.zoom().addTo(map);
 
 </script>
 

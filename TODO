@@ -1,29 +1,59 @@
 Tasks found in: src/leaflet-search.js
     [Line: 22] [low] 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
     [Line: 23] [low] 		//TODO implement can do research on multiple sources
+    [Line: 38] [low] 		//TODO add option for persist markerLoc after collapse!
+    [Line: 48] [low] 		//TODO add option collapsed, like control.layers
+    [Line: 53] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 57] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 60] [low] //TODO change structure of _recordsCache
+    [Line: 342] [low] 		//TODO add option for case sesitive search, also showLocation
+    [Line: 345] [low] 		//TODO use .filter or .map
+    [Line: 407] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 412] [low] 		//TODO remove script node after call run
+    [Line: 421] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 441] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 504] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 604] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 608] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 611] [low] //TODO change structure of _recordsCache
+    [Line: 662] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 758] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 779] [low] 		//TODO add custom icon!	
+    [Line: 787] [low] 		//TODO add inner circle
+    [Line: 843] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 865] [low] 					//TODO use create event 'animateEnd' in SearchMarker 
+    [Line: 50] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+    [Line: 51] [med] //FIXME option condition problem {autoCollapse: false }
+    [Line: 358] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
+    [Line: 731] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 761] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+Tasks found in: src/leaflet-search_collapsed.js
+    [Line: 22] [low] 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+    [Line: 23] [low] 		//TODO implement can do research on multiple sources
     [Line: 37] [low] 		//TODO add option for persist markerLoc after collapse!
     [Line: 47] [low] 		//TODO add option collapsed, like control.layers
     [Line: 52] [low] //TODO important optimization!!! always append data in this._recordsCache
     [Line: 56] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 59] [low] //TODO change structure of _recordsCache
-    [Line: 335] [low] 		//TODO add option for case sesitive search, also showLocation
-    [Line: 338] [low] 		//TODO use .filter or .map
-    [Line: 400] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 405] [low] 		//TODO remove script node after call run
-    [Line: 414] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 434] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 497] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 597] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 601] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 604] [low] //TODO change structure of _recordsCache
-    [Line: 655] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 751] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 772] [low] 		//TODO add custom icon!	
-    [Line: 780] [low] 		//TODO add inner circle
-    [Line: 836] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 858] [low] 					//TODO use create event 'animateEnd' in SearchMarker 
+    [Line: 87] [low] 						// TODO: touch
+    [Line: 358] [low] 		//TODO add option for case sesitive search, also showLocation
+    [Line: 361] [low] 		//TODO use .filter or .map
+    [Line: 423] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 428] [low] 		//TODO remove script node after call run
+    [Line: 437] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 457] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 520] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 620] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 624] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 627] [low] //TODO change structure of _recordsCache
+    [Line: 678] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 774] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 795] [low] 		//TODO add custom icon!	
+    [Line: 803] [low] 		//TODO add inner circle
+    [Line: 859] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 881] [low] 					//TODO use create event 'animateEnd' in SearchMarker 
     [Line: 49] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 50] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 351] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
-    [Line: 724] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 754] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 374] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
+    [Line: 747] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 777] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!

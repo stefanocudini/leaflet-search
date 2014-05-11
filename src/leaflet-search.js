@@ -33,6 +33,7 @@ L.Control.Search = L.Control.extend({
 		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
+		collapsed: true,			//collapse search control at startup
 		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
 		//TODO add option for persist markerLoc after collapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
@@ -78,7 +79,10 @@ L.Control.Search = L.Control.extend({
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
 		this._button = this._createButton(this.options.text, 'search-button');
 		this._alert = this._createAlert('search-alert');
-		
+
+		if(this.options.collapsed===false)
+			this.expand();
+
 		if(this.options.circleLocation || this.options.markerLocation)
 			this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
 		
@@ -170,7 +174,7 @@ L.Control.Search = L.Control.extend({
 		return this;
 	},
 	
-	expand: function() {		
+	expand: function() {	
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
@@ -182,12 +186,15 @@ L.Control.Search = L.Control.extend({
 		this._hideTooltip();
 		this.cancel();
 		this._alert.style.display = 'none';
-		this._input.style.display = 'none';
 		this._input.blur();
-		this._cancel.style.display = 'none';
-		L.DomUtil.removeClass(this._container, 'search-exp');		
-		//this._markerLoc.hide();//maybe unuseful
-		this._map.off('dragstart', this.collapse, this);
+		if(this.options.collapsed)
+		{
+			this._input.style.display = 'none';
+			this._cancel.style.display = 'none';			
+			L.DomUtil.removeClass(this._container, 'search-exp');		
+			//this._markerLoc.hide();//maybe unuseful
+			this._map.off('dragstart', this.collapse, this);
+		}
 		this.fire('search_collapsed');
 		return this;
 	},
