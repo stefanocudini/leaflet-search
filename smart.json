@@ -3,6 +3,6 @@
 	"description": "Leaflet Control for searching markers/features by attribute on map or remote searching in jsonp/ajax",
 	"homepage": "http://labs.easyblog.it/maps/leaflet-search/",
 	"author": "Stefano Cudini <stefano.cudini@gmail.com>",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"git": "https://github.com/stefanocudini/leaflet-search.git"
 }
