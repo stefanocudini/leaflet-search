@@ -178,7 +178,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
-		this._map.on('dragstart', this.collapse, this);
+		this._map.on('dragstart click', this.collapse, this);
 		return this;	
 	},
 
@@ -193,7 +193,7 @@ L.Control.Search = L.Control.extend({
 			this._cancel.style.display = 'none';			
 			L.DomUtil.removeClass(this._container, 'search-exp');		
 			//this._markerLoc.hide();//maybe unuseful
-			this._map.off('dragstart', this.collapse, this);
+			this._map.off('dragstart click', this.collapse, this);
 		}
 		this.fire('search_collapsed');
 		return this;

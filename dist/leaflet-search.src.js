@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.5.2 - 2014-05-21 
+ * Leaflet Control Search v1.5.2 - 2014-06-23 
  * 
  * Copyright 2014 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -194,7 +194,7 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');	
 		this._input.focus();
-		this._map.on('dragstart', this.collapse, this);
+		this._map.on('dragstart click', this.collapse, this);
 		return this;	
 	},
 
@@ -209,7 +209,7 @@ L.Control.Search = L.Control.extend({
 			this._cancel.style.display = 'none';			
 			L.DomUtil.removeClass(this._container, 'search-exp');		
 			//this._markerLoc.hide();//maybe unuseful
-			this._map.off('dragstart', this.collapse, this);
+			this._map.off('dragstart click', this.collapse, this);
 		}
 		this.fire('search_collapsed');
 		return this;
