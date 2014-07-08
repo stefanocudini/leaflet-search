@@ -11,7 +11,7 @@
 <body>
 <h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
 
-<h4>AJAX Example: <em>search locations by Ajax request</em></h4>
+<h4>AJAX Example: <em>search locations by Ajax request, with custom icon marker</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
@@ -29,9 +29,10 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 	
 	L.control.search({
 		url: 'search.php?q={s}',
-		text:'Color...',
-		collapsed: false,		
-		markerLocation: true
+		text: 'Color...',
+		collapsed: false,
+		markerLocation: true,
+		markerIcon: new L.Icon({iconUrl:'custom-icon.png', iconSize: [20,20]})
 	}).addTo(map);
 
 	L.control.zoom().addTo(map);

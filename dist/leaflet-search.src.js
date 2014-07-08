@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.5.2 - 2014-06-23 
+ * Leaflet Control Search v1.5.3 - 2014-07-08 
  * 
  * Copyright 2014 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -53,15 +53,15 @@ L.Control.Search = L.Control.extend({
 		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
 		//TODO add option for persist markerLoc after collapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
-		animateLocation: true,		//animate a circle over location found
-		circleLocation: true,		//draw a circle in location found
-		markerLocation: false,		//draw a marker in location found
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		text: 'Search...',			//placeholder value	
 		textCancel: 'Cancel',		//title in cancel button
 		textErr: 'Location not found',	//error message
-		position: 'topleft'
-		//TODO add option collapsed, like control.layers
+		position: 'topleft',
+		animateLocation: true,		//animate a circle over location found
+		circleLocation: true,		//draw a circle in location found
+		markerLocation: false,		//draw a marker in location found
+		markerIcon: new L.Icon.Default()//custom icon for maker location
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse: false }
@@ -99,8 +99,11 @@ L.Control.Search = L.Control.extend({
 		if(this.options.collapsed===false)
 			this.expand();
 
-		if(this.options.circleLocation || this.options.markerLocation)
-			this._markerLoc = new SearchMarker([0,0], {marker: this.options.markerLocation});//see below
+		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon)
+			this._markerLoc = new SearchMarker([0,0], {
+					showMarker: this.options.markerLocation,
+					icon: this.options.markerIcon
+				});//see below
 		
 		this.setLayer( this._layer );
 		 map.on({
@@ -792,15 +795,14 @@ var SearchMarker = L.Marker.extend({
 		stroke: true,
 		fill: false,
 		title: '',
-		//TODO add custom icon!	
-		marker: false	//show icon optional, show only circleLoc
+		icon: new L.Icon.Default(),
+		showMarker: false	//show icon optional, show only circleLoc
 	},
 	
 	initialize: function (latlng, options) {
 		L.setOptions(this, options);
 		L.Marker.prototype.initialize.call(this, latlng, options);
 		this._circleLoc = new L.CircleMarker(latlng, this.options);
-		//TODO add inner circle
 	},
 
 	onAdd: function (map) {
@@ -829,7 +831,7 @@ var SearchMarker = L.Marker.extend({
 	},
 
 	show: function() {
-		if(this.options.marker)
+		if(this.options.showMarker)
 		{
 			if(this._icon)
 				this._icon.style.display = 'block';
