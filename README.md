@@ -89,6 +89,10 @@ map.addControl(new L.Control.Search({
 }) );
 ```
 
+#Use Case List:
+
+[Websites that use Leaflet Control Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
+
 #Build
 
 Since Version 1.4.7 this plugin support [Grunt](http://gruntjs.com/) for building process.
