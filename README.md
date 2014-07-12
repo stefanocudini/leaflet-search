@@ -21,6 +21,8 @@ Tested in Leaflet 0.7.2
 [NPM](https://npmjs.org/package/leaflet-search)  
 [Atmosphere](https://atmosphere.meteor.com/package/leaflet-search)
 
+[Websites that use Leaflet Control Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
+
 #Examples
 (require src/leaflet-search.css)
 
@@ -88,10 +90,6 @@ map.addControl(new L.Control.Search({
 	}
 }) );
 ```
-
-#Use Case List:
-
-[Websites that use Leaflet Control Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
 
 #Build
 
