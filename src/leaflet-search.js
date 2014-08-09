@@ -85,6 +85,7 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon)
 			this._markerLoc = new SearchMarker([0,0], {
+					showCircle: this.options.circleLocation,
 					showMarker: this.options.markerLocation,
 					icon: this.options.markerIcon
 				});//see below
@@ -235,6 +236,8 @@ L.Control.Search = L.Control.extend({
 		input.size = this._inputMinSize;
 		input.value = '';
 		input.autocomplete = 'off';
+		input.autocorrect = 'off';
+		input.autocapitalize = 'off';
 		input.placeholder = text;
 		input.style.display = 'none';
 		
@@ -780,29 +783,34 @@ var SearchMarker = L.Marker.extend({
 		fill: false,
 		title: '',
 		icon: new L.Icon.Default(),
+		showCircle: true,
 		showMarker: false	//show icon optional, show only circleLoc
 	},
 	
 	initialize: function (latlng, options) {
 		L.setOptions(this, options);
 		L.Marker.prototype.initialize.call(this, latlng, options);
-		this._circleLoc = new L.CircleMarker(latlng, this.options);
+		if(this.options.showCircle)
+			this._circleLoc =  new L.CircleMarker(latlng, this.options);
 	},
 
 	onAdd: function (map) {
 		L.Marker.prototype.onAdd.call(this, map);
-		map.addLayer(this._circleLoc);
+		if(this._circleLoc)
+			map.addLayer(this._circleLoc);
 		this.hide();
 	},
 
 	onRemove: function (map) {
 		L.Marker.prototype.onRemove.call(this, map);
-		map.removeLayer(this._circleLoc);
+		if(this._circleLoc)
+			map.removeLayer(this._circleLoc);
 	},	
 	
 	setLatLng: function (latlng) {
 		L.Marker.prototype.setLatLng.call(this, latlng);
-		this._circleLoc.setLatLng(latlng);
+		if(this._circleLoc)
+			this._circleLoc.setLatLng(latlng);
 		return this;
 	},
 	
@@ -843,30 +851,33 @@ var SearchMarker = L.Marker.extend({
 
 	animate: function() {
 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-		var circle = this._circleLoc,
-			tInt = 200,	//time interval
-			ss = 10,	//frames
-			mr = parseInt(circle._radius/ss),
-			oldrad = this.options.radius,
-			newrad = circle._radius * 2.5,
-			acc = 0;
+		if(this._circleLoc)
+		{
+			var circle = this._circleLoc,
+				tInt = 200,	//time interval
+				ss = 10,	//frames
+				mr = parseInt(circle._radius/ss),
+				oldrad = this.options.radius,
+				newrad = circle._radius * 2.5,
+				acc = 0;
 
-		circle._timerAnimLoc = setInterval(function() {
-			acc += 0.5;
-			mr += acc;	//adding acceleration
-			newrad -= mr;
-			
-			circle.setRadius(newrad);
+			circle._timerAnimLoc = setInterval(function() {
+				acc += 0.5;
+				mr += acc;	//adding acceleration
+				newrad -= mr;
+				
+				circle.setRadius(newrad);
 
-			if(newrad<oldrad)
-			{
-				clearInterval(circle._timerAnimLoc);
-				circle.setRadius(oldrad);//reset radius
-				//if(typeof afterAnimCall == 'function')
-					//afterAnimCall();
-					//TODO use create event 'animateEnd' in SearchMarker 
-			}
-		}, tInt);
+				if(newrad<oldrad)
+				{
+					clearInterval(circle._timerAnimLoc);
+					circle.setRadius(oldrad);//reset radius
+					//if(typeof afterAnimCall == 'function')
+						//afterAnimCall();
+						//TODO use create event 'animateEnd' in SearchMarker 
+				}
+			}, tInt);
+		}
 		
 		return this;
 	}
