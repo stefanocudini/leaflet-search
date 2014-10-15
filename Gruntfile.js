@@ -15,7 +15,7 @@ grunt.initConfig({
 	meta: {
 		banner:
 		'/* \n'+
-		' * Leaflet Search Control v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> \n'+
+		' * Leaflet Control Search v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> \n'+
 		' * \n'+
 		' * Copyright 2014 <%= pkg.author.name %> \n'+
 		' * <%= pkg.author.email %> \n'+

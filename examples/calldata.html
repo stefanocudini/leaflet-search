@@ -11,17 +11,18 @@
 <body>
 <h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
 
-<h4>Custom Tip Example: <em>customize each tip in menu</em></h4>
+<h4>Static data Example: <em>search locations using option callData in static Array</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
 <b>Search values:</b><br />
-aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, green, red, skyblue, yellow, white ...
+black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 </div>
 
 <script src="/maps/leaflet/dist/leaflet.js"></script>
 <script src="../src/leaflet-search.js"></script>
 <script>
+
 
 	//sample data values for populate map
 	var data = [
@@ -50,27 +51,18 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 		{"loc":[41.239190,13.032145], "title":"white"}
 	];
 
-	var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });	//set center from first location
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	var markersLayer = new L.LayerGroup();	//layer contain searched elements
-	map.addLayer(markersLayer);
-	
-	function customTip(text,val) {
-		return '<a href="#">'+text+'<em style="background:'+text+'; width:14px;height:14px;float:right"></em></a>';
+	function localData(text, callResponse)
+	{
+		//here can use custom criteria or merge data from multiple layers
+
+		callResponse(data);
 	}
 
-	map.addControl( new L.Control.Search({layer: markersLayer, callTip: customTip, autoType: false }) );  //inizialize search control
-
-	////////////populate map with markers from sample data
-	for(i in data) {
-		var title = data[i].title,	//value searched
-			loc = data[i].loc,		//position found
-			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
-		marker.bindPopup('title: '+ title );
-		markersLayer.addLayer(marker);
-	}
+	map.addControl( new L.Control.Search({callData: localData, text:'Color...', markerLocation:true}) );
 
 </script>
 

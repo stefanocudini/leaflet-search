@@ -1,13 +1,14 @@
-Leaflet.Control.Search
+Leaflet Control Search
 ============
 
-A leaflet control that search markers/features location by custom property.<br />
-With ajax/jsonp autocompletion and JSON fields filter/remap
+A Leaflet control that search markers/features location by custom property.<br />
+Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
 Copyright 2014 [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)
 
 Tested in Leaflet 0.7.2
 
+![Image](https://raw.githubusercontent.com/stefanocudini/leaflet-search/master/images/leaflet-search.jpg)
 
 #Where
 
@@ -20,15 +21,7 @@ Tested in Leaflet 0.7.2
 [NPM](https://npmjs.org/package/leaflet-search)  
 [Atmosphere](https://atmosphere.meteor.com/package/leaflet-search)
 
-#Build
-
-Since Version 1.4.7 this plugin support [Grunt](http://gruntjs.com/) for building process.
-Therefore the deployment require [NPM](https://npmjs.org/) installed in your system.
-After you've made sure to have npm working, run this in command line:
-```bash
-npm install
-grunt
-```
+[Websites that use Leaflet Control Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
 
 #Examples
 (require src/leaflet-search.css)
@@ -64,6 +57,7 @@ map.addControl( new L.Control.Search({
 Search and color features vector in GeoJSON layer:
 ```javascript
 var searchControl = new L.Control.Search({layer: geojsonLayer, circleLocation:false});
+
 searchControl.on('search_locationfound', function(e) {
 	
 	e.layer.setStyle({fillColor: '#3f0'});
@@ -74,6 +68,35 @@ searchControl.on('search_locationfound', function(e) {
 		featuresLayer.resetStyle(layer);
 	});	
 });
+
 map.addControl(searchControl);
 ```
 
+Static data source:
+```
+var data = [
+	{"loc":[41.575330,13.102411], "title":"aquamarine"},
+	{"loc":[41.575730,13.002411], "title":"black"},
+	{"loc":[41.219190,13.062145], "title":"cyan"}
+];
+
+map.addControl(new L.Control.Search({
+	markerLocation: true,
+	callData: function(text, callResponse) {
+		
+		//here can use custom criteria or merge data from multiple layers
+
+		callResponse(data);
+	}
+}) );
+```
+
+#Build
+
+Since Version 1.4.7 this plugin support [Grunt](http://gruntjs.com/) for building process.
+Therefore the deployment require [NPM](https://npmjs.org/) installed in your system.
+After you've made sure to have npm working, run this in command line:
+```bash
+npm install
+grunt
+```

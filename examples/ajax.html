@@ -11,7 +11,7 @@
 <body>
 <h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
 
-<h4>AJAX Example: <em>search locations by Ajax request</em></h4>
+<h4>AJAX Example: <em>search locations by Ajax request, with custom icon marker</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
@@ -23,11 +23,19 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 <script src="../src/leaflet-search.js"></script>
 <script>
 
-	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]), zoomControl:false });
 
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	
+	L.control.search({
+		url: 'search.php?q={s}',
+		text: 'Color...',
+		collapsed: false,
+		markerLocation: true,
+		markerIcon: new L.Icon({iconUrl:'custom-icon.png', iconSize: [20,20]})
+	}).addTo(map);
 
-	map.addControl( new L.Control.Search({url: 'search.php?q={s}', text:'Color...', markerLocation: true}) );
+	L.control.zoom().addTo(map);
 
 </script>
 
