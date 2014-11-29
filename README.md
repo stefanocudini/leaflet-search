@@ -87,6 +87,12 @@ map.addControl(new L.Control.Search({
 		//here can use custom criteria or merge data from multiple layers
 
 		callResponse(data);
+
+		return {	//called to stop previous requests on map move
+			abort: function() {
+				console.log('aborted request:'+ text);
+			}
+		};
 	}
 }) );
 ```
