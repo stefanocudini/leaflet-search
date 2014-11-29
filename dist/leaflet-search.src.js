@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.5.5 - 2014-08-09 
+ * Leaflet Control Search v1.5.6 - 2014-11-29 
  * 
  * Copyright 2014 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -85,6 +85,7 @@ L.Control.Search = L.Control.extend({
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 		this._countertips = 0;		//number of tips items
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
+		this._curReq = null;
 	},
 
 	onAdd: function (map) {
@@ -443,8 +444,7 @@ L.Control.Search = L.Control.extend({
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 		script.type = 'text/javascript';
 		script.src = url;
-		return this;
-		//may be return {abort: function() { script.parentNode.removeChild(script); } };
+		return {abort: function() { script.parentNode.removeChild(script); } };
 	},
 
 	_recordsFromAjax: function(text, callAfter) {	//Ajax request
@@ -473,7 +473,7 @@ L.Control.Search = L.Control.extend({
 		    }
 		};
 		request.send();
-		return this;   
+		return request;   
 	},	
 
 	_recordsFromLayer: function() {	//return table: key,value from layer
@@ -635,14 +635,17 @@ L.Control.Search = L.Control.extend({
 //	in this mode every record can have a free structure of attributes, only 'loc' is required
 	
 		var inputText = this._input.value,
-			that;
+			that = this;
 		
-		L.DomUtil.addClass(this._container, 'search-load');
+		if(this._curReq && this._curReq.abort)
+			this._curReq.abort();
+		//abort previous requests
+
+		L.DomUtil.addClass(this._container, 'search-load');	
 
 		if(this.options.callData)	//CUSTOM SEARCH CALLBACK
 		{
-			that = this;
-			this.options.callData(inputText, function(jsonraw) {
+			this._curReq = this.options.callData(inputText, function(jsonraw) {
 
 				that._recordsCache = that._filterJSON(jsonraw);
 
@@ -655,8 +658,7 @@ L.Control.Search = L.Control.extend({
 		{
 			if(this.options.jsonpParam)
 			{
-				that = this;
-				this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
+				this._curReq = this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
 					that._recordsCache = data;
 					that.showTooltip();
 					L.DomUtil.removeClass(that._container, 'search-load');
@@ -664,8 +666,7 @@ L.Control.Search = L.Control.extend({
 			}
 			else
 			{
-				that = this;
-				this._recordsFromAjax(inputText, function(data) {// is async request then it need callback
+				this._curReq = this._recordsFromAjax(inputText, function(data) {// is async request then it need callback
 					that._recordsCache = data;
 					that.showTooltip();
 					L.DomUtil.removeClass(that._container, 'search-load');

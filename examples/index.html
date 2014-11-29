@@ -158,7 +158,7 @@ h4 {
 
 	function searchByAjax(text, callResponse)//callback for 3rd party ajax requests
 	{
-		$.ajax({
+		return $.ajax({
 			url: 'search.php',	//read comments in search.php for more information usage
 			type: 'GET',
 			data: {q: text},
