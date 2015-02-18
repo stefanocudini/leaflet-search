@@ -1,7 +1,10 @@
 {
   "name": "leaflet-search",
-  "version": "1.5.5",
-  "main": "leaflet-search.js",
+  "version": "1.5.6",
+  "main": [
+    "dist/leaflet-search.src.js",
+    "dist/leaflet-search.src.css"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
