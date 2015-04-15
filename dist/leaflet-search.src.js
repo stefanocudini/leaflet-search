@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.5.6 - 2014-11-29 
+ * Leaflet Control Search v1.5.6 - 2015-04-16 
  * 
  * Copyright 2014 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -31,7 +31,7 @@ L.Control.Search = L.Control.extend({
 	//
 	options: {
 		wrapper: '',				//container id to insert Search Control
-		url: '',					//url for search by ajax request, ex: "search.php?q={s}"
+		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		layer: null,				//layer where search markers(is a L.LayerGroup)		
 		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
@@ -354,6 +354,10 @@ L.Control.Search = L.Control.extend({
 
 //////end DOM creations
 
+	_getUrl: function() {
+		return (typeof(this.options.url) == "function") ? this.options.url() : this.options.url;
+	},
+
 	_filterRecords: function(text) {	//Filter this._recordsCache case insensitive and much more..
 	
 		var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
@@ -439,7 +443,7 @@ L.Control.Search = L.Control.extend({
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
-			url = L.Util.template(this.options.url+'&'+this.options.jsonpParam+'=L.Control.Search.callJsonp', {s: text}); //parsing url
+			url = L.Util.template(this._getUrl()+'&'+this.options.jsonpParam+'=L.Control.Search.callJsonp', {s: text}); //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 		script.type = 'text/javascript';
@@ -458,7 +462,7 @@ L.Control.Search = L.Control.extend({
 			};
 		}
 		var request = new XMLHttpRequest(),
-			url = L.Util.template(this.options.url, {s: text}), //parsing url
+			url = L.Util.template(this._getUrl(), {s: text}), //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
 			response = {};
@@ -610,6 +614,7 @@ L.Control.Search = L.Control.extend({
 				if(this._input.value.length >= this.options.minLength)
 				{
 					var that = this;
+
 					clearTimeout(this.timerKeypress);	//cancel last search request while type in				
 					this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 
@@ -636,7 +641,7 @@ L.Control.Search = L.Control.extend({
 	
 		var inputText = this._input.value,
 			that = this;
-		
+
 		if(this._curReq && this._curReq.abort)
 			this._curReq.abort();
 		//abort previous requests
@@ -654,7 +659,7 @@ L.Control.Search = L.Control.extend({
 				L.DomUtil.removeClass(that._container, 'search-load');
 			});
 		}
-		else if(this.options.url)	//JSONP/AJAX REQUEST
+		else if(this._getUrl)	//JSONP/AJAX REQUEST
 		{
 			if(this.options.jsonpParam)
 			{
