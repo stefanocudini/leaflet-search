@@ -659,7 +659,7 @@ L.Control.Search = L.Control.extend({
 				L.DomUtil.removeClass(that._container, 'search-load');
 			});
 		}
-		else if(this._getUrl)	//JSONP/AJAX REQUEST
+		else if(this._getUrl())	//JSONP/AJAX REQUEST
 		{
 			if(this.options.jsonpParam)
 			{
