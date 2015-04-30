@@ -232,6 +232,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_createInput: function (text, className) {
+		var label = L.DomUtil.create('label', className, this._container);
 		var input = L.DomUtil.create('input', className, this._container);
 		input.type = 'text';
 		input.size = this._inputMinSize;
@@ -241,6 +242,12 @@ L.Control.Search = L.Control.extend({
 		input.autocapitalize = 'off';
 		input.placeholder = text;
 		input.style.display = 'none';
+		input.role = 'search';
+		input.id = input.role + input.type + input.size;
+		
+		label.htmlFor = input.id;
+		label.style.display = 'none';
+		label.value = text;
 		
 		L.DomEvent
 			.disableClickPropagation(input)
