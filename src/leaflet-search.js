@@ -82,7 +82,7 @@ L.Control.Search = L.Control.extend({
 		this._alert = this._createAlert('search-alert');
 
 		if(this.options.collapsed===false)
-			this.expand();
+			this.expand(this.options.collapsed);
 
 		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon)
 			this._markerLoc = new SearchMarker([0,0], {
@@ -179,11 +179,14 @@ L.Control.Search = L.Control.extend({
 		return this;
 	},
 	
-	expand: function() {	
+	expand: function(toggle) {
+		toggle = toggle || true;
 		this._input.style.display = 'block';
-		L.DomUtil.addClass(this._container, 'search-exp');	
-		this._input.focus();
-		this._map.on('dragstart click', this.collapse, this);
+		L.DomUtil.addClass(this._container, 'search-exp');
+		if ( toggle != false ) {
+			this._input.focus();
+			this._map.on('dragstart click', this.collapse, this);
+		}
 		return this;	
 	},
 
