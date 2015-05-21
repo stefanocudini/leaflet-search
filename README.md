@@ -22,11 +22,9 @@ Tested in Leaflet 0.7.2
 [Atmosphere](https://atmosphere.meteor.com/package/leaflet-search)
 
 **Bug tracking:**
-
 [Waffle.io](https://waffle.io/stefanocudini/leaflet-search)
 
-
-[Websites that use Leaflet Control Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
+[Websites that use Leaflet.Control.Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
 
 #Examples
 (require src/leaflet-search.css)
