@@ -1,7 +1,7 @@
 /* 
- * Leaflet Control Search v1.5.9 - 2015-07-12 
+ * Leaflet Control Search v1.6.0 - 2015-07-13 
  * 
- * Copyright 2014 Stefano Cudini 
+ * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
  * http://labs.easyblog.it/ 
  * 
@@ -30,17 +30,17 @@ L.Control.Search = L.Control.extend({
 	//  showAlert()             'Text message'         Show alert message
 	//
 	options: {
-		wrapper: '',				//container id to insert Search Control
+		layer: null,				//layer where search markers(is a L.LayerGroup)				
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
-		layer: null,				//layer where search markers(is a L.LayerGroup)		
+		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
 		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
 		//TODO implement can do research on multiple sources
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 									// support dotted format: 'prop.subprop.title'
-		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
+		wrapper: '',				//container id to insert Search Control		
 		filterJSON: null,			//callback for filtering data to _recordsCache
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
@@ -364,8 +364,9 @@ L.Control.Search = L.Control.extend({
 
 //////end DOM creations
 
-	_getUrl: function() {
-		return (typeof(this.options.url) == "function") ? this.options.url() : this.options.url;
+	_getUrl: function(text) {
+		console.log('_getUrl',text)
+		return (typeof this.options.url === 'function') ? this.options.url(text) : this.options.url;
 	},
 
 	_filterRecords: function(text) {	//Filter this._recordsCache case insensitive and much more..
@@ -453,7 +454,7 @@ L.Control.Search = L.Control.extend({
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
-			url = L.Util.template(this._getUrl()+'&'+this.options.jsonpParam+'=L.Control.Search.callJsonp', {s: text}); //parsing url
+			url = L.Util.template(this._getUrl(text)+'&'+this.options.jsonpParam+'=L.Control.Search.callJsonp', {s: text}); //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 		script.type = 'text/javascript';
@@ -472,7 +473,7 @@ L.Control.Search = L.Control.extend({
 			};
 		}
 		var request = new XMLHttpRequest(),
-			url = L.Util.template(this._getUrl(), {s: text}), //parsing url
+			url = L.Util.template(this._getUrl(text), {s: text}), //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
 			response = {};
@@ -669,7 +670,7 @@ L.Control.Search = L.Control.extend({
 				L.DomUtil.removeClass(that._container, 'search-load');
 			});
 		}
-		else if(this._getUrl())	//JSONP/AJAX REQUEST
+		else if(this.options.url)	//JSONP/AJAX REQUEST
 		{
 			if(this.options.jsonpParam)
 			{

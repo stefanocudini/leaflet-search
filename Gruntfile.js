@@ -17,7 +17,7 @@ grunt.initConfig({
 		'/* \n'+
 		' * Leaflet Control Search v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> \n'+
 		' * \n'+
-		' * Copyright 2014 <%= pkg.author.name %> \n'+
+		' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> \n'+
 		' * <%= pkg.author.email %> \n'+
 		' * <%= pkg.author.url %> \n'+
 		' * \n'+
