@@ -176,6 +176,7 @@ L.Control.Search = L.Control.extend({
 		this._input.size = this._inputMinSize;
 		this._input.focus();
 		this._cancel.style.display = 'none';
+		this._hideTooltip();
 		return this;
 	},
 	
