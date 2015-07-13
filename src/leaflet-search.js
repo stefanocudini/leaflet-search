@@ -350,7 +350,6 @@ L.Control.Search = L.Control.extend({
 //////end DOM creations
 
 	_getUrl: function(text) {
-		console.log('_getUrl',text)
 		return (typeof this.options.url === 'function') ? this.options.url(text) : this.options.url;
 	},
 
@@ -500,9 +499,9 @@ L.Control.Search = L.Control.extend({
 					loc.layer = layer;
 					retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
 					
-				}else{
-					console.log("propertyName '"+propName+"' not found in marker", layer);
 				}
+				else
+					throw new Error("propertyName '"+propName+"' not found in marker");
 			}
 			else if(layer.hasOwnProperty('feature'))//GeoJSON layer
 			{
@@ -513,7 +512,7 @@ L.Control.Search = L.Control.extend({
 					retRecords[ layer.feature.properties[propName] ] = loc;
 				}
 				else
-					console.log("propertyName '"+propName+"' not found in feature", layer);			
+					throw new Error("propertyName '"+propName+"' not found in feature");
 			}
 			
 		},this);
