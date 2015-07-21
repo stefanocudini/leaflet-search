@@ -11,7 +11,8 @@ L.Control.Search = L.Control.extend({
 	//
 	//Public methods:
 	//  setLayer()				L.LayerGroup()         set layer search at runtime
-	//  showAlert()             'Text message'         Show alert message
+	//  showAlert()             'Text message'         show alert message
+	//  searchText()			'Text searched'        search text by external code
 	//
 	options: {
 		layer: null,				//layer where search markers(is a L.LayerGroup)				
@@ -620,6 +621,21 @@ L.Control.Search = L.Control.extend({
 				else
 					this._hideTooltip();
 		}
+	},
+
+	searchText: function(text) {
+		var code = text.charCodeAt(text.length);
+
+		this._input.value = text;
+
+		this._input.style.display = 'block';
+		L.DomUtil.addClass(this._container, 'search-exp');
+
+		console.log('searchText', text, code);
+
+		this._autoTypeTmp = false;
+
+		this._handleKeypress({keyCode: code});
 	},
 	
 	_fillRecordsCache: function() {
