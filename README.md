@@ -76,7 +76,7 @@ map.addControl(searchControl);
 ```
 
 Static data source:
-```
+```javascript
 var data = [
 	{"loc":[41.575330,13.102411], "title":"aquamarine"},
 	{"loc":[41.575730,13.002411], "title":"black"},
