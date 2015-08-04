@@ -1,6 +1,9 @@
 Leaflet Control Search
 ============
 
+[![NPM version][npm-image]][npm-url]
+[![Downloads][downloads-image]][downloads-url]
+
 A Leaflet control that search markers/features location by custom property.<br />
 Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
