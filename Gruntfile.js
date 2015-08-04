@@ -7,6 +7,7 @@ grunt.loadNpmTasks('grunt-contrib-concat');
 grunt.loadNpmTasks('grunt-contrib-clean');
 grunt.loadNpmTasks('grunt-contrib-cssmin');
 grunt.loadNpmTasks('grunt-contrib-jshint');
+grunt.loadNpmTasks("grunt-remove-logging");
 grunt.loadNpmTasks('grunt-contrib-watch');
 grunt.loadNpmTasks('grunt-todos');
 
@@ -36,15 +37,20 @@ grunt.initConfig({
 			src: ['dist/*']
 		}
 	},
+	removelogging: {
+		dist: {
+			src: 'dist/*.js'
+		}
+	},	
 	jshint: {
 		options: {
 			globals: {
-				console: true,
+				'no-console': true,
 				module: true
 			},
-			"-W099": true,	//ignora tabs e space warning
-			"-W033": true,
-			"-W044": true	//ignore regexp
+			'-W099': true,	//ignora tabs e space warning
+			'-W033': true,
+			'-W044': true	//ignore regexp
 		},
 		files: ['src/*.js']
 	},
@@ -107,6 +113,7 @@ grunt.registerTask('default', [
 	'clean',
 	'concat',	
 	'cssmin',
+	'removelogging',	
 	'jshint',
 	'uglify',
 	'todos'
