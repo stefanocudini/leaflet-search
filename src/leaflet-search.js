@@ -631,8 +631,6 @@ L.Control.Search = L.Control.extend({
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');
 
-		console.log('searchText', text, code);
-
 		this._autoTypeTmp = false;
 
 		this._handleKeypress({keyCode: code});

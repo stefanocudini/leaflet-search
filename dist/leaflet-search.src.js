@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.6.1 - 2015-07-21 
+ * Leaflet Control Search v1.6.1 - 2015-08-04 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -646,8 +646,6 @@ L.Control.Search = L.Control.extend({
 
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');
-
-		console.log('searchText', text, code);
 
 		this._autoTypeTmp = false;
 

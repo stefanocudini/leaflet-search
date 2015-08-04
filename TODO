@@ -12,15 +12,15 @@ Tasks found in: src/leaflet-search.js
     [Line: 444] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
     [Line: 463] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
     [Line: 526] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 642] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 646] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 649] [low] //TODO change structure of _recordsCache
-    [Line: 701] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 797] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 886] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 910] [low] 						//TODO use create event 'animateEnd' in SearchMarker 
+    [Line: 640] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 644] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 647] [low] //TODO change structure of _recordsCache
+    [Line: 699] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 795] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 884] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 908] [low] 						//TODO use create event 'animateEnd' in SearchMarker 
     [Line: 51] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 52] [med] //FIXME option condition problem {autoCollapse: false }
     [Line: 381] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
-    [Line: 770] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 800] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 768] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 798] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
