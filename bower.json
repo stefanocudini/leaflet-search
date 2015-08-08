@@ -1,6 +1,6 @@
 {
   "name": "leaflet-search",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "main": [
     "dist/leaflet-search.src.js",
     "dist/leaflet-search.src.css"

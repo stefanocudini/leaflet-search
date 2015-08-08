@@ -504,18 +504,16 @@ L.Control.Search = L.Control.extend({
 				else
 					throw new Error("propertyName '"+propName+"' not found in marker");
 			}
-            else if(layer instanceof L.LayerGroup) // In LayerGroup search
+            else if(layer instanceof L.LayerGroup)
             {
-                // Add parsing L.LayerGroup
                 //TODO: Optimize
-                layer.eachLayer(function(lGroup) {
-                    loc = lGroup.getLatLng();
-                    loc.layer = lGroup;
-                    retRecords[ lGroup.feature.properties[propName] ] = loc;
+                layer.eachLayer(function(m) {
+                    loc = m.getLatLng();
+                    loc.layer = m;
+                    retRecords[ m.feature.properties[propName] ] = loc;
                 })
-
             }
-			else if(layer.hasOwnProperty('feature'))//GeoJSON layer
+			else if(layer.hasOwnProperty('feature'))//GeoJSON
 			{
 				if(layer.feature.properties.hasOwnProperty(propName))
 				{
