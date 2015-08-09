@@ -39,10 +39,10 @@ L.Control.Search = L.Control.extend({
 		//TODO add option for persist markerLoc after collapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
-		text: 'Search...',			//placeholder value	
-		textCancel: 'Cancel',		//title in cancel button
-		textErr: 'Location not found',	//error message
 		position: 'topleft',
+		textErr: 'Location not found',	//error message
+		textCancel: 'Cancel',		//title in cancel button		
+		textPlaceholder: 'Search...',//placeholder value			
 		//TODO history: false,		//show search history in tooltip
 		animateLocation: true,		//animate a circle over location found
 		circleLocation: true,		//draw a circle in location found
@@ -65,7 +65,7 @@ L.Control.Search = L.Control.extend({
 	
 	initialize: function(options) {
 		L.Util.setOptions(this, options || {});
-		this._inputMinSize = this.options.text ? this.options.text.length : 10;
+		this._inputMinSize = this.options.textPlaceholder ? this.options.textPlaceholder.length : 10;
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterData = this.options.filterData || this._defaultFilterData;
 		this._formatData = this.options.formatData || this._defaultFormatData;
@@ -78,17 +78,17 @@ L.Control.Search = L.Control.extend({
 	onAdd: function (map) {
 		this._map = map;
 		this._container = L.DomUtil.create('div', 'leaflet-control-search');
-		this._input = this._createInput(this.options.text, 'search-input');
+		this._input = this._createInput(this.options.textPlaceholder, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
-		this._button = this._createButton(this.options.text, 'search-button');
+		this._button = this._createButton(this.options.textPlaceholder, 'search-button');
 		this._alert = this._createAlert('search-alert');
 
 		if(this.options.collapsed===false)
 			this.expand(this.options.collapsed);
 
 		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon)
-			this._markerLoc = new SearchMarker([0,0], {
+			this._markerLoc = new L.Control.Search.Marker([0,0], {
 					showCircle: this.options.circleLocation,
 					showMarker: this.options.markerLocation,
 					icon: this.options.markerIcon
@@ -486,7 +486,7 @@ L.Control.Search = L.Control.extend({
 		
 		this._layer.eachLayer(function(layer) {
 
-			if(layer instanceof SearchMarker) return;
+			if(layer instanceof L.Control.Search.Marker) return;
 
 			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
 			{
@@ -813,7 +813,7 @@ L.Control.Search = L.Control.extend({
 	}
 });
 
-var SearchMarker = L.Marker.extend({
+L.Control.Search.Marker = L.Marker.extend({
 
 	includes: L.Mixin.Events,
 	
@@ -916,7 +916,7 @@ var SearchMarker = L.Marker.extend({
 					circle.setRadius(oldrad);//reset radius
 					//if(typeof afterAnimCall == 'function')
 						//afterAnimCall();
-						//TODO use create event 'animateEnd' in SearchMarker 
+						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
 				}
 			}, tInt);
 		}

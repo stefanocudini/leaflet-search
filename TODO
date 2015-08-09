@@ -20,7 +20,7 @@ Tasks found in: src/leaflet-search.js
     [Line: 710] [low] 	    //TODO refact _handleAutoresize now is not accurate
     [Line: 806] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
     [Line: 895] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 919] [low] 						//TODO use create event 'animateEnd' in SearchMarker 
+    [Line: 919] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 52] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 53] [med] //FIXME option condition problem {autoCollapse: false }
     [Line: 383] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of local filter
