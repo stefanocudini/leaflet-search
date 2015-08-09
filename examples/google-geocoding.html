@@ -44,7 +44,7 @@ Google Geocoding API <br />
 		geocoder.geocode({address: text}, callResponse);
 	}
 
-	function filterJSONCall(rawjson)
+	function formatJSON(rawjson)
 	{
 		var json = {},
 			key, loc, disp = [];
@@ -63,7 +63,7 @@ Google Geocoding API <br />
 
 	map.addControl( new L.Control.Search({
 			callData: googleGeocoding,
-			filterJSON: filterJSONCall,
+			formatData: formatJSON,
 			markerLocation: true,
 			autoType: false,
 			autoCollapse: true,

@@ -35,7 +35,7 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 		jsonpName = 'json_callback';
 	//third party jsonp service
 	
-	function filterJSONCall(rawjson) {	//callback that remap fields name
+	function formatJSON(rawjson) {	//callback that remap fields name
 		var json = {},
 			key, loc, disp = [];
 			
@@ -56,7 +56,7 @@ OpenStreetMap Data offer by MapQuest Open Platform<br />
 	var mobileOpts = {
 		url: jsonpurl,
 		jsonpParam: jsonpName,
-		filterJSON: filterJSONCall,		
+		formatData: formatJSON,		
 		text: 'Color...',
 		autoType: false,
 		tipAutoSubmit: true,

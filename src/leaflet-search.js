@@ -26,7 +26,7 @@ L.Control.Search = L.Control.extend({
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 									// support dotted format: 'prop.subprop.title'
 		wrapper: '',				//container id to insert Search Control		
-		filterJSON: null,			//callback for filtering data to _recordsCache
+		formatData: null,			//callback for filtering reformat all data from source
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
 		autoType: true,				//complete input with first suggested result and select this filled-in text.
@@ -43,6 +43,7 @@ L.Control.Search = L.Control.extend({
 		textCancel: 'Cancel',		//title in cancel button
 		textErr: 'Location not found',	//error message
 		position: 'topleft',
+		//TODO history: false,		//show search history in tooltip
 		animateLocation: true,		//animate a circle over location found
 		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
@@ -66,7 +67,8 @@ L.Control.Search = L.Control.extend({
 		L.Util.setOptions(this, options || {});
 		this._inputMinSize = this.options.text ? this.options.text.length : 10;
 		this._layer = this.options.layer || new L.LayerGroup();
-		this._filterJSON = this.options.filterJSON || this._defaultFilterJSON;
+		this._filterData = this.options.filterData || this._defaultFilterData;
+		this._formatData = this.options.formatData || this._defaultFormatData;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 		this._countertips = 0;		//number of tips items
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
@@ -354,7 +356,7 @@ L.Control.Search = L.Control.extend({
 		return (typeof this.options.url === 'function') ? this.options.url(text) : this.options.url;
 	},
 
-	_filterRecords: function(text) {	//Filter this._recordsCache case insensitive and much more..
+	_defaultFilterData: function(text, records) {
 	
 		var regFilter = new RegExp("^[.]$|[\[\]|()*]",'g'),	//remove . * | ( ) ] [
 			I, regSearch,
@@ -366,34 +368,34 @@ L.Control.Search = L.Control.extend({
 		regSearch = new RegExp(I + text,'i');
 
 		//TODO use .filter or .map
-		for(var key in this._recordsCache)
+		for(var key in records)
 			if( regSearch.test(key) )
-				frecords[key]= this._recordsCache[key];
+				frecords[key]= records[key];
 		
 		return frecords;
 	},
 
 	showTooltip: function() {
-		var filteredRecords, newTip;
+		var filtered, tip;
 
 		this._countertips = 0;
 		
-	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
+	//FIXME problem with jsonp/ajax when remote filter has different behavior of local filter
 		if(this.options.layer)
-			filteredRecords = this._filterRecords( this._input.value );
+			filtered = this._filterData( this._input.value, this._recordsCache );
 		else
-			filteredRecords = this._recordsCache;
+			filtered = this._recordsCache;
 			
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
-		for(var key in filteredRecords)//fill tooltip
+		for(var key in filtered)//fill tooltip
 		{
 			if(++this._countertips == this.options.tooltipLimit) break;
 
-			newTip = this._createTip(key, filteredRecords[key] );
+			tip = this._createTip(key, filtered[key] );
 
-			this._tooltip.appendChild(newTip);
+			this._tooltip.appendChild(tip);
 		}
 		
 		if(this._countertips > 0)
@@ -416,7 +418,7 @@ L.Control.Search = L.Control.extend({
 		return 0;
 	},
 
-	_defaultFilterJSON: function(json) {	//default callback for filter data
+	_defaultFormatData: function(json) {	//default callback for filter data
 		var jsonret = {}, i,
 			propName = this.options.propertyName,
 			propLoc = this.options.propertyLoc;
@@ -435,7 +437,7 @@ L.Control.Search = L.Control.extend({
 		//TODO remove script node after call run
 		var that = this;
 		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that._filterJSON(data);//_filterJSON defined in inizialize...
+			var fdata = that._formatData(data);
 			callAfter(fdata);
 		}
 		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
@@ -468,7 +470,7 @@ L.Control.Search = L.Control.extend({
 		request.onreadystatechange = function() {
 		    if(request.readyState === 4 && request.status === 200) {
 		    	response = JSON.parse(request.responseText);
-		    	var fdata = that._filterJSON(response);//_filterJSON defined in inizialize...
+		    	var fdata = that._formatData(response);
 		        callAfter(fdata);
 		    }
 		};
@@ -670,7 +672,7 @@ L.Control.Search = L.Control.extend({
 		{
 			this._curReq = this.options.callData(inputText, function(jsonraw) {
 
-				that._recordsCache = that._filterJSON(jsonraw);
+				that._recordsCache = that._formatData(jsonraw);
 
 				that.showTooltip();
 
@@ -726,7 +728,7 @@ L.Control.Search = L.Control.extend({
 		else if ((velocity == -1 ) && (this._tooltip.currentSelection <= 0)) { // Going back up to the search box.
 			this._tooltip.currentSelection = -1;
 		}
-		else if (this._tooltip.style.display != 'none') { // regular up/down
+		else if (this._tooltip.style.display != 'none') {
 			this._tooltip.currentSelection += velocity;
 			
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');

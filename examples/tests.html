@@ -173,7 +173,7 @@ h4 {
 </div>
 
 <div class="maptest_wrap">
-<h4>jsonpUrl, filterJSON, Cities</h4>
+<h4>jsonpUrl, formatData, Cities</h4>
 <div id="map_filterjson" class="maptest"></div>
 <script>
 
@@ -184,7 +184,7 @@ h4 {
 				   '&format=json&osm_type=N&limit=100&addressdetails=0',
 		jsonpName = 'json_callback';
 
-	function filterJSONCall(rawjson) {	//callback that remap fields name
+	function formatJSON(rawjson) {	//callback that remap fields name
 		var json = {},
 			key, loc, disp = [];
 			
@@ -205,7 +205,7 @@ h4 {
 	var searchOpts = {
 			url: jsonpUrl,
 			jsonpParam: jsonpName,
-			filterJSON: filterJSONCall,
+			formatData: formatJSON,
 			animateLocation: true,
 			markerLocation: true,
 			zoom:10,

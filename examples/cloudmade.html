@@ -45,7 +45,7 @@ Geocoding API by <br />
 			autoCollapse: true,
 			zoom:10,
 			markerLocation: true,
-			filterJSON: function(json) {
+			formatData: function(json) {
 				var key, loc, rjson = {},
 					features = json.features;
 					
