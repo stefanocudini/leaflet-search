@@ -26,13 +26,15 @@ L.Control.Search = L.Control.extend({
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 									// support dotted format: 'prop.subprop.title'
 		container: '',				//container id to insert Search Control		
-		formatData: null,			//callback for filtering reformat all data from source
+		formatData: null,			//callback for reformat all data from source
+		filterData: null,			//callback for filtering data from text searched
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
+		casesesitive: false,		//search elements in case sensitive text
 		autoType: true,				//complete input with first suggested result and select this filled-in text.
 		delayType: 400,				//delay while typing for show tooltip
 		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
-		tipAutoSubmit: true,  		//auto map panTo when click on tooltip
+		tipAutoSubmit: true,		//auto map panTo when click on tooltip
 		autoResize: true,			//autoresize on input change
 		collapsed: true,			//collapse search control at startup
 		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
@@ -364,8 +366,8 @@ L.Control.Search = L.Control.extend({
 
 		text = text.replace(regFilter,'');	  //sanitize text
 		I = this.options.initial ? '^' : '';  //search only initial text
-		//TODO add option for case sesitive search, also showLocation
-		regSearch = new RegExp(I + text,'i');
+
+		regSearch = new RegExp(I + text, !this.options.casesesitive ? 'i' : undefined);
 
 		//TODO use .filter or .map
 		for(var key in records)
