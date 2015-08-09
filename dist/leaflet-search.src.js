@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.2 - 2015-08-09 
+ * Leaflet Control Search v1.7.3 - 2015-08-09 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -41,7 +41,7 @@ L.Control.Search = L.Control.extend({
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 									// support dotted format: 'prop.subprop.title'
-		wrapper: '',				//container id to insert Search Control		
+		container: '',				//container id to insert Search Control		
 		formatData: null,			//callback for filtering reformat all data from source
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
@@ -120,9 +120,9 @@ L.Control.Search = L.Control.extend({
 	},
 	addTo: function (map) {
 
-		if(this.options.wrapper) {
+		if(this.options.container) {
 			this._container = this.onAdd(map);
-			this._wrapper = L.DomUtil.get(this.options.wrapper);
+			this._wrapper = L.DomUtil.get(this.options.container);
 			this._wrapper.style.position = 'relative';
 			this._wrapper.appendChild(this._container);
 		}

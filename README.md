@@ -39,7 +39,7 @@ map.addControl( new L.Control.Search({layer: searchLayer}) );
 
 Short way:
 ```javascript
-var map = new L.Map('map', { searchControl: {layer: searchLayer} });
+L.map('map', { searchControl: {layer: searchLayer} });
 ```
 
 #Advanced Examples

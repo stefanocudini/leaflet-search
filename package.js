@@ -1,6 +1,6 @@
 Package.describe({
 	name: "stefcud:leaflet-search",
-	version: "1.7.2",
+	version: "1.7.3",
 	summary: "Leaflet Control Search"
 });
 
