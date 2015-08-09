@@ -43,7 +43,7 @@ L.Control.Search = L.Control.extend({
 									// support dotted format: 'prop.subprop.title'
 		container: '',				//container id to insert Search Control		
 		formatData: null,			//callback for reformat all data from source
-		filterData: null,			//callback for filtering data from text searched
+		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
 		casesesitive: false,		//search elements in case sensitive text
