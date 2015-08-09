@@ -12,7 +12,7 @@ Tasks found in: src/leaflet-search.js
     [Line: 437] [low] 		//TODO remove script node after call run
     [Line: 446] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
     [Line: 465] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 511] [low]                 //TODO: Optimize
+    [Line: 522] [low]                 //TODO: Optimize
     [Line: 537] [low] 		//TODO implements autype without selection(useful for mobile device)
     [Line: 651] [low] //TODO important optimization!!! always append data in this._recordsCache
     [Line: 655] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 

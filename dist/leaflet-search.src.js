@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.1 - 2015-08-09 
+ * Leaflet Control Search v1.7.2 - 2015-08-09 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -522,16 +522,7 @@ L.Control.Search = L.Control.extend({
 				else
 					throw new Error("propertyName '"+propName+"' not found in marker");
 			}
-            else if(layer instanceof L.LayerGroup)
-            {
-                //TODO: Optimize
-                layer.eachLayer(function(m) {
-                    loc = m.getLatLng();
-                    loc.layer = m;
-                    retRecords[ m.feature.properties[propName] ] = loc;
-                })
-            }
-			else if(layer.hasOwnProperty('feature'))//GeoJSON
+            else if(layer.hasOwnProperty('feature'))//GeoJSON
 			{
 				if(layer.feature.properties.hasOwnProperty(propName))
 				{
@@ -542,6 +533,15 @@ L.Control.Search = L.Control.extend({
 				else
 					throw new Error("propertyName '"+propName+"' not found in feature");
 			}
+			else if(layer instanceof L.LayerGroup)
+            {
+                //TODO: Optimize
+                layer.eachLayer(function(m) {
+                    loc = m.getLatLng();
+                    loc.layer = m;
+                    retRecords[ m.feature.properties[propName] ] = loc;
+                });
+            }
 			
 		},this);
 		
