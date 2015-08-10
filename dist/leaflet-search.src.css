@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.5 - 2015-08-09 
+ * Leaflet Control Search v1.7.6 - 2015-08-10 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -91,6 +91,7 @@
 	top:100%;
 	left:0;
 	float:left;
+	list-style: none;
 	min-width:120px;
 	max-height:122px;
 	box-shadow: 1px 1px 6px rgba(0,0,0,0.4);

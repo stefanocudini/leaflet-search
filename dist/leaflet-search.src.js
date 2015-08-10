@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.5 - 2015-08-09 
+ * Leaflet Control Search v1.7.6 - 2015-08-10 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -313,7 +313,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_createTooltip: function(className) {
-		var tool = L.DomUtil.create('div', className, this._container);
+		var tool = L.DomUtil.create('ul', className, this._container);
 		tool.style.display = 'none';
 
 		var that = this;
@@ -345,8 +345,7 @@ L.Control.Search = L.Control.extend({
 		}
 		else
 		{
-			tip = L.DomUtil.create('a', '');
-			tip.href = '#';
+			tip = L.DomUtil.create('li', '');
 			tip.innerHTML = text;
 		}
 		

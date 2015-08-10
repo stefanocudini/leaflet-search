@@ -6,22 +6,22 @@ Tasks found in: src/leaflet-search.js
     [Line: 57] [low] //TODO important optimization!!! always append data in this._recordsCache
     [Line: 61] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 64] [low] //TODO change structure of _recordsCache
-    [Line: 372] [low] 		//TODO use .filter or .map
-    [Line: 434] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 439] [low] 		//TODO remove script node after call run
-    [Line: 448] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 467] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 524] [low]                 //TODO: Optimize
-    [Line: 539] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 653] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 657] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 660] [low] //TODO change structure of _recordsCache
-    [Line: 712] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 808] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 897] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 921] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 371] [low] 		//TODO use .filter or .map
+    [Line: 433] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 438] [low] 		//TODO remove script node after call run
+    [Line: 447] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 466] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 523] [low]                 //TODO: Optimize
+    [Line: 538] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 652] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 656] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 659] [low] //TODO change structure of _recordsCache
+    [Line: 711] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 807] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 896] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 920] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 54] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 55] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 385] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of local filter
-    [Line: 781] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 811] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 384] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of local filter
+    [Line: 780] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 810] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
