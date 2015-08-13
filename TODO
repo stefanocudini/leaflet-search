@@ -1,8 +1,8 @@
 Tasks found in: src/leaflet-search.js
-    [Line: 23] [low] 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
-    [Line: 24] [low] 		//TODO implement can do research on multiple sources
+    [Line: 22] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+    [Line: 23] [low] 		//TODO implement can do research on multiple sources layers and remote
     [Line: 41] [low] 		//TODO add option for persist markerLoc after collapse!
-    [Line: 48] [low] 		//TODO history: false,		//show search history in tooltip
+    [Line: 52] [low] 		//TODO history: false,		//show latest searches in tooltip		
     [Line: 57] [low] //TODO important optimization!!! always append data in this._recordsCache
     [Line: 61] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 64] [low] //TODO change structure of _recordsCache
@@ -16,11 +16,12 @@ Tasks found in: src/leaflet-search.js
     [Line: 650] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 653] [low] //TODO change structure of _recordsCache
     [Line: 668] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-    [Line: 697] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 793] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 882] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 906] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 689] [low] 				//TODO refact!
+    [Line: 703] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 799] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 888] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 912] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 54] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 55] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 766] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 796] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 772] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 802] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!

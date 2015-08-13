@@ -16,18 +16,18 @@ L.Control.Search = L.Control.extend({
 	//
 	options: {
 		layer: null,				//layer where search markers(is a L.LayerGroup)				
+		sourceData: null,			//function that fill _recordsCache, passed searching text by first param and callback in second				
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
-		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
-		sourceData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
-		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
-		//TODO implement can do research on multiple sources
+		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+		//TODO implement can do research on multiple sources layers and remote
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
-									// support dotted format: 'prop.subprop.title'
-		container: '',				//container id to insert Search Control		
 		formatData: null,			//callback for reformat all data from source to indexed data object
-		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords
+		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords									// support dotted format: 'prop.subprop.title'
+
+		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
+		container: '',				//container id to insert Search Control		
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
 		casesesitive: false,		//search elements in case sensitive text
@@ -45,11 +45,11 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',	//error message
 		textCancel: 'Cancel',		//title in cancel button		
 		textPlaceholder: 'Search...',//placeholder value			
-		//TODO history: false,		//show search history in tooltip
 		animateLocation: true,		//animate a circle over location found
 		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
 		markerIcon: new L.Icon.Default()//custom icon for maker location
+		//TODO history: false,		//show latest searches in tooltip		
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse: false }
@@ -652,10 +652,10 @@ L.Control.Search = L.Control.extend({
 //
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
-//	in this mode every record can have a free structure of attributes, only 'loc' is required
+//	in this way every record can have a free structure of attributes, only 'loc' is required
 	
 		var inputText = this._input.value,
-			that = this;
+			that = this, records;
 
 		if(this._curReq && this._curReq.abort)
 			this._curReq.abort();
@@ -668,7 +668,7 @@ L.Control.Search = L.Control.extend({
 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
 			this._recordsCache = this._recordsFromLayer();
 			
-			var records = this._filterData( this._input.value, this._recordsCache );
+			records = this._filterData( this._input.value, this._recordsCache );
 
 			this.showTooltip( records );
 
@@ -685,8 +685,14 @@ L.Control.Search = L.Control.extend({
 			this._curReq = this._retrieveData.call(this, inputText, function(data) {
 				
 				that._recordsCache = that._formatData(data);
-				
-				that.showTooltip( that._recordsCache );
+
+				//TODO refact!
+				if(that.options.sourceData)
+					records = that._filterData( that._input.value, that._recordsCache );
+				else
+					records = that._recordsCache;
+
+				that.showTooltip( records );
  
 				L.DomUtil.removeClass(that._container, 'search-load');
 			});
