@@ -11,7 +11,7 @@
 <body>
 <h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
 
-<h4>Static data from custom callback Example: <em>search locations using option callData in static Array</em></h4>
+<h4>Static data from custom data source Example: <em>search locations using option sourceData in static Array</em></h4>
 <div id="map"></div>
 
 <div id="post-it">
@@ -68,7 +68,7 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 		};
 	}
 
-	map.addControl( new L.Control.Search({callData: localData, text:'Color...', markerLocation:true}) );
+	map.addControl( new L.Control.Search({sourceData: localData, text:'Color...', markerLocation:true}) );
 
 </script>
 

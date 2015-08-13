@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.9 - 2015-08-14 
+ * Leaflet Control Search v1.8.0 - 2015-08-14 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -35,7 +35,7 @@ L.Control.Search = L.Control.extend({
 		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
 		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
-		callData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
+		sourceData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second
 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
 		//TODO implement can do research on multiple sources
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
@@ -75,7 +75,7 @@ L.Control.Search = L.Control.extend({
 //  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 //
 //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-//  run one of callbacks search(callData,jsonpUrl or options.layer) and run this.showTooltip
+//  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
 //
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
@@ -664,7 +664,7 @@ L.Control.Search = L.Control.extend({
 //  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 //
 //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-//  run one of callbacks search(callData,jsonpUrl or options.layer) and run this.showTooltip
+//  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
 //
 //TODO change structure of _recordsCache
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
@@ -692,8 +692,8 @@ L.Control.Search = L.Control.extend({
 		}
 		else
 		{
-			if(this.options.callData)
-				this._retrieveData = this.options.callData;
+			if(this.options.sourceData)
+				this._retrieveData = this.options.sourceData;
 
 			else if(this.options.url)	//jsonp or ajax
 				this._retrieveData = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax;
