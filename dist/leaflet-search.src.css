@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.7 - 2015-08-13 
+ * Leaflet Control Search v1.7.8 - 2015-08-13 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -98,7 +98,8 @@
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1010;
 	overflow-y:auto;
-	overflow-x:hidden;	
+	overflow-x:hidden;
+	cursor: pointer;
 }
 .leaflet-control-search .search-tip {
 	margin:2px;

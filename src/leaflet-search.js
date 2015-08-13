@@ -419,10 +419,10 @@ L.Control.Search = L.Control.extend({
 		return 0;
 	},
 
-	_defaultFormatData: function(json) {	//default callback for filter data
-		var jsonret = {}, i,
-			propName = this.options.propertyName,
-			propLoc = this.options.propertyLoc;
+	_defaultFormatData: function(json) {	//default callback for format data to indexed data
+		var propName = this.options.propertyName,
+			propLoc = this.options.propertyLoc,
+			i, jsonret = {};
 
 		if( L.Util.isArray(propLoc) )
 			for(i in json)
@@ -435,19 +435,14 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_recordsFromJsonp: function(text, callAfter) {  //extract searched records from remote jsonp service
-		//TODO remove script node after call run
-		var that = this;
-		L.Control.Search.callJsonp = function(data) {	//jsonp callback
-			var fdata = that._formatData(data);
-			callAfter(fdata);
-		}
-		var script = L.DomUtil.create('script','search-jsonp', document.getElementsByTagName('body')[0] ),			
+		L.Control.Search.callJsonp = callAfter;
+		var script = L.DomUtil.create('script','leaflet-search-jsonp', document.getElementsByTagName('body')[0] ),			
 			url = L.Util.template(this._getUrl(text)+'&'+this.options.jsonpParam+'=L.Control.Search.callJsonp', {s: text}); //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
 		script.type = 'text/javascript';
 		script.src = url;
-		return {abort: function() { script.parentNode.removeChild(script); } };
+		return { abort: function() { script.parentNode.removeChild(script); } };
 	},
 
 	_recordsFromAjax: function(text, callAfter) {	//Ajax request
@@ -462,8 +457,7 @@ L.Control.Search = L.Control.extend({
 		}
 		var IE8or9 = ( L.Browser.ie && !window.atob && document.querySelector ),
 			request = IE8or9 ? new XDomainRequest() : new XMLHttpRequest(),
-			url = L.Util.template(this._getUrl(text), {s: text}),
-			response = {};
+			url = L.Util.template(this._getUrl(text), {s: text});
 
 		//rnd = '&_='+Math.floor(Math.random()*10000);
 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
@@ -472,9 +466,7 @@ L.Control.Search = L.Control.extend({
 		var that = this;
 
 		request.onload = function() {
-			response = JSON.parse(request.responseText);
-			var fdata = that._filterData(response);
-			callAfter(fdata);
+			callAfter( JSON.parse(request.responseText) );
 		};
 		request.onreadystatechange = function() {
 		    if(request.readyState === 4 && request.status === 200) {
@@ -676,41 +668,29 @@ L.Control.Search = L.Control.extend({
 
 		L.DomUtil.addClass(this._container, 'search-load');	
 
-		if(this.options.callData)	//CUSTOM SEARCH CALLBACK
+		if(this.options.layer)	//SEARCH ELEMENTS IN PRELOADED LAYER
 		{
-			this._curReq = this.options.callData(inputText, function(jsonraw) {
-
-				that._recordsCache = that._formatData(jsonraw);
-
+			this._recordsCache = this._recordsFromLayer();
+			this.showTooltip();
+			L.DomUtil.removeClass(this._container, 'search-load');
+		}
+		else if(this.options.callData)	//CUSTOM SEARCH CALLBACK
+		{
+			this._curReq = this.options.callData(inputText, function(data) {
+				that._recordsCache = that._formatData(data);
 				that.showTooltip();
-
 				L.DomUtil.removeClass(that._container, 'search-load');
 			});
 		}
 		else if(this.options.url)	//JSONP/AJAX REQUEST
 		{
-			if(this.options.jsonpParam)
-			{
-				this._curReq = this._recordsFromJsonp(inputText, function(data) {// is async request then it need callback
-					that._recordsCache = data;
-					that.showTooltip();
-					L.DomUtil.removeClass(that._container, 'search-load');
-				});
-			}
-			else
-			{
-				this._curReq = this._recordsFromAjax(inputText, function(data) {// is async request then it need callback
-					that._recordsCache = data;
-					that.showTooltip();
-					L.DomUtil.removeClass(that._container, 'search-load');
-				});
-			}
-		}
-		else if(this.options.layer)	//SEARCH ELEMENTS IN PRELOADED LAYER
-		{
-			this._recordsCache = this._recordsFromLayer();	//fill table key,value from markers into layer				
-			this.showTooltip();
-			L.DomUtil.removeClass(this._container, 'search-load');
+			var funcFrom = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax;
+
+			this._curReq = funcFrom.call(this, inputText, function(data) {
+				that._recordsCache = that._formatData(data);
+				that.showTooltip();
+				L.DomUtil.removeClass(that._container, 'search-load');
+			});
 		}
 	},
 	
