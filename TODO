@@ -7,20 +7,20 @@ Tasks found in: src/leaflet-search.js
     [Line: 61] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 64] [low] //TODO change structure of _recordsCache
     [Line: 371] [low] 		//TODO use .filter or .map
-    [Line: 433] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 442] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 463] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 522] [low]                 //TODO: Optimize
-    [Line: 537] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 651] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 655] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 658] [low] //TODO change structure of _recordsCache
-    [Line: 698] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 794] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 883] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 907] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 427] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 436] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 457] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 517] [low]                 //TODO: Optimize
+    [Line: 532] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 646] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 650] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 653] [low] //TODO change structure of _recordsCache
+    [Line: 668] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 697] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 793] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 882] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 906] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 54] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 55] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 384] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of local filter
-    [Line: 767] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 797] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 766] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 796] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!

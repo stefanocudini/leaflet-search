@@ -9,16 +9,16 @@
 <style>
 .leaflet-marker-icon {
 	color: #fff;
-	font-size: 18px;
+	font-size: 16px;
+	line-height: 16px;	
 	text-align: center;
 	vertical-align: middle;
-	line-height: 18px;
+	box-shadow: 2px 1px 4px rgba(0,0,0,0.3);
+	border-radius: 8px;
+	border:1px solid #fff;
 }
 .search-tip b {
 	color: #fff;
-}
-.leaflet-marker-icon {
-	box-shadow: 2px 1px 4px #333
 }
 .bar.search-tip b,
 .bar.leaflet-marker-icon {
@@ -68,7 +68,7 @@
 				return L.marker(latlng, {
 					icon: L.divIcon({
 						className: feature.properties.amenity,
-						iconSize: L.point(20, 20),
+						iconSize: L.point(16, 16),
 						html: feature.properties.amenity[0].toUpperCase(),
 					})
 				}).bindPopup(feature.properties.amenity+'<br><b>'+feature.properties.name+'</b>');
@@ -85,6 +85,7 @@
 	L.control.search({
 		layer: poiLayers,
 		initial: false,
+		zoom: 18,
 		propertyName: 'name',
 		callTip: function(text, val) {
 			var type = val.layer.feature.properties.amenity;

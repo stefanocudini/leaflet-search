@@ -26,7 +26,7 @@ L.Control.Search = L.Control.extend({
 		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 									// support dotted format: 'prop.subprop.title'
 		container: '',				//container id to insert Search Control		
-		formatData: null,			//callback for reformat all data from source
+		formatData: null,			//callback for reformat all data from source to indexed data object
 		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
@@ -376,25 +376,19 @@ L.Control.Search = L.Control.extend({
 		return frecords;
 	},
 
-	showTooltip: function() {
-		var filtered, tip;
+	showTooltip: function(records) {
+		var tip;
 
 		this._countertips = 0;
-		
-	//FIXME problem with jsonp/ajax when remote filter has different behavior of local filter
-		if(this.options.layer)
-			filtered = this._filterData( this._input.value, this._recordsCache );
-		else
-			filtered = this._recordsCache;
-			
+				
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
-		for(var key in filtered)//fill tooltip
+		for(var key in records)//fill tooltip
 		{
 			if(++this._countertips == this.options.tooltipLimit) break;
 
-			tip = this._createTip(key, filtered[key] );
+			tip = this._createTip(key, records[key] );
 
 			this._tooltip.appendChild(tip);
 		}
@@ -496,7 +490,8 @@ L.Control.Search = L.Control.extend({
 					loc.layer = layer;
 					retRecords[ that._getPath(layer.options,propName) ] = loc;			
 					
-				}else if(that._getPath(layer.feature.properties,propName)){
+				}
+				else if(that._getPath(layer.feature.properties,propName)){
 
 					loc = layer.getLatLng();
 					loc.layer = layer;
@@ -668,27 +663,31 @@ L.Control.Search = L.Control.extend({
 
 		L.DomUtil.addClass(this._container, 'search-load');	
 
-		if(this.options.layer)	//SEARCH ELEMENTS IN PRELOADED LAYER
+		if(this.options.layer)
 		{
+			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
 			this._recordsCache = this._recordsFromLayer();
-			this.showTooltip();
+			
+			var records = this._filterData( this._input.value, this._recordsCache );
+
+			this.showTooltip( records );
+
 			L.DomUtil.removeClass(this._container, 'search-load');
 		}
-		else if(this.options.callData)	//CUSTOM SEARCH CALLBACK
+		else
 		{
-			this._curReq = this.options.callData(inputText, function(data) {
-				that._recordsCache = that._formatData(data);
-				that.showTooltip();
-				L.DomUtil.removeClass(that._container, 'search-load');
-			});
-		}
-		else if(this.options.url)	//JSONP/AJAX REQUEST
-		{
-			var funcFrom = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax;
+			if(this.options.callData)
+				this._retrieveData = this.options.callData;
 
-			this._curReq = funcFrom.call(this, inputText, function(data) {
+			else if(this.options.url)	//jsonp or ajax
+				this._retrieveData = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax;
+
+			this._curReq = this._retrieveData.call(this, inputText, function(data) {
+				
 				that._recordsCache = that._formatData(data);
-				that.showTooltip();
+				
+				that.showTooltip( that._recordsCache );
+ 
 				L.DomUtil.removeClass(that._container, 'search-load');
 			});
 		}
