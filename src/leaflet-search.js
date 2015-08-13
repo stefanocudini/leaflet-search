@@ -460,8 +460,8 @@ L.Control.Search = L.Control.extend({
 				}
 			};
 		}
-		var type = ( this._isIE() && this._isIE() <=9 && this._isIE() >=8); //Checking if IE8 or 9, if IE8 or 9 use nonstandard XDomainRequest
-		var request = type ? new XDomainRequest : new XMLHttpRequest(),
+		var IE8or9 = ( L.Browser.ie && !window.atob && document.querySelector ); //Checking if IE8 or 9 
+		var request = IE8or9 ? new XDomainRequest : new XMLHttpRequest(), //If IE8 or 9 then use nonstandard XDomainRequest
 			url = L.Util.template(this._getUrl(text), {s: text}), //parsing url
 			//rnd = '&_='+Math.floor(Math.random()*10000);
 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
@@ -485,11 +485,6 @@ L.Control.Search = L.Control.extend({
 		return request;   
 	},
 	
-	_isIE: function() {
-		var nav = navigator.userAgent.toLowerCase();
-	  	return (nav.indexOf('msie') != -1) ? parseInt(nav.split('msie')[1]) : false;
-	},
-
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var that = this,
 			retRecords = {},
