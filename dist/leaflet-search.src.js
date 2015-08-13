@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.7.6 - 2015-08-10 
+ * Leaflet Control Search v1.7.7 - 2015-08-13 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -476,25 +476,32 @@ L.Control.Search = L.Control.extend({
 				}
 			};
 		}
-		var request = new XMLHttpRequest(),
-			url = L.Util.template(this._getUrl(text), {s: text}), //parsing url
-			//rnd = '&_='+Math.floor(Math.random()*10000);
-			//TODO add rnd param or randomize callback name! in recordsFromAjax			
+		var IE8or9 = ( L.Browser.ie && !window.atob && document.querySelector ),
+			request = IE8or9 ? new XDomainRequest() : new XMLHttpRequest(),
+			url = L.Util.template(this._getUrl(text), {s: text}),
 			response = {};
+
+		//rnd = '&_='+Math.floor(Math.random()*10000);
+		//TODO add rnd param or randomize callback name! in recordsFromAjax			
 		
 		request.open("GET", url);
 		var that = this;
+
+		request.onload = function() {
+			response = JSON.parse(request.responseText);
+			var fdata = that._filterData(response);
+			callAfter(fdata);
+		};
 		request.onreadystatechange = function() {
 		    if(request.readyState === 4 && request.status === 200) {
-		    	response = JSON.parse(request.responseText);
-		    	var fdata = that._formatData(response);
-		        callAfter(fdata);
+		    	this.onload();
 		    }
 		};
+
 		request.send();
 		return request;   
-	},	
-
+	},
+	
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var that = this,
 			retRecords = {},

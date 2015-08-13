@@ -460,19 +460,20 @@ L.Control.Search = L.Control.extend({
 				}
 			};
 		}
-		var IE8or9 = ( L.Browser.ie && !window.atob && document.querySelector ); //Checking if IE8 or 9 
-		var request = IE8or9 ? new XDomainRequest : new XMLHttpRequest(), //If IE8 or 9 then use nonstandard XDomainRequest
-			url = L.Util.template(this._getUrl(text), {s: text}), //parsing url
-			//rnd = '&_='+Math.floor(Math.random()*10000);
-			//TODO add rnd param or randomize callback name! in recordsFromAjax			
+		var IE8or9 = ( L.Browser.ie && !window.atob && document.querySelector ),
+			request = IE8or9 ? new XDomainRequest() : new XMLHttpRequest(),
+			url = L.Util.template(this._getUrl(text), {s: text}),
 			response = {};
+
+		//rnd = '&_='+Math.floor(Math.random()*10000);
+		//TODO add rnd param or randomize callback name! in recordsFromAjax			
 		
 		request.open("GET", url);
 		var that = this;
 
 		request.onload = function() {
 			response = JSON.parse(request.responseText);
-			var fdata = that._filterJSON(response);
+			var fdata = that._filterData(response);
 			callAfter(fdata);
 		};
 		request.onreadystatechange = function() {
