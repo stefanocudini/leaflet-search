@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.8.1 - 2015-08-14 
+ * Leaflet Control Search v1.8.2 - 2015-08-24 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -23,6 +23,7 @@ L.Control.Search = L.Control.extend({
 	//
 	//Managed Events:
 	//	search_locationfound	{latlng, title, layer} fired after moved and show markerLocation
+	//	search_expanded			{}					   fired after control was expanded
 	//  search_collapsed		{}					   fired after control was collapsed
 	//
 	//Public methods:
@@ -209,6 +210,7 @@ L.Control.Search = L.Control.extend({
 			this._input.focus();
 			this._map.on('dragstart click', this.collapse, this);
 		}
+		this.fire('search_expanded');
 		return this;	
 	},
 
