@@ -203,7 +203,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	expand: function(toggle) {
-		toggle = toggle || true;
+		if(typeof toggle === 'undefined' ) { toggle = true };
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');
 		if ( toggle !== false ) {
