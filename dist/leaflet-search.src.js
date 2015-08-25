@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.8.2 - 2015-08-24 
+ * Leaflet Control Search v1.8.3 - 2015-08-25 
  * 
  * Copyright 2015 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -203,7 +203,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	expand: function(toggle) {
-		if(typeof toggle === 'undefined' ) { toggle = true };
+		toggle = toggle || true;
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');
 		if ( toggle !== false ) {
