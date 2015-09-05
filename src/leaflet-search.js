@@ -186,7 +186,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	expand: function(toggle) {
-		toggle = toggle || true;
+		toggle = typeof toggle === 'boolean' ? toggle : true;
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');
 		if ( toggle !== false ) {
