@@ -87,7 +87,7 @@
 		initial: false,
 		zoom: 18,
 		propertyName: 'name',
-		callTip: function(text, val) {
+		buildTip: function(text, val) {
 			var type = val.layer.feature.properties.amenity;
 			return '<a href="#" class="'+type+'">'+text+'<b>'+type+'</b></a>';
 		}

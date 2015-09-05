@@ -16,18 +16,15 @@ L.Control.Search = L.Control.extend({
 	//  searchText()			'Text searched'        search text by external code
 	//
 	options: {
+		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		layer: null,				//layer where search markers(is a L.LayerGroup)				
 		sourceData: null,			//function that fill _recordsCache, passed searching text by first param and callback in second				
-		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
-		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
-		//TODO implement can do research on multiple sources layers and remote
+		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] ) support dotted format: 'prop.subprop.title'
 		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
-		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] )
 		formatData: null,			//callback for reformat all data from source to indexed data object
-		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords									// support dotted format: 'prop.subprop.title'
-
-		callTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
+		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords
+		buildTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
 		container: '',				//container id to insert Search Control		
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
@@ -39,7 +36,6 @@ L.Control.Search = L.Control.extend({
 		autoResize: true,			//autoresize on input change
 		collapsed: true,			//collapse search control at startup
 		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
-		//TODO add option for persist markerLoc after collapse!
 		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
 		zoom: null,					//zoom after pan to location found, default: map.getZoom()
 		position: 'topleft',
@@ -50,6 +46,9 @@ L.Control.Search = L.Control.extend({
 		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
 		markerIcon: new L.Icon.Default()//custom icon for maker location
+		//TODO add option for persist markerLoc after collapse!
+		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+		//TODO implement can do research on multiple sources layers and remote		
 		//TODO history: false,		//show latest searches in tooltip		
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
@@ -319,9 +318,9 @@ L.Control.Search = L.Control.extend({
 	_createTip: function(text, val) {//val is object in recordCache, usually is Latlng
 		var tip;
 		
-		if(this.options.callTip)
+		if(this.options.buildTip)
 		{
-			tip = this.options.callTip(text,val); //custom tip node or html string
+			tip = this.options.buildTip.call(this, text, val); //custom tip node or html string
 			if(typeof tip === 'string')
 			{
 				var tmpNode = L.DomUtil.create('div');
@@ -338,17 +337,17 @@ L.Control.Search = L.Control.extend({
 		L.DomUtil.addClass(tip, 'search-tip');
 		tip._text = text; //value replaced in this._input and used by _autoType
 
-		L.DomEvent
-			.disableClickPropagation(tip)		
-			.on(tip, 'click', L.DomEvent.stop, this)
-			.on(tip, 'click', function(e) {
-				this._input.value = text;
-				this._handleAutoresize();
-				this._input.focus();
-				this._hideTooltip();	
-				if(this.options.tipAutoSubmit)//go to location at once
+		if(this.options.tipAutoSubmit)
+			L.DomEvent
+				.disableClickPropagation(tip)		
+				.on(tip, 'click', L.DomEvent.stop, this)
+				.on(tip, 'click', function(e) {
+					this._input.value = text;
+					this._handleAutoresize();
+					this._input.focus();
+					this._hideTooltip();	
 					this._handleSubmit();
-			}, this);
+				}, this);
 
 		return tip;
 	},
