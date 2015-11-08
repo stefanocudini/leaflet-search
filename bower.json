@@ -5,6 +5,9 @@
     "dist/leaflet-search.src.js",
     "dist/leaflet-search.src.css"
   ],
+ "dependencies": {
+    "leaflet": ">=0.7"
+ },
   "ignore": [
     "**/.*",
     "node_modules",
