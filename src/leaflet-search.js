@@ -46,6 +46,7 @@ L.Control.Search = L.Control.extend({
 		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
 		markerIcon: new L.Icon.Default()//custom icon for maker location
+		,hideMarkerOnCollapse: false // remove circle and marker on search control collapsed
 		//TODO add option for persist markerLoc after collapse!
 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
 		//TODO implement can do research on multiple sources layers and remote		
@@ -207,7 +208,9 @@ L.Control.Search = L.Control.extend({
 			this._input.style.display = 'none';
 			this._cancel.style.display = 'none';			
 			L.DomUtil.removeClass(this._container, 'search-exp');		
-			//this._markerLoc.hide();//maybe unuseful
+			if (this.options.hideMarkerOnCollapse) {
+				this._markerLoc.hide();
+			}
 			this._map.off('dragstart click', this.collapse, this);
 		}
 		this.fire('search_collapsed');
