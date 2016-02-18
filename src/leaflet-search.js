@@ -592,7 +592,10 @@ L.Control.Search = L.Control.extend({
 			case 13: //Enter
 				if(this._countertips == 1)
 					this._handleArrowSelect(1);
-				this._handleSubmit();	//do search
+				if (!this.options.sourceData || typeof this.options.sourceData !== 'function') {
+                    this._handleSubmit();	//do search
+                    break;
+                }
 			break;
 			case 38://Up
 				this._handleArrowSelect(-1);
