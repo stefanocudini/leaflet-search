@@ -28,7 +28,7 @@ L.Control.Search = L.Control.extend({
 		container: '',				//container id to insert Search Control		
 		minLength: 1,				//minimal text length for autocomplete
 		initial: true,				//search elements only by initial text
-		casesesitive: false,		//search elements in case sensitive text
+		casesensitive: false,		//search elements in case sensitive text
 		autoType: true,				//complete input with first suggested result and select this filled-in text.
 		delayType: 400,				//delay while typing for show tooltip
 		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
@@ -370,7 +370,7 @@ L.Control.Search = L.Control.extend({
 		text = text.replace(regFilter,'');	  //sanitize text
 		I = this.options.initial ? '^' : '';  //search only initial text
 
-		regSearch = new RegExp(I + text, !this.options.casesesitive ? 'i' : undefined);
+		regSearch = new RegExp(I + text, !this.options.casesensitive ? 'i' : undefined);
 
 		//TODO use .filter or .map
 		for(var key in records)
