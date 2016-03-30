@@ -42,6 +42,7 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',	//error message
 		textCancel: 'Cancel',		//title in cancel button		
 		textPlaceholder: 'Search...',//placeholder value			
+		selectFirstOnReturn: false, //if first target of list is to be selected if there are multiple
 		animateLocation: true,		//animate a circle over location found
 		circleLocation: true,		//draw a circle in location found
 		markerLocation: false,		//draw a marker in location found
@@ -590,7 +591,7 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			break;
 			case 13: //Enter
-				if(this._countertips == 1)
+				if((this._countertips == 1) || ((this.options.selectFirstOnReturn) && (this._countertips > 0)))
 					this._handleArrowSelect(1);
 				this._handleSubmit();	//do search
 			break;
