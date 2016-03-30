@@ -16,39 +16,38 @@ L.Control.Search = L.Control.extend({
 	//  searchText()			'Text searched'        search text by external code
 	//
 	options: {
-		url: '',					//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
-		layer: null,				//layer where search markers(is a L.LayerGroup)				
-		sourceData: null,			//function that fill _recordsCache, passed searching text by first param and callback in second				
-		jsonpParam: null,			//jsonp param name for search by jsonp service, ex: "callback"
-		propertyLoc: 'loc',			//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] ) support dotted format: 'prop.subprop.title'
-		propertyName: 'title',		//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
-		formatData: null,			//callback for reformat all data from source to indexed data object
-		filterData: null,			//callback for filtering data from text searched, params: textSearch, allRecords
-		buildTip: null,				//function that return row tip html node(or html string), receive text tooltip in first param
-		container: '',				//container id to insert Search Control		
-		minLength: 1,				//minimal text length for autocomplete
-		initial: true,				//search elements only by initial text
-		casesensitive: false,		//search elements in case sensitive text
-		autoType: true,				//complete input with first suggested result and select this filled-in text.
-		delayType: 400,				//delay while typing for show tooltip
-		tooltipLimit: -1,			//limit max results to show in tooltip. -1 for no limit.
-		tipAutoSubmit: true,		//auto map panTo when click on tooltip
-		autoResize: true,			//autoresize on input change
-		collapsed: true,			//collapse search control at startup
-		autoCollapse: false,		//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
-		autoCollapseTime: 1200,		//delay for autoclosing alert and collapse after blur
-		zoom: null,					//zoom after pan to location found, default: map.getZoom()
-		position: 'topleft',
+		url: '',						//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
+		layer: null,					//layer where search markers(is a L.LayerGroup)				
+		sourceData: null,				//function that fill _recordsCache, passed searching text by first param and callback in second				
+		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer				
+		jsonpParam: null,				//jsonp param name for search by jsonp service, ex: "callback"
+		propertyLoc: 'loc',				//field for remapping location, using array: ['latname','lonname'] for select double fields(ex. ['lat','lon'] ) support dotted format: 'prop.subprop.title'
+		propertyName: 'title',			//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
+		formatData: null,				//callback for reformat all data from source to indexed data object
+		filterData: null,				//callback for filtering data from text searched, params: textSearch, allRecords
+		buildTip: null,					//function that return row tip html node(or html string), receive text tooltip in first param
+		container: '',					//container id to insert Search Control		
+		minLength: 1,					//minimal text length for autocomplete
+		initial: true,					//search elements only by initial text
+		casesensitive: false,			//search elements in case sensitive text
+		autoType: true,					//complete input with first suggested result and select this filled-in text.
+		delayType: 400,					//delay while typing for show tooltip
+		tooltipLimit: -1,				//limit max results to show in tooltip. -1 for no limit.
+		tipAutoSubmit: true,			//auto map panTo when click on tooltip
+		autoResize: true,				//autoresize on input change
+		collapsed: true,				//collapse search control at startup
+		autoCollapse: false,			//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
+		autoCollapseTime: 1200,			//delay for autoclosing alert and collapse after blur
+		zoom: null,						//zoom after pan to location found, default: map.getZoom()
 		textErr: 'Location not found',	//error message
-		textCancel: 'Cancel',		//title in cancel button		
-		textPlaceholder: 'Search...',//placeholder value			
-		animateLocation: true,		//animate a circle over location found
-		circleLocation: true,		//draw a circle in location found
-		markerLocation: false,		//draw a marker in location found
-		markerIcon: new L.Icon.Default()//custom icon for maker location
-		,hideMarkerOnCollapse: false // remove circle and marker on search control collapsed
-		//TODO add option for persist markerLoc after collapse!
-		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+		textCancel: 'Cancel',		    //title in cancel button		
+		textPlaceholder: 'Search...',   //placeholder value			
+		animateLocation: true,		    //animate a circle over location found
+		circleLocation: true,		    //draw a circle in location found
+		markerLocation: false,		    //draw a marker in location found
+		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
+		markerIcon: new L.Icon.Default(),//custom icon for maker location
+		position: 'topleft'
 		//TODO implement can do research on multiple sources layers and remote		
 		//TODO history: false,		//show latest searches in tooltip		
 	},
