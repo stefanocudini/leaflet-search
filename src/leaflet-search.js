@@ -25,6 +25,7 @@ L.Control.Search = L.Control.extend({
 		propertyName: 'title',			//property in marker.options(or feature.properties for vector layer) trough filter elements in layer,
 		formatData: null,				//callback for reformat all data from source to indexed data object
 		filterData: null,				//callback for filtering data from text searched, params: textSearch, allRecords
+		moveToLocation: null,			//callback run on location found, params: latlng, title, map
 		buildTip: null,					//function that return row tip html node(or html string), receive text tooltip in first param
 		container: '',					//container id to insert Search Control		
 		minLength: 1,					//minimal text length for autocomplete
@@ -38,7 +39,6 @@ L.Control.Search = L.Control.extend({
 		collapsed: true,				//collapse search control at startup
 		autoCollapse: false,			//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
 		autoCollapseTime: 1200,			//delay for autoclosing alert and collapse after blur
-		zoom: null,						//zoom after pan to location found, default: map.getZoom()
 		textErr: 'Location not found',	//error message
 		textCancel: 'Cancel',		    //title in cancel button		
 		textPlaceholder: 'Search...',   //placeholder value			
@@ -71,6 +71,7 @@ L.Control.Search = L.Control.extend({
 		this._layer = this.options.layer || new L.LayerGroup();
 		this._filterData = this.options.filterData || this._defaultFilterData;
 		this._formatData = this.options.formatData || this._defaultFormatData;
+		this._moveToLocation = this.options.moveToLocation || this._defaultMoveToLocation;
 		this._autoTypeTmp = this.options.autoType;	//useful for disable autoType temporarily in delete/backspace keydown
 		this._countertips = 0;		//number of tips items
 		this._recordsCache = {};	//key,value table! that store locations! format: key,latlng
@@ -785,12 +786,13 @@ L.Control.Search = L.Control.extend({
 			return false;
 	},
 
+	_defaultMoveToLocation: function(latlng, title, map) {
+		map.panTo(latlng);
+	},
+
 	showLocation: function(latlng, title) {	//set location on map from _recordsCache
 			
-		if(this.options.zoom)
-			this._map.setView(latlng, this.options.zoom);
-		else
-			this._map.panTo(latlng);
+		this._moveToLocation(latlng, title, this._map);
 
 		if(this._markerLoc)
 		{

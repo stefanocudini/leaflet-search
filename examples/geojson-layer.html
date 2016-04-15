@@ -42,7 +42,14 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 
 	map.addLayer(featuresLayer);
 
-	var searchControl = new L.Control.Search({layer: featuresLayer, propertyName: 'name', circleLocation:false});
+	var searchControl = new L.Control.Search({
+		layer: featuresLayer,
+		propertyName: 'name',
+		circleLocation: false,
+		moveToLocation: function(latlng, title, map) {
+			map.fitBounds( latlng.layer.getBounds() );
+		}
+	});
 
 	searchControl.on('search_locationfound', function(e) {
 		
