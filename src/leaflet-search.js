@@ -785,12 +785,21 @@ L.Control.Search = L.Control.extend({
 			return false;
 	},
 
-	showLocation: function(latlng, title) {	//set location on map from _recordsCache
-			
-		if(this.options.zoom)
-			this._map.setView(latlng, this.options.zoom);
+	showLocation: function(feature, title) {	//set location on map from _recordsCache
+		var latlong;
+		if(typeof feature.getBounds === 'function')
+		{
+			this._map.fitBounds(feature);
+			latlng = feature.getBounds().getCenter();
+		}
 		else
-			this._map.panTo(latlng);
+		{
+			latlng = feature;
+			if(this.options.zoom)
+				this._map.setView(latlng, this.options.zoom);
+			else
+				this._map.panTo(latlng);
+		}
 
 		if(this._markerLoc)
 		{
