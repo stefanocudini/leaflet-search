@@ -857,8 +857,7 @@ L.Control.Search.Marker = L.Marker.extend({
 	setTitle: function(title) {
 		title = title || '';
 		this.options.title = title;
-		if(this._icon)
-			this._icon.title = title;
+		this.bindPopup( title );
 		return this;
 	},
 

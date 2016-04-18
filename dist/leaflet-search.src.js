@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.0 - 2016-04-15 
+ * Leaflet Control Search v1.9.1 - 2016-04-18 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -873,8 +873,7 @@ L.Control.Search.Marker = L.Marker.extend({
 	setTitle: function(title) {
 		title = title || '';
 		this.options.title = title;
-		if(this._icon)
-			this._icon.title = title;
+		this.bindPopup( title );
 		return this;
 	},
 
