@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.2 - 2016-04-22 
+ * Leaflet Control Search v1.9.3 - 2016-04-22 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -379,17 +379,19 @@ L.Control.Search = L.Control.extend({
 
 	_defaultFilterData: function(text, records) {
 	
-		var I, regSearch, frecords = {};
+		var I, icase, regSearch, frecords = {};
 
 		text = text.replace(/[^\w\s]/gi,'');  //sanitize remove all special characters
 		I = this.options.initial ? '^' : '';  //search only initial text
+		icase = !this.options.casesensitive ? 'i' : undefined;
 
-		
+		regSearch = new RegExp(I + text, icase);
 
 		//TODO use .filter or .map
-		for(var key in records)
+		for(var key in records) {
 			if( regSearch.test(key) )
 				frecords[key]= records[key];
+		}
 		
 		return frecords;
 	},

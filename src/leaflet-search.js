@@ -363,19 +363,19 @@ L.Control.Search = L.Control.extend({
 
 	_defaultFilterData: function(text, records) {
 	
-		var I, regSearch, frecords = {};
+		var I, icase, regSearch, frecords = {};
 
 		text = text.replace(/[^\w\s]/gi,'');  //sanitize remove all special characters
 		I = this.options.initial ? '^' : '';  //search only initial text
+		icase = !this.options.casesensitive ? 'i' : undefined;
 
-		console.log('regexp',text)
-
-		regSearch = new RegExp(I + text, !this.options.casesensitive ? 'i' : undefined);
+		regSearch = new RegExp(I + text, icase);
 
 		//TODO use .filter or .map
-		for(var key in records)
+		for(var key in records) {
 			if( regSearch.test(key) )
 				frecords[key]= records[key];
+		}
 		
 		return frecords;
 	},

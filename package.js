@@ -1,6 +1,6 @@
 Package.describe({
 	name: "stefcud:leaflet-search",
-	version: "1.9.2",
+	version: "1.9.3",
 	summary: "Leaflet Control Search",
 	git: "https://github.com/stefanocudini/leaflet-search.git"
 });

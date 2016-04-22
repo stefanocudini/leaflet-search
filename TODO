@@ -5,7 +5,7 @@ Tasks found in: src/leaflet-search.js
     [Line: 57] [low] //TODO important optimization!!! always append data in this._recordsCache
     [Line: 61] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 64] [low] //TODO change structure of _recordsCache
-    [Line: 375] [low] 		//TODO use .filter or .map
+    [Line: 374] [low] 		//TODO use .filter or .map
     [Line: 431] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
     [Line: 440] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
     [Line: 461] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
