@@ -27,7 +27,8 @@ L.Control.Search = L.Control.extend({
 		filterData: null,				//callback for filtering data from text searched, params: textSearch, allRecords
 		moveToLocation: null,			//callback run on location found, params: latlng, title, map
 		buildTip: null,					//function that return row tip html node(or html string), receive text tooltip in first param
-		container: '',					//container id to insert Search Control		
+		container: '',					//container id to insert Search Control
+		containerClass: 'leaflet-control-search', //default classes for container
 		minLength: 1,					//minimal text length for autocomplete
 		initial: true,					//search elements only by initial text
 		casesensitive: false,			//search elements in case sensitive text
@@ -80,7 +81,7 @@ L.Control.Search = L.Control.extend({
 
 	onAdd: function (map) {
 		this._map = map;
-		this._container = L.DomUtil.create('div', 'leaflet-control-search');
+		this._container = L.DomUtil.create('div', this.options.containerClass);
 		this._input = this._createInput(this.options.textPlaceholder, 'search-input');
 		this._tooltip = this._createTooltip('search-tooltip');
 		this._cancel = this._createCancel(this.options.textCancel, 'search-cancel');
