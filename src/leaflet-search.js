@@ -476,57 +476,56 @@ L.Control.Search = L.Control.extend({
 		return request;   
 	},
 	
+	_searchInLayer: function(layer, retRecords, propName) {
+		var that = this,
+			loc;
+		
+		if(layer instanceof L.Control.Search.Marker) return;
+		
+		if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
+		{
+			if(that._getPath(layer.options,propName))
+			{
+				loc = layer.getLatLng();
+				loc.layer = layer;
+				retRecords[ that._getPath(layer.options,propName) ] = loc;
+			}
+			else if(that._getPath(layer.feature.properties,propName))
+			{
+				loc = layer.getLatLng();
+				loc.layer = layer;
+				retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
+			}
+			else
+				throw new Error("propertyName '"+propName+"' not found in marker");
+		}
+    		else if(layer.hasOwnProperty('feature'))//GeoJSON
+		{
+			if(layer.feature.properties.hasOwnProperty(propName))
+			{
+				loc = layer.getBounds().getCenter();
+				loc.layer = layer;			
+				retRecords[ layer.feature.properties[propName] ] = loc;
+			}
+			else
+				throw new Error("propertyName '"+propName+"' not found in feature");
+		}
+		else if(layer instanceof L.LayerGroup)
+		{
+			layer.eachLayer(function (layer) {
+				that._searchInLayer(layer, retRecords, propName);
+			});
+		}
+	},
+	
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var that = this,
 			retRecords = {},
-			propName = this.options.propertyName,
-			loc;
+			propName = this.options.propertyName;
 		
-		this._layer.eachLayer(function(layer) {
-
-			if(layer instanceof L.Control.Search.Marker) return;
-
-			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
-			{
-				if(that._getPath(layer.options,propName))
-				{
-					loc = layer.getLatLng();
-					loc.layer = layer;
-					retRecords[ that._getPath(layer.options,propName) ] = loc;			
-					
-				}
-				else if(that._getPath(layer.feature.properties,propName)){
-
-					loc = layer.getLatLng();
-					loc.layer = layer;
-					retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
-					
-				}
-				else
-					throw new Error("propertyName '"+propName+"' not found in marker");
-			}
-            else if(layer.hasOwnProperty('feature'))//GeoJSON
-			{
-				if(layer.feature.properties.hasOwnProperty(propName))
-				{
-					loc = layer.getBounds().getCenter();
-					loc.layer = layer;			
-					retRecords[ layer.feature.properties[propName] ] = loc;
-				}
-				else
-					throw new Error("propertyName '"+propName+"' not found in feature");
-			}
-			else if(layer instanceof L.LayerGroup)
-            {
-                //TODO: Optimize
-                layer.eachLayer(function(m) {
-                    loc = m.getLatLng();
-                    loc.layer = m;
-                    retRecords[ m.feature.properties[propName] ] = loc;
-                });
-            }
-			
-		},this);
+		this._layer.eachLayer(function (layer) {
+			that._searchInLayer(layer, retRecords, propName);
+		});
 		
 		return retRecords;
 	},
