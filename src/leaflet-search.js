@@ -507,7 +507,9 @@ L.Control.Search = L.Control.extend({
 						throw new Error("propertyName '"+propName+"' not found in marker");
 					
 				}
-				catch(err){}
+				catch(err){
+					if (console) {console.warn(err);}
+				}
 			}
             else if(layer.hasOwnProperty('feature'))//GeoJSON
 			{
@@ -521,7 +523,9 @@ L.Control.Search = L.Control.extend({
 					else
 						throw new Error("propertyName '"+propName+"' not found in feature");
 				}
-				catch(err){}
+				catch(err){
+					if (console) {console.warn(err);}
+				}
 			}
 			else if(layer instanceof L.LayerGroup)
             {
