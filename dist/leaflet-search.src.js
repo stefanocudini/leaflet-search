@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.3 - 2016-04-22 
+ * Leaflet Control Search v1.9.4 - 2016-04-26 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -504,33 +504,44 @@ L.Control.Search = L.Control.extend({
 
 			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
 			{
-				if(that._getPath(layer.options,propName))
-				{
-					loc = layer.getLatLng();
-					loc.layer = layer;
-					retRecords[ that._getPath(layer.options,propName) ] = loc;			
+				try {
+					if(that._getPath(layer.options,propName))
+					{
+						loc = layer.getLatLng();
+						loc.layer = layer;
+						retRecords[ that._getPath(layer.options,propName) ] = loc;			
+						
+					}
+					else if(that._getPath(layer.feature.properties,propName)){
+	
+						loc = layer.getLatLng();
+						loc.layer = layer;
+						retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
+						
+					}
+					else
+						throw new Error("propertyName '"+propName+"' not found in marker");
 					
 				}
-				else if(that._getPath(layer.feature.properties,propName)){
-
-					loc = layer.getLatLng();
-					loc.layer = layer;
-					retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
-					
+				catch(err){
+					if (console) {}
 				}
-				else
-					throw new Error("propertyName '"+propName+"' not found in marker");
 			}
             else if(layer.hasOwnProperty('feature'))//GeoJSON
 			{
-				if(layer.feature.properties.hasOwnProperty(propName))
-				{
-					loc = layer.getBounds().getCenter();
-					loc.layer = layer;			
-					retRecords[ layer.feature.properties[propName] ] = loc;
+				try {
+					if(layer.feature.properties.hasOwnProperty(propName))
+					{
+						loc = layer.getBounds().getCenter();
+						loc.layer = layer;			
+						retRecords[ layer.feature.properties[propName] ] = loc;
+					}
+					else
+						throw new Error("propertyName '"+propName+"' not found in feature");
 				}
-				else
-					throw new Error("propertyName '"+propName+"' not found in feature");
+				catch(err){
+					if (console) {}
+				}
 			}
 			else if(layer instanceof L.LayerGroup)
             {
