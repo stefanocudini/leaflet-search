@@ -365,7 +365,10 @@ L.Control.Search = L.Control.extend({
 	
 		var I, icase, regSearch, frecords = {};
 
-		text = text.replace(/[^\w\s]/gi,'');  //sanitize remove all special characters
+		text = text.replace(/[.*+?^${}()|[\]\\]/g, '');  //sanitize remove all special characters
+		if(text==='')
+			return [];
+
 		I = this.options.initial ? '^' : '';  //search only initial text
 		icase = !this.options.casesensitive ? 'i' : undefined;
 

@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.5 - 2016-04-26 
+ * Leaflet Control Search v1.9.6 - 2016-04-27 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -381,7 +381,10 @@ L.Control.Search = L.Control.extend({
 	
 		var I, icase, regSearch, frecords = {};
 
-		text = text.replace(/[^\w\s]/gi,'');  //sanitize remove all special characters
+		text = text.replace(/[.*+?^${}()|[\]\\]/g, '');  //sanitize remove all special characters
+		if(text==='')
+			return [];
+
 		I = this.options.initial ? '^' : '';  //search only initial text
 		icase = !this.options.casesensitive ? 'i' : undefined;
 
