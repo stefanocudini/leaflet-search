@@ -17,10 +17,9 @@ Tasks found in: src/leaflet-search.js
     [Line: 686] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
     [Line: 707] [low] 				//TODO refact!
     [Line: 721] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 818] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 906] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 930] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 909] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 933] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 54] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 55] [med] //FIXME option condition problem {autoCollapse: false }
     [Line: 790] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 821] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 823] [med] 		//FIXME autoCollapse option hide self._markerLoc before that visualized!!

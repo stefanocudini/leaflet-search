@@ -805,23 +805,26 @@ L.Control.Search = L.Control.extend({
 	},
 
 	showLocation: function(latlng, title) {	//set location on map from _recordsCache
-			
-		this._moveToLocation(latlng, title, this._map);
+		var self = this;
 
-		if(this._markerLoc)
-		{
-			this._markerLoc.setLatLng(latlng);  //show circle/marker in location found
-			this._markerLoc.setTitle(title);
-			this._markerLoc.show();
-			if(this.options.animateLocation)
-				this._markerLoc.animate();
-			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-		}
-		
-		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
-		if(this.options.autoCollapse)
-			this.collapse();
-		return this;
+		self._map.once('moveend zoomend', function(e) {
+
+			if(self._markerLoc) {
+				self._markerLoc.setLatLng(latlng);  //show circle/marker in location found
+				self._markerLoc.setTitle(title);
+				self._markerLoc.show();
+				if(self.options.animateLocation)
+					self._markerLoc.animate();
+			}
+			
+		});
+
+		self._moveToLocation(latlng, title, self._map);
+		//FIXME autoCollapse option hide self._markerLoc before that visualized!!
+		if(self.options.autoCollapse)
+			self.collapse();
+
+		return self;
 	}
 });
 
