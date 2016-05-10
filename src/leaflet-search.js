@@ -487,12 +487,12 @@ L.Control.Search = L.Control.extend({
 		
 		this._layer.eachLayer(function(layer) {
 			var path;
-
-			if(layer instanceof L.Control.Search.Marker) return;
-
-			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
-			{
-				try {
+			
+			try {
+				if(layer instanceof L.Control.Search.Marker) return;
+	
+				if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
+				{
 					if(that._getPath(layer.options,propName))
 					{
 						loc = layer.getLatLng();
@@ -507,42 +507,33 @@ L.Control.Search = L.Control.extend({
 						path = that._getPath(layer.feature.properties,propName);
 						
 					}
-					else
-						throw new Error("propertyName '"+propName+"' not found in marker");
-					
 				}
-				catch(err){
-					if (console) {console.warn(err);}
-				}
-			}
-            		if(layer.hasOwnProperty('feature'))//GeoJSON
-			{
-				try {
+	            		if(layer.hasOwnProperty('feature'))//GeoJSON
+				{
 					if(layer.feature.properties.hasOwnProperty(propName))
 					{
 						loc = layer.getBounds().getCenter();
 						loc.layer = layer;			
 						path = layer.feature.properties[propName];
 					}
-					else
-						throw new Error("propertyName '"+propName+"' not found in feature");
 				}
-				catch(err){
-					if (console) {console.warn(err);}
+				else if(layer instanceof L.LayerGroup)
+				{
+					//TODO: Optimize
+					layer.eachLayer(function(m) {
+					    loc = m.getLatLng();
+					    loc.layer = m;
+					    path = m.feature.properties[propName];
+					});
 				}
+				
+				if ( loc && path ) {
+					retRecords[path] = loc;
+				} else
+					throw new Error("propertyName '"+ propName+"' not found in layer");
 			}
-			else if(layer instanceof L.LayerGroup)
-			{
-				//TODO: Optimize
-				layer.eachLayer(function(m) {
-				    loc = m.getLatLng();
-				    loc.layer = m;
-				    path = m.feature.properties[propName];
-				});
-			}
-			
-			if ( loc && path ) {
-				retRecords[path] = loc;
+			catch(err) {
+				if(console) { console.warn(err); }
 			}
 			
 		},this);
