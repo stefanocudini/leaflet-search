@@ -486,6 +486,7 @@ L.Control.Search = L.Control.extend({
 			loc;
 		
 		this._layer.eachLayer(function(layer) {
+			var path;
 
 			if(layer instanceof L.Control.Search.Marker) return;
 
@@ -496,14 +497,14 @@ L.Control.Search = L.Control.extend({
 					{
 						loc = layer.getLatLng();
 						loc.layer = layer;
-						retRecords[ that._getPath(layer.options,propName) ] = loc;			
+						path = that._getPath(layer.options,propName);			
 						
 					}
 					else if(that._getPath(layer.feature.properties,propName)){
 	
 						loc = layer.getLatLng();
 						loc.layer = layer;
-						retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
+						path = that._getPath(layer.feature.properties,propName);
 						
 					}
 					else
@@ -521,7 +522,7 @@ L.Control.Search = L.Control.extend({
 					{
 						loc = layer.getBounds().getCenter();
 						loc.layer = layer;			
-						retRecords[ layer.feature.properties[propName] ] = loc;
+						path = layer.feature.properties[propName];
 					}
 					else
 						throw new Error("propertyName '"+propName+"' not found in feature");
@@ -531,14 +532,18 @@ L.Control.Search = L.Control.extend({
 				}
 			}
 			else if(layer instanceof L.LayerGroup)
-            {
-                //TODO: Optimize
-                layer.eachLayer(function(m) {
-                    loc = m.getLatLng();
-                    loc.layer = m;
-                    retRecords[ m.feature.properties[propName] ] = loc;
-                });
-            }
+			{
+				//TODO: Optimize
+				layer.eachLayer(function(m) {
+				    loc = m.getLatLng();
+				    loc.layer = m;
+				    path = m.feature.properties[propName];
+				});
+			}
+			
+			if ( loc && path ) {
+				retRecords[path] = loc;
+			}
 			
 		},this);
 		
