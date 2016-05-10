@@ -512,7 +512,12 @@ L.Control.Search = L.Control.extend({
 				{
 					if(layer.feature.properties.hasOwnProperty(propName))
 					{
-						loc = layer.getBounds().getCenter();
+						if ( typeof layer.getBounds  == 'function' ) {
+							loc = layer.getBounds().getCenter();	
+						} else {
+							loc = layer.getLatLng();
+						}
+						
 						loc.layer = layer;			
 						path = layer.feature.properties[propName];
 					}
