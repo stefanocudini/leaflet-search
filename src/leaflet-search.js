@@ -514,7 +514,7 @@ L.Control.Search = L.Control.extend({
 					if (console) {console.warn(err);}
 				}
 			}
-            else if(layer.hasOwnProperty('feature'))//GeoJSON
+            		if(layer.hasOwnProperty('feature'))//GeoJSON
 			{
 				try {
 					if(layer.feature.properties.hasOwnProperty(propName))
