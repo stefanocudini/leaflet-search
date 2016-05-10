@@ -486,7 +486,7 @@ L.Control.Search = L.Control.extend({
 			loc;
 		
 		this._layer.eachLayer(function(layer) {
-			var path;
+			var path = undefined;
 			
 			try {
 				if(layer instanceof L.Control.Search.Marker) return;
