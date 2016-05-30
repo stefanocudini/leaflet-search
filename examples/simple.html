@@ -57,7 +57,12 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 	var markersLayer = new L.LayerGroup();	//layer contain searched elements
 	map.addLayer(markersLayer);
 
-	var controlSearch = new L.Control.Search({layer: markersLayer, initial: false, position:'topright'});
+	var controlSearch = new L.Control.Search({
+		position:'topright',		
+		layer: markersLayer,
+		initial: false,
+		zoom: 12
+	});
 
 	map.addControl( controlSearch );
 
