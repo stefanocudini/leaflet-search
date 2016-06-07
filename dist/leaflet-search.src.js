@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.8 - 2016-05-30 
+ * Leaflet Control Search v1.9.8 - 2016-06-07 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -364,8 +364,6 @@ L.Control.Search = L.Control.extend({
 				.on(tip, 'click', function(e) {
 					this._input.value = text;
 					this._handleAutoresize();
-					this._input.focus();
-					this._hideTooltip();	
 					this._handleSubmit();
 				}, this);
 

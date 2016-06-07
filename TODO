@@ -5,21 +5,21 @@ Tasks found in: src/leaflet-search.js
     [Line: 58] [low] //TODO important optimization!!! always append data in this._recordsCache
     [Line: 62] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 65] [low] //TODO change structure of _recordsCache
-    [Line: 378] [low] 		//TODO use .filter or .map
-    [Line: 435] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 444] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 465] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 536] [low]                 //TODO: Optimize
-    [Line: 551] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 665] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 669] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 672] [low] //TODO change structure of _recordsCache
-    [Line: 687] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-    [Line: 708] [low] 				//TODO refact!
-    [Line: 722] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 913] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 937] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 376] [low] 		//TODO use .filter or .map
+    [Line: 433] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 442] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 463] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 534] [low]                 //TODO: Optimize
+    [Line: 549] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 663] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 667] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 670] [low] //TODO change structure of _recordsCache
+    [Line: 685] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 706] [low] 				//TODO refact!
+    [Line: 720] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 911] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 935] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 55] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 56] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 791] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 827] [med] 		//FIXME autoCollapse option hide self._markerLoc before that visualized!!
+    [Line: 789] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 825] [med] 		//FIXME autoCollapse option hide self._markerLoc before that visualized!!
