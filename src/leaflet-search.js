@@ -348,8 +348,6 @@ L.Control.Search = L.Control.extend({
 				.on(tip, 'click', function(e) {
 					this._input.value = text;
 					this._handleAutoresize();
-					this._input.focus();
-					this._hideTooltip();	
 					this._handleSubmit();
 				}, this);
 
