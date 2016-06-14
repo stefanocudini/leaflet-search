@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.8 - 2016-05-30 
+ * Leaflet Control Search v1.9.9 - 2016-06-14 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -80,11 +80,11 @@
 	float:left;
 	width:26px;
 	height:26px;	
-	background: url('../images/search-icon.png') no-repeat 2px 2px;
+	background: url('../images/search-icon.png') no-repeat 2px 2px #fff;
 	border-radius:4px;
 }
 .leaflet-control-search .search-button:hover {
-	background: url('../images/search-icon.png') no-repeat 2px -22px;
+	background: url('../images/search-icon.png') no-repeat 2px -22px #fafafa;
 }
 .leaflet-control-search .search-tooltip {
 	position:absolute;
@@ -113,10 +113,10 @@
 	white-space:nowrap;
 	vertical-align:center;
 }
-.leaflet-control-search .search-tip-select,
 .leaflet-control-search .search-tip:hover,
+.leaflet-control-search .search-tip-select,
 .leaflet-control-search .search-button:hover {
-	background-color: #fff;
+	background-color: #f4f4f4;
 }
 .leaflet-control-search .search-alert {
 	cursor:pointer;

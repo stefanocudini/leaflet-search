@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.8 - 2016-05-30 
+ * Leaflet Control Search v1.9.9 - 2016-06-14 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
