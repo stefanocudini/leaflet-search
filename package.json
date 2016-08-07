@@ -12,7 +12,7 @@
     "email": "stefano.cudini@gmail.com",
     "url": "http://labs.easyblog.it/"
   },
-  "main": "dist/leaflet-search.src.js"
+  "main": "dist/leaflet-search.src.js",
   "license": "MIT",
   "keywords": [
     "gis",
