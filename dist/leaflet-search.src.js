@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v1.9.9 - 2016-06-14 
+ * Leaflet Control Search v2.0.0 - 2016-08-12 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -52,6 +52,7 @@ L.Control.Search = L.Control.extend({
 		delayType: 400,					//delay while typing for show tooltip
 		tooltipLimit: -1,				//limit max results to show in tooltip. -1 for no limit.
 		tipAutoSubmit: true,			//auto map panTo when click on tooltip
+		firstTipSubmit: false,			//auto select first result con enter click
 		autoResize: true,				//autoresize on input change
 		collapsed: true,				//collapse search control at startup
 		autoCollapse: false,			//collapse search control after submit(on button or on tips if enabled tipAutoSubmit)
@@ -64,6 +65,7 @@ L.Control.Search = L.Control.extend({
 		markerLocation: false,		    //draw a marker in location found
 		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
 		markerIcon: new L.Icon.Default(),//custom icon for maker location
+		markerLocationOptions: null,
 		position: 'topleft'
 		//TODO implement can do research on multiple sources layers and remote		
 		//TODO history: false,		//show latest searches in tooltip		
@@ -621,7 +623,7 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			break;
 			case 13: //Enter
-				if(this._countertips == 1)
+				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
 					this._handleArrowSelect(1);
 				this._handleSubmit();	//do search
 			break;
@@ -853,7 +855,7 @@ L.Control.Search.Marker = L.Marker.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
-		radius: 10,
+		radius: 14,
 		weight: 3,
 		color: '#e03',
 		stroke: true,
@@ -931,10 +933,10 @@ L.Control.Search.Marker = L.Marker.extend({
 		{
 			var circle = this._circleLoc,
 				tInt = 200,	//time interval
-				ss = 10,	//frames
+				ss = 5,	//frames
 				mr = parseInt(circle._radius/ss),
 				oldrad = this.options.radius,
-				newrad = circle._radius * 2.5,
+				newrad = circle._radius * 2,
 				acc = 0;
 
 			circle._timerAnimLoc = setInterval(function() {
