@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.0.0 - 2016-08-12 
+ * Leaflet Control Search v2.0.1 - 2016-08-15 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -616,7 +616,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_handleKeypress: function (e) {	//run _input keyup event
-		
+
 		switch(e.keyCode)
 		{
 			case 27: //Esc
@@ -633,16 +633,18 @@ L.Control.Search = L.Control.extend({
 			case 40://Down
 				this._handleArrowSelect(1);
 			break;
+			case 8://backspace
+			case 45://Insert			
+			case 46://delete
+				this._autoTypeTmp = false;//disable temporarily autoType
+			break;
 			case 37://Left
 			case 39://Right
 			case 16://Shift
 			case 17://Ctrl
-			//case 32://Space
-			break;
-			case 8://backspace
-			case 46://delete
-				this._autoTypeTmp = false;//disable temporarily autoType
-			break;
+			case 35://End
+			case 36://Home
+			break;			
 			default://All keys
 
 				if(this._input.value.length)
