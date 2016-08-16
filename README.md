@@ -6,22 +6,20 @@ Leaflet Control Search
 A Leaflet control that search markers/features location by custom property.<br />
 Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
-Copyright 2014 [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)
+*Copyright 2016 [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)*
 
-Tested in Leaflet 0.7.2
+Tested in Leaflet 0.7.7,1.0
 
 ![Image](https://raw.githubusercontent.com/stefanocudini/leaflet-search/master/images/leaflet-search.jpg)
 
 #Where
 
-**Demo online:**  
+**Demo:**  
 [labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
 **Source code:**  
-[Github](https://github.com/stefanocudini/leaflet-search)  
-[Bitbucket](https://bitbucket.org/zakis_/leaflet-search)  
-[NPM](https://npmjs.org/package/leaflet-search)  
-[Atmosphere](https://atmosphere.meteor.com/package/leaflet-search)
+[Github](https://github.com/stefanocudini/leaflet-search)
+[NPM](https://npmjs.org/package/leaflet-search)
 
 **Bug tracking:**
 [Waffle.io](https://waffle.io/stefanocudini/leaflet-search)
@@ -40,6 +38,18 @@ map.addControl( new L.Control.Search({layer: searchLayer}) );
 Short way:
 ```javascript
 L.map('map', { searchControl: {layer: searchLayer} });
+```
+
+AMD module:
+```javascript
+require(["leaflet", "leafletSearch"],function(L, LeafletSearch) {
+
+	//... initialize leaflet map and dataLayer ...
+
+	map.addControl( new LeafletSearch({
+		layer: dataLayer
+	}) );
+});
 ```
 
 #Build
