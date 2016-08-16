@@ -1,24 +1,17 @@
-
-/* TODO 
 (function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD
+    if(typeof define === 'function' && define.amd) {
+    //AMD
         define(['leaflet'], factory);
-    } else if (typeof module !== 'undefined') {
-        // Node/CommonJS
+    } else if(typeof module !== 'undefined') {
+    // Node/CommonJS
         module.exports = factory(require('leaflet'));
     } else {
-        // Browser globals
-        if (typeof window.L === 'undefined') {
+    // Browser globals
+        if(typeof window.L === 'undefined')
             throw 'Leaflet must be loaded first';
-        }
         factory(window.L);
     }
 })(function (L) {
-	...
-});	*/
-
-(function() {
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
@@ -982,5 +975,8 @@ L.control.search = function (options) {
     return new L.Control.Search(options);
 };
 
-}).call(this);
+return L.Control.Search;
+
+});
+
 

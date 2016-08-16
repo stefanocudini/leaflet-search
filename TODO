@@ -1,25 +1,24 @@
 Tasks found in: src/leaflet-search.js
-    [Line: 2] [low] /* TODO 
-    [Line: 42] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer				
-    [Line: 75] [low] 		//TODO implement can do research on multiple sources layers and remote		
-    [Line: 76] [low] 		//TODO history: false,		//show latest searches in tooltip		
-    [Line: 81] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 84] [low] //TODO change structure of _recordsCache
-    [Line: 399] [low] 		//TODO use .filter or .map
-    [Line: 456] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 465] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 486] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 557] [low]                 //TODO: Optimize
-    [Line: 572] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 690] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 694] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 697] [low] //TODO change structure of _recordsCache
-    [Line: 712] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-    [Line: 733] [low] 				//TODO refact!
-    [Line: 747] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 941] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 965] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
-    [Line: 78] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
-    [Line: 79] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 816] [med] 				//FIXME if collapse in _handleSubmit hide _markerSearch!
-    [Line: 848] [med] 		//FIXME autoCollapse option hide self._markerSearch before that visualized!!
+    [Line: 35] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer				
+    [Line: 68] [low] 		//TODO implement can do research on multiple sources layers and remote		
+    [Line: 69] [low] 		//TODO history: false,		//show latest searches in tooltip		
+    [Line: 74] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 77] [low] //TODO change structure of _recordsCache
+    [Line: 392] [low] 		//TODO use .filter or .map
+    [Line: 449] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 458] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 479] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 550] [low]                 //TODO: Optimize
+    [Line: 565] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 683] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 687] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 690] [low] //TODO change structure of _recordsCache
+    [Line: 705] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 726] [low] 				//TODO refact!
+    [Line: 740] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 934] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 958] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 71] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+    [Line: 72] [med] //FIXME option condition problem {autoCollapse: false }
+    [Line: 809] [med] 				//FIXME if collapse in _handleSubmit hide _markerSearch!
+    [Line: 841] [med] 		//FIXME autoCollapse option hide self._markerSearch before that visualized!!
