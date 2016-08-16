@@ -97,10 +97,12 @@
 	white-space:nowrap;
 	vertical-align:center;
 }
-.leaflet-control-search .search-tip-select,
-.leaflet-control-search .search-tip:hover,
 .leaflet-control-search .search-button:hover {
 	background-color: #f4f4f4;
+}
+.leaflet-control-search .search-tip-select,
+.leaflet-control-search .search-tip:hover {
+	background-color: #fff;
 }
 .leaflet-control-search .search-alert {
 	cursor:pointer;

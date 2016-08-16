@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.1.0 - 2016-08-16 
+ * Leaflet Control Search v2.2.0 - 2016-08-16 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -113,10 +113,12 @@
 	white-space:nowrap;
 	vertical-align:center;
 }
-.leaflet-control-search .search-tip-select,
-.leaflet-control-search .search-tip:hover,
 .leaflet-control-search .search-button:hover {
 	background-color: #f4f4f4;
+}
+.leaflet-control-search .search-tip-select,
+.leaflet-control-search .search-tip:hover {
+	background-color: #fff;
 }
 .leaflet-control-search .search-alert {
 	cursor:pointer;

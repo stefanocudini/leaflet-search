@@ -116,7 +116,9 @@ L.Control.Search = L.Control.extend({
 				marker: this.options.markerLocation,
 				animate: this.options.animateLocation,
 				icon: this.options.markerIcon					
-			}).addTo(this._map);
+			})
+			.addTo(this._map);
+
 			this._markerSearch._isMarkerSearch = true;
 		}
 		
@@ -152,7 +154,6 @@ L.Control.Search = L.Control.extend({
 	},
 
 	// _onLayerAddRemove: function(e) {
-	// 	//console.info('_onLayerAddRemove');
 	// 	//without this, run setLayer also for each Markers!! to optimize!
 	// 	if(e.layer instanceof L.LayerGroup)
 	// 		if( L.stamp(e.layer) != L.stamp(this._layer) )
@@ -200,7 +201,7 @@ L.Control.Search = L.Control.extend({
 		
 	cancel: function() {
 		this._input.value = '';
-		this._handleKeypress({keyCode:8});//simulate backspace keypress
+		this._handleKeypress({ keyCode: 8 });//simulate backspace keypress
 		this._input.size = this._inputMinSize;
 		this._input.focus();
 		this._cancel.style.display = 'none';
@@ -283,11 +284,10 @@ L.Control.Search = L.Control.extend({
 		label.htmlFor = input.id;
 		label.style.display = 'none';
 		label.value = text;
-		
+
 		L.DomEvent
 			.disableClickPropagation(input)
-			.on(input, 'keyup', this._handleKeypress, this)
-			.on(input, 'keydown', this._handleAutoresize, this)
+			.on(input, 'keydown', this._handleKeypress, this)
 			.on(input, 'blur', this.collapseDelayed, this)
 			.on(input, 'focus', this.collapseDelayedStop, this);
 		
@@ -533,7 +533,7 @@ L.Control.Search = L.Control.extend({
 					
 				}
 				catch(err){
-					if (console) {console.warn(err);}
+					if (console) { console.warn(err); }
 				}
 			}
             else if(layer.hasOwnProperty('feature'))//GeoJSON
@@ -549,7 +549,7 @@ L.Control.Search = L.Control.extend({
 						throw new Error("propertyName '"+propName+"' not found in feature");
 				}
 				catch(err){
-					if (console) {console.warn(err);}
+					if (console) { console.warn(err); }
 				}
 			}
 			else if(layer instanceof L.LayerGroup)
@@ -622,10 +622,10 @@ L.Control.Search = L.Control.extend({
 
 		switch(e.keyCode)
 		{
-			case 27: //Esc
+			case 27://Esc
 				this.collapse();
 			break;
-			case 13: //Enter
+			case 13://Enter
 				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
 					this._handleArrowSelect(1);
 				this._handleSubmit();	//do search
@@ -636,9 +636,9 @@ L.Control.Search = L.Control.extend({
 			case 40://Down
 				this._handleArrowSelect(1);
 			break;
-			case 8://backspace
-			case 45://Insert			
-			case 46://delete
+			case  8://Backspace
+			case 45://Insert
+			case 46://Delete
 				this._autoTypeTmp = false;//disable temporarily autoType
 			break;
 			case 37://Left
@@ -647,7 +647,7 @@ L.Control.Search = L.Control.extend({
 			case 17://Ctrl
 			case 35://End
 			case 36://Home
-			break;			
+			break;
 			default://All keys
 
 				if(this._input.value.length)
@@ -669,6 +669,8 @@ L.Control.Search = L.Control.extend({
 				else
 					this._hideTooltip();
 		}
+
+		this._handleAutoresize();
 	},
 
 	searchText: function(text) {
@@ -837,10 +839,7 @@ L.Control.Search = L.Control.extend({
 		self._map.once('moveend zoomend', function(e) {
 
 			if(self._markerSearch) {
-				self._markerSearch
-					.setLatLng(latlng)
-					.setTitle(title)
-					.show();
+				self._markerSearch.show(latlng, title);
 			}
 			
 		});
@@ -905,7 +904,11 @@ L.Control.Search.Marker = L.Marker.extend({
 		return this;
 	},
 
-	show: function() {
+	show: function(latlng, title) {
+		
+		this.setLatLng(latlng);
+		this.setTitle(title);
+
 		if(this.options.marker)
 		{
 			if(this._icon)
