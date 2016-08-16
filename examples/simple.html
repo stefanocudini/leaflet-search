@@ -40,7 +40,7 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 		{"loc":[41.805008,12.982884], "title":"greenyellow"},
 		{"loc":[41.536175,13.273590], "title":"red"},
 		{"loc":[41.516175,13.373590], "title":"rosybrown"},
-		{"loc":[41.506175,13.173590], "title":"royalblue"},
+		{"loc":[41.506175,13.273590], "title":"royalblue"},
 		{"loc":[41.836175,13.673590], "title":"salmon"},
 		{"loc":[41.796175,13.570590], "title":"seagreen"},
 		{"loc":[41.436175,13.573590], "title":"seashell"},
@@ -55,6 +55,7 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	
 	map.addLayer(markersLayer);
 
 	var controlSearch = new L.Control.Search({

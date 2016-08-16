@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.0.1 - 2016-08-15 
+ * Leaflet Control Search v2.1.0 - 2016-08-16 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -14,6 +14,26 @@
  * git@github.com:stefanocudini/leaflet-search.git 
  * 
  */
+
+/* TODO 
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['leaflet'], factory);
+    } else if (typeof module !== 'undefined') {
+        // Node/CommonJS
+        module.exports = factory(require('leaflet'));
+    } else {
+        // Browser globals
+        if (typeof window.L === 'undefined') {
+            throw 'Leaflet must be loaded first';
+        }
+        factory(window.L);
+    }
+})(function (L) {
+	...
+});	*/
+
 (function() {
 
 L.Control.Search = L.Control.extend({
@@ -60,22 +80,19 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',	//error message
 		textCancel: 'Cancel',		    //title in cancel button		
 		textPlaceholder: 'Search...',   //placeholder value			
+		position: 'topleft',
+
+		//markerLocation: null,
+		markerIcon: new L.Icon.Default(),//custom icon for maker location
 		animateLocation: true,		    //animate a circle over location found
 		circleLocation: true,		    //draw a circle in location found
 		markerLocation: false,		    //draw a marker in location found
 		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
-		markerIcon: new L.Icon.Default(),//custom icon for maker location
-		markerLocationOptions: null,
-		position: 'topleft'
 		//TODO implement can do research on multiple sources layers and remote		
 		//TODO history: false,		//show latest searches in tooltip		
 	},
 //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
 //FIXME option condition problem {autoCollapse: false }
-//
-//TODO important optimization!!! always append data in this._recordsCache
-//  now _recordsCache content is emptied and replaced with new data founded
-//  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
 //
 //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
 //  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
@@ -109,19 +126,23 @@ L.Control.Search = L.Control.extend({
 		if(this.options.collapsed===false)
 			this.expand(this.options.collapsed);
 
-		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon)
-			this._markerLoc = new L.Control.Search.Marker([0,0], {
-					showCircle: this.options.circleLocation,
-					showMarker: this.options.markerLocation,
-					icon: this.options.markerIcon
-				});//see below
+		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon) {
+			this._markerSearch = new L.Control.Search.Marker([0,0], {
+				circle: this.options.circleLocation,
+				marker: this.options.markerLocation,
+				animate: this.options.animateLocation,
+				icon: this.options.markerIcon					
+			}).addTo(this._map);
+			this._markerSearch._isMarkerSearch = true;
+		}
 		
 		this.setLayer( this._layer );
-		 map.on({
-		// 		'layeradd': this._onLayerAddRemove,
-		// 		'layerremove': this._onLayerAddRemove
-		     'resize': this._handleAutoresize
-		 	}, this);
+
+		map.on({
+			// 		'layeradd': this._onLayerAddRemove,
+			// 		'layerremove': this._onLayerAddRemove
+			'resize': this._handleAutoresize
+			}, this);
 		return this._container;
 	},
 	addTo: function (map) {
@@ -173,8 +194,6 @@ L.Control.Search = L.Control.extend({
 		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
 		this._layer = layer;
 		this._layer.addTo(this._map);
-		if(this._markerLoc)
-			this._layer.addLayer(this._markerLoc);
 		return this;
 	},
 	
@@ -228,7 +247,7 @@ L.Control.Search = L.Control.extend({
 			this._cancel.style.display = 'none';			
 			L.DomUtil.removeClass(this._container, 'search-exp');		
 			if (this.options.hideMarkerOnCollapse) {
-				this._markerLoc.hide();
+				this._markerSearch.hide();
 			}
 			this._map.off('dragstart click', this.collapse, this);
 		}
@@ -506,7 +525,7 @@ L.Control.Search = L.Control.extend({
 		
 		this._layer.eachLayer(function(layer) {
 
-			if(layer instanceof L.Control.Search.Marker) return;
+			if(layer.hasOwnProperty('_isMarkerSearch')) return;
 
 			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
 			{
@@ -808,7 +827,7 @@ L.Control.Search = L.Control.extend({
 						});
 				}
 				//this.collapse();
-				//FIXME if collapse in _handleSubmit hide _markerLoc!
+				//FIXME if collapse in _handleSubmit hide _markerSearch!
 			}
 		}
 	},
@@ -833,18 +852,17 @@ L.Control.Search = L.Control.extend({
 
 		self._map.once('moveend zoomend', function(e) {
 
-			if(self._markerLoc) {
-				self._markerLoc.setLatLng(latlng);  //show circle/marker in location found
-				self._markerLoc.setTitle(title);
-				self._markerLoc.show();
-				if(self.options.animateLocation)
-					self._markerLoc.animate();
+			if(self._markerSearch) {
+				self._markerSearch
+					.setLatLng(latlng)
+					.setTitle(title)
+					.show();
 			}
 			
 		});
 
 		self._moveToLocation(latlng, title, self._map);
-		//FIXME autoCollapse option hide self._markerLoc before that visualized!!
+		//FIXME autoCollapse option hide self._markerSearch before that visualized!!
 		if(self.options.autoCollapse)
 			self.collapse();
 
@@ -857,21 +875,22 @@ L.Control.Search.Marker = L.Marker.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
-		radius: 14,
+		radius: 10,
 		weight: 3,
 		color: '#e03',
 		stroke: true,
 		fill: false,
 		title: '',
 		icon: new L.Icon.Default(),
-		showCircle: true,
-		showMarker: false	//show icon optional, show only circleLoc
+		animate: true,
+		marker: false,
+		circle: true		
 	},
 	
 	initialize: function (latlng, options) {
 		L.setOptions(this, options);
 		L.Marker.prototype.initialize.call(this, latlng, options);
-		if(this.options.showCircle)
+		if(this.options.circle)
 			this._circleLoc =  new L.CircleMarker(latlng, this.options);
 	},
 
@@ -886,7 +905,7 @@ L.Control.Search.Marker = L.Marker.extend({
 		L.Marker.prototype.onRemove.call(this, map);
 		if(this._circleLoc)
 			map.removeLayer(this._circleLoc);
-	},	
+	},
 	
 	setLatLng: function (latlng) {
 		L.Marker.prototype.setLatLng.call(this, latlng);
@@ -903,7 +922,7 @@ L.Control.Search.Marker = L.Marker.extend({
 	},
 
 	show: function() {
-		if(this.options.showMarker)
+		if(this.options.marker)
 		{
 			if(this._icon)
 				this._icon.style.display = 'block';
@@ -911,11 +930,13 @@ L.Control.Search.Marker = L.Marker.extend({
 				this._shadow.style.display = 'block';
 			//this._bringToFront();
 		}
+
 		if(this._circleLoc)
-		{
 			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
-			//this._circleLoc.bringToFront();
-		}
+		
+		if(this.options.animate)
+			this.animate();
+
 		return this;
 	},
 
