@@ -79,17 +79,10 @@ L.Control.Search = L.Control.extend({
 		textPlaceholder: 'Search...',   //placeholder value			
 		position: 'topleft',
 		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
-		
-		/*
-		markerIcon: new L.Icon.Default(),//custom icon for maker location
-		animateLocation: true,		    //animate a circle over location found
-		circleLocation: true,		    //draw a circle in location found
-		markerLocation: false,		    //draw a marker in location found
-		*/
-		marker: {
-			icon: false,
-			animate: true,
-			circle: {
+		marker: {						//custom L.Marker or false for hide
+			icon: false,				//custom L.Icon for maker location or false for hide
+			animate: true,				//animate a circle over location found
+			circle: {					//draw a circle in location found
 				radius: 10,
 				weight: 3,
 				color: '#e03',
@@ -137,7 +130,7 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.marker) {
 			
-			if(this.options.marker instanceof L.Marker)
+			if(this.options.marker instanceof L.Marker || this.options.marker instanceof L.CircleMarker)
 				this._markerSearch = this.options.marker;
 
 			else if(_isObject(this.options.marker))
