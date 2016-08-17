@@ -206,10 +206,11 @@ h4 {
 			url: jsonpUrl,
 			jsonpParam: jsonpName,
 			formatData: formatJSON,
-			animateLocation: true,
-			markerLocation: true,
 			minLength: 2,
-			autoType: false
+			autoType: false,
+			marker: {
+				icon: true
+			}
 		};
 		
 	map.addControl( new L.Control.Search(searchOpts) );

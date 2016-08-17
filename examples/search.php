@@ -93,7 +93,7 @@ $fdata = array_values($fdata);	//reset $fdata indexs
 
 $JSON = json_encode($fdata,true);
 
-if($_SERVER['REMOTE_ADDR']=='127.0.0.1') sleep(1);
+#if($_SERVER['REMOTE_ADDR']=='127.0.0.1') sleep(1);
 //simulate connection latency for localhost tests
 @header("Content-type: application/json; charset=utf-8");
 

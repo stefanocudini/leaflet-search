@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.5.0 - 2016-08-16 
+ * Leaflet Control Search v2.6.0 - 2016-08-17 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -28,6 +28,26 @@
         factory(window.L);
     }
 })(function (L) {
+
+	function _getPath(obj, prop) {
+		var parts = prop.split('.'),
+			last = parts.pop(),
+			len = parts.length,
+			cur = parts[0],
+			i = 1;
+
+		if(len > 0)
+			while((obj = obj[cur]) && i < len)
+				cur = parts[i++];
+
+		if(obj)
+			return obj[last];
+	}
+
+	function _isObject(obj) {
+		return Object.prototype.toString.call(obj) === "[object Object]";
+	}
+
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
@@ -74,13 +94,25 @@ L.Control.Search = L.Control.extend({
 		textCancel: 'Cancel',		    //title in cancel button		
 		textPlaceholder: 'Search...',   //placeholder value			
 		position: 'topleft',
-
-		//markerLocation: null,
+		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
+		
+		/*
 		markerIcon: new L.Icon.Default(),//custom icon for maker location
 		animateLocation: true,		    //animate a circle over location found
 		circleLocation: true,		    //draw a circle in location found
 		markerLocation: false,		    //draw a marker in location found
-		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
+		*/
+		marker: {
+			icon: false,
+			animate: true,
+			circle: {
+				radius: 10,
+				weight: 3,
+				color: '#e03',
+				stroke: true,
+				fill: false
+			}
+		}
 		//TODO implement can do research on multiple sources layers and remote		
 		//TODO history: false,		//show latest searches in tooltip		
 	},
@@ -119,18 +151,17 @@ L.Control.Search = L.Control.extend({
 		if(this.options.collapsed===false)
 			this.expand(this.options.collapsed);
 
-		if(this.options.circleLocation || this.options.markerLocation || this.options.markerIcon) {
-			this._markerSearch = new L.Control.Search.Marker([0,0], {
-				circle: this.options.circleLocation,
-				marker: this.options.markerLocation,
-				animate: this.options.animateLocation,
-				icon: this.options.markerIcon					
-			})
-			.addTo(this._map);
+		if(this.options.marker) {
+			
+			if(this.options.marker instanceof L.Marker)
+				this._markerSearch = this.options.marker;
+
+			else if(_isObject(this.options.marker))
+				this._markerSearch = new L.Control.Search.Marker([0,0], this.options.marker);
 
 			this._markerSearch._isMarkerSearch = true;
 		}
-		
+
 		this.setLayer( this._layer );
 
 		map.on({
@@ -168,21 +199,6 @@ L.Control.Search = L.Control.extend({
 	// 		if( L.stamp(e.layer) != L.stamp(this._layer) )
 	// 			this.setLayer(e.layer);
 	// },
-
-	_getPath: function(obj, prop) {
-		var parts = prop.split('.'),
-			last = parts.pop(),
-			len = parts.length,
-			cur = parts[0],
-			i = 1;
-
-		if(len > 0)
-			while((obj = obj[cur]) && i < len)
-				cur = parts[i++];
-
-		if(obj)
-			return obj[last];
-	},
 
 	setLayer: function(layer) {	//set search layer at runtime
 		//this.options.layer = layer; //setting this, run only this._recordsFromLayer()
@@ -241,7 +257,7 @@ L.Control.Search = L.Control.extend({
 			this._cancel.style.display = 'none';			
 			L.DomUtil.removeClass(this._container, 'search-exp');		
 			if (this.options.hideMarkerOnCollapse) {
-				this._markerSearch.hide();
+				this._map.removeLayer(this._markerSearch);
 			}
 			this._map.off('dragstart click', this.collapse, this);
 		}
@@ -458,10 +474,10 @@ L.Control.Search = L.Control.extend({
 
 		if( L.Util.isArray(propLoc) )
 			for(i in json)
-				jsonret[ this._getPath(json[i],propName) ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
+				jsonret[ _getPath(json[i],propName) ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
 		else
 			for(i in json)
-				jsonret[ this._getPath(json[i],propName) ]= L.latLng( this._getPath(json[i],propLoc) );
+				jsonret[ _getPath(json[i],propName) ]= L.latLng( _getPath(json[i],propLoc) );
 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
 	},
@@ -523,18 +539,18 @@ L.Control.Search = L.Control.extend({
 			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
 			{
 				try {
-					if(that._getPath(layer.options,propName))
+					if(_getPath(layer.options,propName))
 					{
 						loc = layer.getLatLng();
 						loc.layer = layer;
-						retRecords[ that._getPath(layer.options,propName) ] = loc;			
+						retRecords[ _getPath(layer.options,propName) ] = loc;			
 						
 					}
-					else if(that._getPath(layer.feature.properties,propName)){
+					else if(_getPath(layer.feature.properties,propName)){
 	
 						loc = layer.getLatLng();
 						loc.layer = layer;
-						retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
+						retRecords[ _getPath(layer.feature.properties,propName) ] = loc;
 						
 					}
 					else
@@ -821,8 +837,6 @@ L.Control.Search = L.Control.extend({
 							layer: loc.layer ? loc.layer : null
 						});
 				}
-				//this.collapse();
-				//FIXME if collapse in _handleSubmit hide _markerSearch!
 			}
 		}
 	},
@@ -848,7 +862,7 @@ L.Control.Search = L.Control.extend({
 		self._map.once('moveend zoomend', function(e) {
 
 			if(self._markerSearch) {
-				self._markerSearch.show(latlng, title);
+				self._markerSearch.addTo(self._map).setLatLng(latlng);
 			}
 			
 		});
@@ -867,30 +881,36 @@ L.Control.Search.Marker = L.Marker.extend({
 	includes: L.Mixin.Events,
 	
 	options: {
-		radius: 10,
-		weight: 3,
-		color: '#e03',
-		stroke: true,
-		fill: false,
-		title: '',
 		icon: new L.Icon.Default(),
 		animate: true,
-		marker: false,
-		circle: true		
+		circle: {
+			radius: 10,
+			weight: 3,
+			color: '#e03',
+			stroke: true,
+			fill: false
+		}
 	},
 	
 	initialize: function (latlng, options) {
 		L.setOptions(this, options);
+
+		if(options.icon === true)
+			options.icon = new L.Icon.Default();
+
 		L.Marker.prototype.initialize.call(this, latlng, options);
-		if(this.options.circle)
-			this._circleLoc =  new L.CircleMarker(latlng, this.options);
+		
+		if( _isObject(this.options.circle) )
+			this._circleLoc = new L.CircleMarker(latlng, this.options.circle);
 	},
 
 	onAdd: function (map) {
 		L.Marker.prototype.onAdd.call(this, map);
-		if(this._circleLoc)
+		if(this._circleLoc) {
 			map.addLayer(this._circleLoc);
-		this.hide();
+			if(this.options.animate)
+				this.animate();
+		}
 	},
 
 	onRemove: function (map) {
@@ -906,44 +926,14 @@ L.Control.Search.Marker = L.Marker.extend({
 		return this;
 	},
 	
-	setTitle: function(title) {
-		title = title || '';
-		this.options.title = title;
-		this.bindPopup( title );
-		return this;
+	_initIcon: function () {
+		if(this.options.icon)
+			L.Marker.prototype._initIcon.call(this);
 	},
 
-	show: function(latlng, title) {
-		
-		this.setLatLng(latlng);
-		this.setTitle(title);
-
-		if(this.options.marker)
-		{
-			if(this._icon)
-				this._icon.style.display = 'block';
-			if(this._shadow)
-				this._shadow.style.display = 'block';
-			//this._bringToFront();
-		}
-
-		if(this._circleLoc)
-			this._circleLoc.setStyle({fill: this.options.fill, stroke: this.options.stroke});
-		
-		if(this.options.animate)
-			this.animate();
-
-		return this;
-	},
-
-	hide: function() {
-		if(this._icon)
-			this._icon.style.display = 'none';
-		if(this._shadow)
-			this._shadow.style.display = 'none';
-		if(this._circleLoc)			
-			this._circleLoc.setStyle({fill: false, stroke: false});
-		return this;
+	_removeIcon: function () {
+		if(this.options.icon)
+			L.Marker.prototype._removeIcon.call(this);
 	},
 
 	animate: function() {
@@ -954,7 +944,7 @@ L.Control.Search.Marker = L.Marker.extend({
 				tInt = 200,	//time interval
 				ss = 5,	//frames
 				mr = parseInt(circle._radius/ss),
-				oldrad = this.options.radius,
+				oldrad = this.options.circle.radius,
 				newrad = circle._radius * 2,
 				acc = 0;
 

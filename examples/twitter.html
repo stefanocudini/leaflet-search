@@ -75,10 +75,11 @@
 			jsonpParam: 'callback',
 			formatData: formatJSON,
 			buildTip: makeTip,
-			animateLocation: true,
-			markerLocation: true,
 			minLength: 3,
-			autoType: false			
+			autoType: false,
+			marker: {
+				icon: true
+			}
 		};
 		
 	var searchControl = new L.Control.Search(searchOpts);

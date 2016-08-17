@@ -30,9 +30,16 @@ black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
 	L.control.search({
 		url: 'search.php?q={s}',
 		textPlaceholder: 'Color...',
-		collapsed: false,
-		markerLocation: true,
-		markerIcon: new L.Icon({iconUrl:'data/custom-icon.png', iconSize: [20,20]})
+		position: 'topright',
+		hideMarkerOnCollapse: true,
+		marker: {
+			icon: new L.Icon({iconUrl:'data/custom-icon.png', iconSize: [20,20]}),
+			circle: {
+				radius: 20,
+				color: '#0a0',
+				opacity: 1
+			}
+		}
 	}).addTo(map);
 
 	L.control.zoom().addTo(map);

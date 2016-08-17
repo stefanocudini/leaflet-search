@@ -1,24 +1,23 @@
 Tasks found in: src/leaflet-search.js
-    [Line: 35] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer				
-    [Line: 68] [low] 		//TODO implement can do research on multiple sources layers and remote		
-    [Line: 69] [low] 		//TODO history: false,		//show latest searches in tooltip		
-    [Line: 74] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 77] [low] //TODO change structure of _recordsCache
-    [Line: 392] [low] 		//TODO use .filter or .map
-    [Line: 449] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 458] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 479] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 550] [low]                 //TODO: Optimize
-    [Line: 565] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 683] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 687] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 690] [low] //TODO change structure of _recordsCache
-    [Line: 705] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-    [Line: 726] [low] 				//TODO refact!
-    [Line: 740] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 934] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 958] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
-    [Line: 71] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
-    [Line: 72] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 809] [med] 				//FIXME if collapse in _handleSubmit hide _markerSearch!
-    [Line: 841] [med] 		//FIXME autoCollapse option hide self._markerSearch before that visualized!!
+    [Line: 55] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer				
+    [Line: 100] [low] 		//TODO implement can do research on multiple sources layers and remote		
+    [Line: 101] [low] 		//TODO history: false,		//show latest searches in tooltip		
+    [Line: 106] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 109] [low] //TODO change structure of _recordsCache
+    [Line: 408] [low] 		//TODO use .filter or .map
+    [Line: 465] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 474] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 495] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 566] [low]                 //TODO: Optimize
+    [Line: 581] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 699] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 703] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 706] [low] //TODO change structure of _recordsCache
+    [Line: 721] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 742] [low] 				//TODO refact!
+    [Line: 756] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 924] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 948] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 103] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+    [Line: 104] [med] //FIXME option condition problem {autoCollapse: false }
+    [Line: 855] [med] 		//FIXME autoCollapse option hide self._markerSearch before that visualized!!
