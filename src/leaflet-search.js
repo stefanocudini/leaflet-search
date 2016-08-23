@@ -184,7 +184,9 @@ L.Control.Search = L.Control.extend({
         layers[group].addTo(map);
       });
     } else {
-      console.log('No Array "searchGroup" define in "layer" object');
+      for (var allGroup in layers) {
+        layers[allGroup].addTo(map);
+      }
     }
 
 		return this;
@@ -576,7 +578,9 @@ L.Control.Search = L.Control.extend({
         context._layer[group].eachLayer(searchMarker,context);
       });
     } else {
-      console.log('No Array "searchGroup" define in "layer" object');
+      for (var allGroup in context._layer) {
+          context._layer[allGroup].eachLayer(searchMarker,context);
+      }
     }
 
 		return retRecords;
