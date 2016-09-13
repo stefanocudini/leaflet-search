@@ -75,7 +75,7 @@ Example: <i>pizza</i>, <i>vege</i>, <i>japa</i>, <i>giappo</i>, <i>cucina romana
 			return ret;
 		}
 	})
-	.on('search_locationfound', function(e) {
+	.on('search:locationfound', function(e) {
 		e.layer.openPopup();
 	})
 	.addTo(map);

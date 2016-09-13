@@ -84,7 +84,7 @@
 		
 	var searchControl = new L.Control.Search(searchOpts);
 	
-	searchControl.on('search_locationfound',function(e) {	
+	searchControl.on('search:locationfound',function(e) {	
 	
 		var	popup = e.latlng.popupText,
 			marker = this._markerLoc;		

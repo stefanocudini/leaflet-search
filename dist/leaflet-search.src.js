@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.6.1 - 2016-08-17 
+ * Leaflet Control Search v2.7.0 - 2016-09-13 
  * 
  * Copyright 2016 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -55,9 +55,9 @@ L.Control.Search = L.Control.extend({
 	//	Name					Data passed			   Description
 	//
 	//Managed Events:
-	//	search_locationfound	{latlng, title, layer} fired after moved and show markerLocation
-	//	search_expanded			{}					   fired after control was expanded
-	//  search_collapsed		{}					   fired after control was collapsed
+	//	search:locationfound	{latlng, title, layer} fired after moved and show markerLocation
+	//	search:expanded			{}					   fired after control was expanded
+	//  search:collapsed		{}					   fired after control was collapsed
 	//
 	//Public methods:
 	//  setLayer()				L.LayerGroup()         set layer search at runtime
@@ -235,7 +235,7 @@ L.Control.Search = L.Control.extend({
 			this._input.focus();
 			this._map.on('dragstart click', this.collapse, this);
 		}
-		this.fire('search_expanded');
+		this.fire('search:expanded');
 		return this;	
 	},
 
@@ -254,7 +254,7 @@ L.Control.Search = L.Control.extend({
 			}
 			this._map.off('dragstart click', this.collapse, this);
 		}
-		this.fire('search_collapsed');
+		this.fire('search:collapsed');
 		return this;
 	},
 	
@@ -824,7 +824,7 @@ L.Control.Search = L.Control.extend({
 				else
 				{
 					this.showLocation(loc, this._input.value);
-					this.fire('search_locationfound', {
+					this.fire('search:locationfound', {
 							latlng: loc,
 							text: this._input.value,
 							layer: loc.layer ? loc.layer : null

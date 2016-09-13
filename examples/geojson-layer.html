@@ -53,13 +53,13 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 		}
 	});
 
-	searchControl.on('search_locationfound', function(e) {
+	searchControl.on('search:locationfound', function(e) {
 		
 		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
 		if(e.layer._popup)
 			e.layer.openPopup();
 
-	}).on('search_collapsed', function(e) {
+	}).on('search:collapsed', function(e) {
 
 		featuresLayer.eachLayer(function(layer) {	//restore feature color
 			featuresLayer.resetStyle(layer);
