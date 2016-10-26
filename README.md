@@ -39,7 +39,7 @@ map.addControl( new L.Control.Search({layer: searchLayer}) );
 
 Short way:
 ```javascript
-var searchLayer = L.layerGroup().addTo(map);
+var searchLayer = L.geoJson().addTo(map);
 //... adding data in searchLayer ...
 L.map('map', { searchControl: {layer: searchLayer} });
 ```
