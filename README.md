@@ -31,12 +31,16 @@ Tested in Leaflet 0.7.7,1.0
 
 Adding the search control to the map:
 ```javascript
+var searchLayer = L.layerGroup().addTo(map);
+//... adding data in searchLayer ...
 map.addControl( new L.Control.Search({layer: searchLayer}) );
 //searchLayer is a L.LayerGroup contains searched markers
 ```
 
 Short way:
 ```javascript
+var searchLayer = L.layerGroup().addTo(map);
+//... adding data in searchLayer ...
 L.map('map', { searchControl: {layer: searchLayer} });
 ```
 
