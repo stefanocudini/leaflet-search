@@ -2,7 +2,6 @@
 /*
  * Demo serverside file for Leaflet Search Plugin
  * https://github.com/stefanocudini/leaflet-search
- * https://bitbucket.org/zakis_/leaflet-search 
  *
  * http://labs.easyblog.it/maps/leaflet-search
  *

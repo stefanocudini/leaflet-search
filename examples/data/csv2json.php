@@ -2,7 +2,6 @@
 /*
  * Leaflet Search Plugin
  * https://github.com/stefanocudini/leaflet-search
- * https://bitbucket.org/zakis_/leaflet-search 
  * http://labs.easyblog.it/maps/leaflet-search
  *
  * Copyright 2013, Stefano Cudini - http://labs.easyblog.it/stefano-cudini/
