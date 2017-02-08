@@ -45,7 +45,7 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 	var searchControl = new L.Control.Search({
 		layer: featuresLayer,
 		propertyName: 'name',
-		circleLocation: false,
+		marker: false,
 		moveToLocation: function(latlng, title, map) {
 			//map.fitBounds( latlng.layer.getBounds() );
 			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
@@ -55,6 +55,10 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 
 	searchControl.on('search:locationfound', function(e) {
 		
+		//console.log('search:locationfound', );
+
+		//map.removeLayer(this._markerSearch)
+
 		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
 		if(e.layer._popup)
 			e.layer.openPopup();

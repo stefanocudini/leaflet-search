@@ -99,7 +99,7 @@ h4 {
 
 	map.addLayer(featuresLayer);
 
-	var searchControl = new L.Control.Search({layer: featuresLayer, propertyName: 'name', circleLocation:false});
+	var searchControl = new L.Control.Search({layer: featuresLayer, propertyName: 'name', marker: false});
 
 	searchControl.on('search:locationfound', function(e) {
 		
