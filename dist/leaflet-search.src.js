@@ -1,7 +1,7 @@
 /* 
- * Leaflet Control Search v2.7.0 - 2016-09-13 
+ * Leaflet Control Search v2.7.2 - 2017-04-08 
  * 
- * Copyright 2016 Stefano Cudini 
+ * Copyright 2017 Stefano Cudini 
  * stefano.cudini@gmail.com 
  * http://labs.easyblog.it/ 
  * 
@@ -48,6 +48,27 @@
 		return Object.prototype.toString.call(obj) === "[object Object]";
 	}
 
+//TODO implement can do research on multiple sources layers and remote		
+//TODO history: false,		//show latest searches in tooltip		
+//FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+//FIXME option condition problem {autoCollapse: false }
+//
+//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+//  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
+//
+//TODO change structure of _recordsCache
+//	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
+//	in this mode every record can have a free structure of attributes, only 'loc' is required
+//TODO important optimization!!! always append data in this._recordsCache
+//  now _recordsCache content is emptied and replaced with new data founded
+//  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
+//
+//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+//  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
+//
+//TODO change structure of _recordsCache
+//	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
+//	in this way every record can have a free structure of attributes, only 'loc' is required
 
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
@@ -83,7 +104,7 @@ L.Control.Search = L.Control.extend({
 		casesensitive: false,			//search elements in case sensitive text
 		autoType: true,					//complete input with first suggested result and select this filled-in text.
 		delayType: 400,					//delay while typing for show tooltip
-		tooltipLimit: -1,				//limit max results to show in tooltip. -1 for no limit.
+		tooltipLimit: -1,				//limit max results to show in tooltip. -1 for no limit, 0 for no results
 		tipAutoSubmit: true,			//auto map panTo when click on tooltip
 		firstTipSubmit: false,			//auto select first result con enter click
 		autoResize: true,				//autoresize on input change
@@ -106,19 +127,8 @@ L.Control.Search = L.Control.extend({
 				fill: false
 			}
 		}
-		//TODO implement can do research on multiple sources layers and remote		
-		//TODO history: false,		//show latest searches in tooltip		
 	},
-//FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
-//FIXME option condition problem {autoCollapse: false }
-//
-//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-//  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
-//
-//TODO change structure of _recordsCache
-//	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
-//	in this mode every record can have a free structure of attributes, only 'loc' is required
-	
+
 	initialize: function(options) {
 		L.Util.setOptions(this, options || {});
 		this._inputMinSize = this.options.textPlaceholder ? this.options.textPlaceholder.length : 10;
@@ -273,7 +283,7 @@ L.Control.Search = L.Control.extend({
 		return this;		
 	},
 
-////start DOM creations
+	////start DOM creations
 	_createAlert: function(className) {
 		var alert = L.DomUtil.create('div', className, this._container);
 		alert.style.display = 'none';
@@ -395,7 +405,7 @@ L.Control.Search = L.Control.extend({
 		return tip;
 	},
 
-//////end DOM creations
+	//////end DOM creations
 
 	_getUrl: function(text) {
 		return (typeof this.options.url === 'function') ? this.options.url(text) : this.options.url;
@@ -424,33 +434,39 @@ L.Control.Search = L.Control.extend({
 	},
 
 	showTooltip: function(records) {
-		var tip;
+		
 
 		this._countertips = 0;
-				
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
-		for(var key in records)//fill tooltip
+		if(this.options.tooltipLimit)
 		{
-			if(++this._countertips == this.options.tooltipLimit) break;
+			for(var key in records)//fill tooltip
+			{
+				if(this._countertips === this.options.tooltipLimit)
+					break;
+				
+				this._countertips++;
 
-			tip = this._createTip(key, records[key] );
-
-			this._tooltip.appendChild(tip);
+				this._tooltip.appendChild( this._createTip(key, records[key]) );
+			}
 		}
 		
 		if(this._countertips > 0)
 		{
 			this._tooltip.style.display = 'block';
+			
 			if(this._autoTypeTmp)
 				this._autoType();
+
 			this._autoTypeTmp = this.options.autoType;//reset default value
 		}
 		else
 			this._hideTooltip();
 
 		this._tooltip.scrollTop = 0;
+
 		return this._countertips;
 	},
 
@@ -590,7 +606,7 @@ L.Control.Search = L.Control.extend({
 		//TODO implements autype without selection(useful for mobile device)
 		
 		var start = this._input.value.length,
-			firstRecord = this._tooltip.firstChild._text,
+			firstRecord = this._tooltip.firstChild ? this._tooltip.firstChild._text : '',
 			end = firstRecord.length;
 
 		if (firstRecord.indexOf(this._input.value) === 0) { // If prefix match
@@ -705,17 +721,7 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_fillRecordsCache: function() {
-//TODO important optimization!!! always append data in this._recordsCache
-//  now _recordsCache content is emptied and replaced with new data founded
-//  always appending data on _recordsCache give the possibility of caching ajax, jsonp and layersearch!
-//
-//TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-//  run one of callbacks search(sourceData,jsonpUrl or options.layer) and run this.showTooltip
-//
-//TODO change structure of _recordsCache
-//	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
-//	in this way every record can have a free structure of attributes, only 'loc' is required
-	
+
 		var inputText = this._input.value,
 			that = this, records;
 

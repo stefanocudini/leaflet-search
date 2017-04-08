@@ -88,7 +88,7 @@ L.Control.Search = L.Control.extend({
 		casesensitive: false,			//search elements in case sensitive text
 		autoType: true,					//complete input with first suggested result and select this filled-in text.
 		delayType: 400,					//delay while typing for show tooltip
-		tooltipLimit: -1,				//limit max results to show in tooltip. -1 for no limit.
+		tooltipLimit: -1,				//limit max results to show in tooltip. -1 for no limit, 0 for no results
 		tipAutoSubmit: true,			//auto map panTo when click on tooltip
 		firstTipSubmit: false,			//auto select first result con enter click
 		autoResize: true,				//autoresize on input change
@@ -418,33 +418,39 @@ L.Control.Search = L.Control.extend({
 	},
 
 	showTooltip: function(records) {
-		var tip;
+		
 
 		this._countertips = 0;
-				
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
-		for(var key in records)//fill tooltip
+		if(this.options.tooltipLimit)
 		{
-			if(++this._countertips == this.options.tooltipLimit) break;
+			for(var key in records)//fill tooltip
+			{
+				if(this._countertips === this.options.tooltipLimit)
+					break;
+				
+				this._countertips++;
 
-			tip = this._createTip(key, records[key] );
-
-			this._tooltip.appendChild(tip);
+				this._tooltip.appendChild( this._createTip(key, records[key]) );
+			}
 		}
 		
 		if(this._countertips > 0)
 		{
 			this._tooltip.style.display = 'block';
+			
 			if(this._autoTypeTmp)
 				this._autoType();
+
 			this._autoTypeTmp = this.options.autoType;//reset default value
 		}
 		else
 			this._hideTooltip();
 
 		this._tooltip.scrollTop = 0;
+
 		return this._countertips;
 	},
 
@@ -584,7 +590,7 @@ L.Control.Search = L.Control.extend({
 		//TODO implements autype without selection(useful for mobile device)
 		
 		var start = this._input.value.length,
-			firstRecord = this._tooltip.firstChild._text,
+			firstRecord = this._tooltip.firstChild ? this._tooltip.firstChild._text : '',
 			end = firstRecord.length;
 
 		if (firstRecord.indexOf(this._input.value) === 0) { // If prefix match
