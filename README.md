@@ -12,7 +12,7 @@ Tested in Leaflet 0.7.7,1.0
 
 ![Image](https://raw.githubusercontent.com/stefanocudini/leaflet-search/master/images/leaflet-search.jpg)
 
-#Where
+# Where
 
 **Demo:**  
 [labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
@@ -22,11 +22,17 @@ Tested in Leaflet 0.7.7,1.0
 [NPM](https://npmjs.org/package/leaflet-search)
 
 **Bug tracking:**
+
 [Waffle.io](https://waffle.io/stefanocudini/leaflet-search)
 
 [Websites that use Leaflet.Control.Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
 
-#Examples
+# Install
+```
+npm install --save leaflet-search
+```
+
+# Examples
 (require src/leaflet-search.css)
 
 Adding the search control to the map:
@@ -56,7 +62,7 @@ require(["leaflet", "leafletSearch"],function(L, LeafletSearch) {
 });
 ```
 
-#Build
+# Build
 
 Therefore the deployment require **npm** installed in your system.
 ```bash
