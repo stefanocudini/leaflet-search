@@ -300,6 +300,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.on(input, 'keydown', this._handleKeypress, this)
+			.on(input, 'keyup', this._handleKeyUp, this)
 			.on(input, 'blur', this.collapseDelayed, this)
 			.on(input, 'focus', this.collapseDelayedStop, this);
 		
@@ -636,60 +637,75 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 	
-	_handleKeypress: function (e) {	//run _input keyup event
+	_handleKeypress: function(e) { //run _input keypress event
+	        switch (e.keyCode) {
+	                case 27: //Esc
+	                        this.collapse();
+	                        break;
+	                case 13: //Enter
+	                        if (this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
+	                                this._handleArrowSelect(1);
+	                        this._handleSubmit(); //do search
+	                        break;
+	                case 38: //Up
+	                        this._handleArrowSelect(-1);
+	                        break;
+	                case 40: //Down
+	                        this._handleArrowSelect(1);
+	                        break;
+	                case 8: //Backspace
+	                case 45: //Insert
+	                case 46: //Delete
+	                        this._autoTypeTmp = false; //disable temporarily autoType
+	                        break;
+	                default:
+	                        break;
+	        }
 
-		switch(e.keyCode)
-		{
-			case 27://Esc
-				this.collapse();
-			break;
-			case 13://Enter
-				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
-					this._handleArrowSelect(1);
-				this._handleSubmit();	//do search
-			break;
-			case 38://Up
-				this._handleArrowSelect(-1);
-			break;
-			case 40://Down
-				this._handleArrowSelect(1);
-			break;
-			case  8://Backspace
-			case 45://Insert
-			case 46://Delete
-				this._autoTypeTmp = false;//disable temporarily autoType
-			break;
-			case 37://Left
-			case 39://Right
-			case 16://Shift
-			case 17://Ctrl
-			case 35://End
-			case 36://Home
-			break;
-			default://All keys
-
-				if(this._input.value.length)
-					this._cancel.style.display = 'block';
-				else
-					this._cancel.style.display = 'none';
-
-				if(this._input.value.length >= this.options.minLength)
-				{
-					var that = this;
-
-					clearTimeout(this.timerKeypress);	//cancel last search request while type in				
-					this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
-
-						that._fillRecordsCache();
-					
-					}, this.options.delayType);
-				}
-				else
-					this._hideTooltip();
-		}
-
-		this._handleAutoresize();
 	},
+
+
+	_handleKeyUp: function(e) { //run _input keyup event
+	        switch (e.keyCode) {
+	                case 13: //Enter
+	                case 27: //Esc
+	                case 38: //Up
+	                case 40: //Down
+	                case 8: //Backspace
+	                case 45: //Insert
+	                case 46: //Delete
+	                case 37: //Left
+	                case 39: //Right
+	                case 16: //Shift
+	                case 17: //Ctrl
+	                case 35: //End
+	                case 36: //Home
+	                        break;
+	                default: //All other keys
+
+	                        if (this._input.value.length)
+	                                this._cancel.style.display = 'block';
+	                        else
+	                                this._cancel.style.display = 'none';
+
+	                        if (this._input.value.length >= this.options.minLength) {
+	                                var that = this;
+
+	                                clearTimeout(this.timerKeypress); //cancel last search request while type in
+	                                this.timerKeypress = setTimeout(function() { //delay before request, for limit jsonp/ajax request
+
+	                                        that._fillRecordsCache();
+
+	                                }, this.options.delayType);
+	                        } else {
+	                                this._hideTooltip();
+	                        }
+	                        break;
+	        }
+
+	        this._handleAutoresize();
+	},
+
 
 	searchText: function(text) {
 		var code = text.charCodeAt(text.length);
