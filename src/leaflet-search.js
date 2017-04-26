@@ -1,36 +1,16 @@
-(function (factory) {
-    if(typeof define === 'function' && define.amd) {
-    //AMD
-        define(['leaflet'], factory);
-    } else if(typeof module !== 'undefined') {
-    // Node/CommonJS
-        module.exports = factory(require('leaflet'));
-    } else {
-    // Browser globals
-        if(typeof window.L === 'undefined')
-            throw 'Leaflet must be loaded first';
-        factory(window.L);
-    }
-})(function (L) {
+/*
+	Name					Data passed			   Description
 
-	function _getPath(obj, prop) {
-		var parts = prop.split('.'),
-			last = parts.pop(),
-			len = parts.length,
-			cur = parts[0],
-			i = 1;
+	Managed Events:
+	 search:locationfound	{latlng, title, layer} fired after moved and show markerLocation
+	 search:expanded		{}					   fired after control was expanded
+	 search:collapsed		{}					   fired after control was collapsed
 
-		if(len > 0)
-			while((obj = obj[cur]) && i < len)
-				cur = parts[i++];
-
-		if(obj)
-			return obj[last];
-	}
-
-	function _isObject(obj) {
-		return Object.prototype.toString.call(obj) === "[object Object]";
-	}
+	Public methods:
+	 setLayer()				L.LayerGroup()         set layer search at runtime
+	 showAlert()            'Text message'         show alert message
+	 searchText()			'Text searched'        search text by external code
+*/
 
 //TODO implement can do research on multiple sources layers and remote		
 //TODO history: false,		//show latest searches in tooltip		
@@ -54,21 +34,42 @@
 //	like this: _recordsCache = {"text-key1": {loc:[lat,lng], ..other attributes.. }, {"text-key2": {loc:[lat,lng]}...}, ...}
 //	in this way every record can have a free structure of attributes, only 'loc' is required
 
+(function (factory) {
+    if(typeof define === 'function' && define.amd) {
+    //AMD
+        define(['leaflet'], factory);
+    } else if(typeof module !== 'undefined') {
+    // Node/CommonJS
+        module.exports = factory(require('leaflet'));
+    } else {
+    // Browser globals
+        if(typeof window.L === 'undefined')
+            throw 'Leaflet must be loaded first';
+        factory(window.L);
+    }
+})(function (L) {
+
+function _getPath(obj, prop) {
+	var parts = prop.split('.'),
+		last = parts.pop(),
+		len = parts.length,
+		cur = parts[0],
+		i = 1;
+
+	if(len > 0)
+		while((obj = obj[cur]) && i < len)
+			cur = parts[i++];
+
+	if(obj)
+		return obj[last];
+}
+
+function _isObject(obj) {
+	return Object.prototype.toString.call(obj) === "[object Object]";
+}
+
 L.Control.Search = L.Control.extend({
 	includes: L.Mixin.Events,
-	//
-	//	Name					Data passed			   Description
-	//
-	//Managed Events:
-	//	search:locationfound	{latlng, title, layer} fired after moved and show markerLocation
-	//	search:expanded			{}					   fired after control was expanded
-	//  search:collapsed		{}					   fired after control was collapsed
-	//
-	//Public methods:
-	//  setLayer()				L.LayerGroup()         set layer search at runtime
-	//  showAlert()             'Text message'         show alert message
-	//  searchText()			'Text searched'        search text by external code
-	//
 	options: {
 		url: '',						//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		layer: null,					//layer where search markers(is a L.LayerGroup)				
@@ -98,8 +99,8 @@ L.Control.Search = L.Control.extend({
 		textErr: 'Location not found',	//error message
 		textCancel: 'Cancel',		    //title in cancel button		
 		textPlaceholder: 'Search...',   //placeholder value			
-		position: 'topleft',
 		hideMarkerOnCollapse: false,    //remove circle and marker on search control collapsed		
+		position: 'topleft',		
 		marker: {						//custom L.Marker or false for hide
 			icon: false,				//custom L.Icon for maker location or false for hide
 			animate: true,				//animate a circle over location found
