@@ -31,6 +31,20 @@ Tested in Leaflet 0.7.7,1.0
 ```
 npm install --save leaflet-search
 ```
+# Events
+| Event			 | Data			  | Description                               |
+| ---------------------- | ---------------------- | ----------------------------------------- |
+| 'search:locationfound' | {latlng, title, layer} | fired after moved and show markerLocation |
+| 'search:expanded'	 | {}	                  | fired after control was expanded          |
+| 'search:collapsed'	 | {}		          | fired after control was collapsed         |
+
+# Methods
+| Method		| Arguments		 | Description                  |
+| --------------------- | ---------------------- | ---------------------------- |
+| setLayer()		| L.LayerGroup()	 | set layer search at runtime  |
+| showAlert()           | 'Text message' 	 | show alert message           |
+| searchText()		| 'Text searched'	 | search text by external code |
+
 
 # Examples
 (require src/leaflet-search.css)
