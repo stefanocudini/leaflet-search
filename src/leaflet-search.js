@@ -806,7 +806,7 @@ L.Control.Search = L.Control.extend({
 		{
 			if(this._input.value === '')	//hide _input only
 				this.collapse();
-			else
+			else if (!this.options.sourceData || typeof this.options.sourceData !== 'function')
 			{
 				var loc = this._getLocation(this._input.value);
 				
