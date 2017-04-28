@@ -647,7 +647,11 @@ L.Control.Search = L.Control.extend({
 			case 13://Enter
 				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
 					this._handleArrowSelect(1);
-				this._handleSubmit();	//do search
+				if (!this.options.sourceData || typeof this.options.sourceData !== 'function'
+					|| $('.search-tip-select').text() == this._input.value) {
+                    this._handleSubmit();	//do search
+                    break;
+                }
 			break;
 			case 38://Up
 				this._handleArrowSelect(-1);
@@ -746,9 +750,12 @@ L.Control.Search = L.Control.extend({
 					records = that._recordsCache;
 
 				that.showTooltip( records );
+
+				if (!Object.keys(records).length)
+					this.showAlert();
  
 				L.DomUtil.removeClass(that._container, 'search-load');
-			});
+			}.bind(this));
 		}
 	},
 	
