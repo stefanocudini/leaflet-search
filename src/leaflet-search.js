@@ -300,7 +300,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(input)
-			.on(input, 'keydown', this._handleKeypress, this)
+			.on(input, 'keyup', this._handleKeypress, this)
 			.on(input, 'blur', this.collapseDelayed, this)
 			.on(input, 'focus', this.collapseDelayedStop, this);
 		
