@@ -568,9 +568,17 @@ L.Control.Search = L.Control.extend({
     {
       if(layer.feature.properties.hasOwnProperty(propName))
       {
-        loc = layer.getBounds().getCenter();
-        loc.layer = layer;			
-        retRecords[ layer.feature.properties[propName] ] = loc;
+        if(layer.getLatLng && typeof layer.getLatLng === 'function') {
+          loc = layer.getLatLng();
+          loc.layer = layer;			
+          retRecords[ layer.feature.properties[propName] ] = loc;
+        } else if(layer.getBounds && typeof layer.getBounds === 'function') {
+          loc = layer.getBounds().getCenter();
+          loc.layer = layer;			
+          retRecords[ layer.feature.properties[propName] ] = loc;
+        } else {
+          console.warn("Unknown type of Layer");
+        }
       }
       else
         throw new Error("propertyName '"+propName+"' not found in feature");
