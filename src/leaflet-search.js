@@ -575,9 +575,15 @@ L.Control.Search = L.Control.extend({
             {
                 //TODO: Optimize
                 layer.eachLayer(function(m) {
+                  if(m.getLatLng && typeof m.getLatLng === 'function') { // Marker
                     loc = m.getLatLng();
                     loc.layer = m;
                     retRecords[ m.feature.properties[propName] ] = loc;
+                  } else if(m.getBounds && typeof m.getBounds === 'function') { // Shape
+                    loc = m.getBounds().getCenter();
+                    loc.layer = m;
+                    retRecords[ m.feature.properties[propName] ] = loc;
+                  }
                 });
             }
 			
