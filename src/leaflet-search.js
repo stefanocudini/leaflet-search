@@ -580,8 +580,10 @@ L.Control.Search = L.Control.extend({
           console.warn("Unknown type of Layer");
         }
       }
-      else
-        throw new Error("propertyName '"+propName+"' not found in feature");
+      else {
+        //throw new Error("propertyName '"+propName+"' not found in feature");
+        console.warn("propertyName '"+propName+"' not found in feature"); 
+      }
     }
     else if(layer instanceof L.LayerGroup)
     {
