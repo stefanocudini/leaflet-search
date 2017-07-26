@@ -528,17 +528,17 @@ L.Control.Search = L.Control.extend({
 
     if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
     {
-      if(that._getPath(layer.options,propName))
+      if(_getPath(layer.options,propName))
       {
         loc = layer.getLatLng();
         loc.layer = layer;
-        retRecords[ that._getPath(layer.options,propName) ] = loc;
+        retRecords[ _getPath(layer.options,propName) ] = loc;
       }
-      else if(that._getPath(layer.feature.properties,propName))
+      else if(_getPath(layer.feature.properties,propName))
       {
         loc = layer.getLatLng();
         loc.layer = layer;
-        retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
+        retRecords[ _getPath(layer.feature.properties,propName) ] = loc;
       }
       else {
         //throw new Error("propertyName '"+propName+"' not found in marker"); 
@@ -547,17 +547,17 @@ L.Control.Search = L.Control.extend({
     }
     if(layer instanceof L.Path || layer instanceof L.MultiPolyline || layer instanceof L.MultiPolygon)
     {
-      if(that._getPath(layer.options,propName))
+      if(_getPath(layer.options,propName))
       {
         loc = layer.getBounds().getCenter();
         loc.layer = layer;
-        retRecords[ that._getPath(layer.options,propName) ] = loc;
+        retRecords[ _getPath(layer.options,propName) ] = loc;
       }
-      else if(that._getPath(layer.feature.properties,propName))
+      else if(_getPath(layer.feature.properties,propName))
       {
         loc = layer.getBounds().getCenter();
         loc.layer = layer;
-        retRecords[ that._getPath(layer.feature.properties,propName) ] = loc;
+        retRecords[ _getPath(layer.feature.properties,propName) ] = loc;
       }
       else {
         //throw new Error("propertyName '"+propName+"' not found in shape"); 
