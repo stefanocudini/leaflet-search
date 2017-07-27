@@ -6,7 +6,9 @@ Leaflet Control Search
 A Leaflet control that search markers/features location by custom property.<br />
 Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
-*Copyright 2016 [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)*
+*Licensed under the MIT license.*
+
+*Copyright [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)*
 
 Tested in Leaflet 0.7.7,1.0
 
