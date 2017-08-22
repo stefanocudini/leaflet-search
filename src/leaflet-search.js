@@ -519,73 +519,92 @@ L.Control.Search = L.Control.extend({
 		request.send();
 		return request;   
 	},
+
+  _searchInLayer: function(layer, retRecords, propName) {
+    var that = this,
+      loc;
+
+    if(layer instanceof L.Control.Search.Marker) return;
+
+    if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
+    {
+      if(_getPath(layer.options,propName))
+      {
+        loc = layer.getLatLng();
+        loc.layer = layer;
+        retRecords[ _getPath(layer.options,propName) ] = loc;
+      }
+      else if(_getPath(layer.feature.properties,propName))
+      {
+        loc = layer.getLatLng();
+        loc.layer = layer;
+        retRecords[ _getPath(layer.feature.properties,propName) ] = loc;
+      }
+      else {
+        //throw new Error("propertyName '"+propName+"' not found in marker"); 
+        console.warn("propertyName '"+propName+"' not found in marker"); 
+      }
+    }
+    if(layer instanceof L.Path || layer instanceof L.MultiPolyline || layer instanceof L.MultiPolygon)
+    {
+      if(_getPath(layer.options,propName))
+      {
+        loc = layer.getBounds().getCenter();
+        loc.layer = layer;
+        retRecords[ _getPath(layer.options,propName) ] = loc;
+      }
+      else if(_getPath(layer.feature.properties,propName))
+      {
+        loc = layer.getBounds().getCenter();
+        loc.layer = layer;
+        retRecords[ _getPath(layer.feature.properties,propName) ] = loc;
+      }
+      else {
+        //throw new Error("propertyName '"+propName+"' not found in shape"); 
+        console.warn("propertyName '"+propName+"' not found in shape"); 
+      }
+    }
+    else if(layer.hasOwnProperty('feature'))//GeoJSON
+    {
+      if(layer.feature.properties.hasOwnProperty(propName))
+      {
+        if(layer.getLatLng && typeof layer.getLatLng === 'function') {
+          loc = layer.getLatLng();
+          loc.layer = layer;			
+          retRecords[ layer.feature.properties[propName] ] = loc;
+        } else if(layer.getBounds && typeof layer.getBounds === 'function') {
+          loc = layer.getBounds().getCenter();
+          loc.layer = layer;			
+          retRecords[ layer.feature.properties[propName] ] = loc;
+        } else {
+          console.warn("Unknown type of Layer");
+        }
+      }
+      else {
+        //throw new Error("propertyName '"+propName+"' not found in feature");
+        console.warn("propertyName '"+propName+"' not found in feature"); 
+      }
+    }
+    else if(layer instanceof L.LayerGroup)
+    {
+      layer.eachLayer(function (layer) {
+        that._searchInLayer(layer, retRecords, propName);
+      });
+    }
+  },
 	
 	_recordsFromLayer: function() {	//return table: key,value from layer
 		var that = this,
 			retRecords = {},
-			propName = this.options.propertyName,
-			loc;
+			propName = this.options.propertyName;
 		
-		this._layer.eachLayer(function(layer) {
-
-			if(layer.hasOwnProperty('_isMarkerSearch')) return;
-
-			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
-			{
-				try {
-					if(_getPath(layer.options,propName))
-					{
-						loc = layer.getLatLng();
-						loc.layer = layer;
-						retRecords[ _getPath(layer.options,propName) ] = loc;			
-						
-					}
-					else if(_getPath(layer.feature.properties,propName)){
-	
-						loc = layer.getLatLng();
-						loc.layer = layer;
-						retRecords[ _getPath(layer.feature.properties,propName) ] = loc;
-						
-					}
-					else
-						throw new Error("propertyName '"+propName+"' not found in marker");
-					
-				}
-				catch(err){
-					if (console) { console.warn(err); }
-				}
-			}
-            else if(layer.hasOwnProperty('feature'))//GeoJSON
-			{
-				try {
-					if(layer.feature.properties.hasOwnProperty(propName))
-					{
-						loc = layer.getBounds().getCenter();
-						loc.layer = layer;			
-						retRecords[ layer.feature.properties[propName] ] = loc;
-					}
-					else
-						throw new Error("propertyName '"+propName+"' not found in feature");
-				}
-				catch(err){
-					if (console) { console.warn(err); }
-				}
-			}
-			else if(layer instanceof L.LayerGroup)
-            {
-                //TODO: Optimize
-                layer.eachLayer(function(m) {
-                    loc = m.getLatLng();
-                    loc.layer = m;
-                    retRecords[ m.feature.properties[propName] ] = loc;
-                });
-            }
-			
-		},this);
+		this._layer.eachLayer(function (layer) {
+			that._searchInLayer(layer, retRecords, propName);
+		});
 		
 		return retRecords;
 	},
-
+	
 	_autoType: function() {
 		
 		//TODO implements autype without selection(useful for mobile device)
@@ -646,7 +665,8 @@ L.Control.Search = L.Control.extend({
 			break;
 			case 13://Enter
 				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
-					this._handleArrowSelect(1);
+          if(this._tooltip.currentSelection == -1)
+					  this._handleArrowSelect(1);
 				this._handleSubmit();	//do search
 			break;
 			case 38://Up
