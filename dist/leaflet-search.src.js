@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.3.0 - 2017-08-22 
+ * Leaflet Control Search v2.3.2 - 2017-08-22 
  * 
  * Copyright 2017 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -85,7 +85,9 @@ function _isObject(obj) {
 }
 
 L.Control.Search = L.Control.extend({
-	includes: L.Mixin.Events,
+	
+	includes: L.version[0]==='1' ? L.Evented.prototype : L.Mixin.Events,
+
 	options: {
 		url: '',						//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		layer: null,					//layer where search markers(is a L.LayerGroup)				
@@ -898,7 +900,7 @@ L.Control.Search = L.Control.extend({
 
 L.Control.Search.Marker = L.Marker.extend({
 
-	includes: L.Mixin.Events,
+	includes: L.version[0]==='1' ? L.Evented.prototype : L.Mixin.Events,
 	
 	options: {
 		icon: new L.Icon.Default(),

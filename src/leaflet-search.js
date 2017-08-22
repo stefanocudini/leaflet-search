@@ -69,7 +69,9 @@ function _isObject(obj) {
 }
 
 L.Control.Search = L.Control.extend({
-	includes: L.Mixin.Events,
+	
+	includes: L.version[0]==='1' ? L.Evented.prototype : L.Mixin.Events,
+
 	options: {
 		url: '',						//url for search by ajax request, ex: "search.php?q={s}". Can be function that returns string for dynamic parameter setting
 		layer: null,					//layer where search markers(is a L.LayerGroup)				
@@ -882,7 +884,7 @@ L.Control.Search = L.Control.extend({
 
 L.Control.Search.Marker = L.Marker.extend({
 
-	includes: L.Mixin.Events,
+	includes: L.version[0]==='1' ? L.Evented.prototype : L.Mixin.Events,
 	
 	options: {
 		icon: new L.Icon.Default(),
