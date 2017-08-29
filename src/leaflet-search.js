@@ -759,7 +759,7 @@ L.Control.Search = L.Control.extend({
 
 			this._curReq = this._retrieveData.call(this, inputText, function(data) {
 				
-				self._recordsCache = self._formatData(data);
+				self._recordsCache = self._formatData.call(this, data);
 
 				//TODO refact!
 				if(self.options.sourceData)
