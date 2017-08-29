@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.3.2 - 2017-08-22 
+ * Leaflet Control Search v2.3.3 - 2017-08-29 
  * 
  * Copyright 2017 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -318,7 +318,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomEvent
 			.disableClickPropagation(input)
-			.on(input, 'keydown', this._handleKeypress, this)
+			.on(input, 'keyup', this._handleKeypress, this)
 			.on(input, 'blur', this.collapseDelayed, this)
 			.on(input, 'focus', this.collapseDelayedStop, this);
 		
@@ -563,7 +563,7 @@ L.Control.Search = L.Control.extend({
          
       }
     }
-    if(layer instanceof L.Path || layer instanceof L.MultiPolyline || layer instanceof L.MultiPolygon)
+    if(layer instanceof L.Path || layer instanceof L.Polyline || layer instanceof L.Polygon)
     {
       if(_getPath(layer.options,propName))
       {

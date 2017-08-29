@@ -547,7 +547,7 @@ L.Control.Search = L.Control.extend({
         console.warn("propertyName '"+propName+"' not found in marker"); 
       }
     }
-    if(layer instanceof L.Path || layer instanceof L.MultiPolyline || layer instanceof L.MultiPolygon)
+    if(layer instanceof L.Path || layer instanceof L.Polyline || layer instanceof L.Polygon)
     {
       if(_getPath(layer.options,propName))
       {
