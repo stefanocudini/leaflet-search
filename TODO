@@ -1,17 +1,17 @@
 Tasks found in: src/leaflet-search.js
     [Line: 15] [low] //TODO implement can do research on multiple sources layers and remote		
     [Line: 16] [low] //TODO history: false,		//show latest searches in tooltip		
-    [Line: 20] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 20] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 23] [low] //TODO change structure of _recordsCache
     [Line: 26] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 30] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 30] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 33] [low] //TODO change structure of _recordsCache
-    [Line: 79] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer				
-    [Line: 414] [low] 		//TODO use .filter or .map
-    [Line: 477] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 486] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 507] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 612] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 61] [low] 		//TODO implements uniq option 'sourceData' to recognizes source type: url,array,callback or layer				
+    [Line: 415] [low] 		//TODO use .filter or .map
+    [Line: 479] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 488] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 509] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 613] [low] 		//TODO implements autype without selection(useful for mobile device)
     [Line: 743] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
     [Line: 764] [low] 				//TODO refact!
     [Line: 778] [low] 	    //TODO refact _handleAutoresize now is not accurate
@@ -19,4 +19,4 @@ Tasks found in: src/leaflet-search.js
     [Line: 970] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 17] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 18] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 877] [med] 		//FIXME autoCollapse option hide self._markerSearch before that visualized!!
+    [Line: 877] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!
