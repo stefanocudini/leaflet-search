@@ -1,22 +1,22 @@
 Tasks found in: src/leaflet-search.js
-    [Line: 15] [low] //TODO implement can do research on multiple sources layers and remote		
-    [Line: 16] [low] //TODO history: false,		//show latest searches in tooltip		
-    [Line: 20] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 23] [low] //TODO change structure of _recordsCache
-    [Line: 26] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 30] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 33] [low] //TODO change structure of _recordsCache
-    [Line: 61] [low] 		//TODO implements uniq option 'sourceData' to recognizes source type: url,array,callback or layer				
-    [Line: 415] [low] 		//TODO use .filter or .map
-    [Line: 479] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 488] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 509] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 613] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 743] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-    [Line: 764] [low] 				//TODO refact!
-    [Line: 778] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 946] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 970] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
-    [Line: 17] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
-    [Line: 18] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 877] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!
+    [Line: 16] [low] //TODO implement can do research on multiple sources layers and remote		
+    [Line: 17] [low] //TODO history: false,		//show latest searches in tooltip		
+    [Line: 21] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 24] [low] //TODO change structure of _recordsCache
+    [Line: 27] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 31] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 34] [low] //TODO change structure of _recordsCache
+    [Line: 62] [low] 		//TODO implements uniq option 'sourceData' to recognizes source type: url,array,callback or layer				
+    [Line: 417] [low] 		//TODO use .filter or .map
+    [Line: 481] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 490] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 511] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 615] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 745] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 766] [low] 				//TODO refact!
+    [Line: 780] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 948] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 972] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 18] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+    [Line: 19] [med] //FIXME option condition problem {autoCollapse: false }
+    [Line: 879] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!

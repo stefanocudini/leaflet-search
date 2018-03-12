@@ -1,7 +1,7 @@
 /* 
- * Leaflet Control Search v2.3.7 - 2017-11-13 
+ * Leaflet Control Search v2.4.0 - 2018-03-13 
  * 
- * Copyright 2017 Stefano Cudini 
+ * Copyright 2018 Stefano Cudini 
  * stefano.cudini@gmail.com 
  * http://labs.easyblog.it/ 
  * 
@@ -21,6 +21,7 @@
 	 search:locationfound	{latlng, title, layer} fired after moved and show markerLocation
 	 search:expanded		{}					   fired after control was expanded
 	 search:collapsed		{}					   fired after control was collapsed
+ 	 search:cancel			{}					   fired after cancel button clicked
 
 	Public methods:
 	 setLayer()				L.LayerGroup()         set layer search at runtime
@@ -239,6 +240,7 @@ L.Control.Search = L.Control.extend({
 		this._input.focus();
 		this._cancel.style.display = 'none';
 		this._hideTooltip();
+		this.fire('search:cancel');
 		return this;
 	},
 	
