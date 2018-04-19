@@ -56,7 +56,13 @@ Example: <i>pizza</i>, <i>vege</i>, <i>japa</i>, <i>giappo</i>, <i>cucina romana
 		}).addTo(map);
 
 	var fuse = new Fuse(restaurant500.features, {
-		keys: ['properties.name', 'properties.cuisine']
+		keys: [
+			'properties.name',
+			'properties.description',
+			'properties.cuisine',
+			'properties.note',
+			//'properties.operator'
+		]
 	});
 
 	L.control.search({
