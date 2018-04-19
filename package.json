@@ -1,6 +1,6 @@
 {
   "name": "leaflet-search",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Leaflet Control for searching markers/features by attribute on map or remote searching in jsonp/ajax",
   "repository": {
     "type": "git",
