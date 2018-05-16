@@ -10,7 +10,7 @@ Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
 *Copyright [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)*
 
-Tested in Leaflet 0.7.7 and 1.3.0
+Tested in Leaflet 0.7.x and 1.3.x
 
 ![Image](https://raw.githubusercontent.com/stefanocudini/leaflet-search/master/images/leaflet-search.jpg)
 
