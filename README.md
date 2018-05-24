@@ -27,6 +27,8 @@ Tested in Leaflet 0.7.x and 1.3.x
 
 [Waffle.io](https://waffle.io/stefanocudini/leaflet-search)
 
+**Use Cases:**
+
 [Websites that use Leaflet.Control.Search](https://github.com/stefanocudini/leaflet-search/wiki/Websites-that-use-Leaflet-Control-Search)
 
 # Install
