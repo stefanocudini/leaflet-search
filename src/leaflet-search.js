@@ -776,13 +776,21 @@ L.Control.Search = L.Control.extend({
 		}
 	},
 	
-	_handleAutoresize: function() {	//autoresize this._input
-	    //TODO refact _handleAutoresize now is not accurate
-	    if (this._input.style.maxWidth != this._map._container.offsetWidth) //If maxWidth isn't the same as when first set, reset to current Map width
-	        this._input.style.maxWidth = L.DomUtil.getStyle(this._map._container, 'width');
+	_handleAutoresize: function() {
+	    var maxWidth;
 
-		if(this.options.autoResize && (this._container.offsetWidth + 45 < this._map._container.offsetWidth))
-			this._input.size = this._input.value.length<this._inputMinSize ? this._inputMinSize : this._input.value.length;
+		if (this._input.style.maxWidth !== this._map._container.offsetWidth) {
+			maxWidth = L.DomUtil.getStyle(this._map._container, 'width');
+			maxWidth = parseInt(maxWidth);
+			 // other side margin + padding + width border + width search-button + width search-cancel
+			maxWidth -= 10 + 20 + 1 + 30 + 22; 
+
+			this._input.style.maxWidth = maxWidth.toString() + 'px';
+		}
+
+		if (this.options.autoResize && (this._container.offsetWidth + 20 < this._map._container.offsetWidth)) {
+			this._input.size = this._input.value.length < this._inputMinSize ? this._inputMinSize : this._input.value.length;
+		}
 	},
 
 	_handleArrowSelect: function(velocity) {
