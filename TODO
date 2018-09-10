@@ -14,9 +14,8 @@ Tasks found in: src/leaflet-search.js
     [Line: 615] [low] 		//TODO implements autype without selection(useful for mobile device)
     [Line: 745] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
     [Line: 766] [low] 				//TODO refact!
-    [Line: 780] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 948] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 972] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 956] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 980] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 18] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 19] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 879] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!
+    [Line: 887] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!
