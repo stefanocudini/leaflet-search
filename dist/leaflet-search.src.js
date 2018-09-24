@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.9.5 - 2018-09-10 
+ * Leaflet Control Search v2.9.6 - 2018-09-24 
  * 
  * Copyright 2018 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -796,9 +796,9 @@ L.Control.Search = L.Control.extend({
 	    var maxWidth;
 
 		if (this._input.style.maxWidth !== this._map._container.offsetWidth) {
-			maxWidth = L.DomUtil.getStyle(this._map._container, 'width');
-			maxWidth = parseInt(maxWidth);
-			 // other side margin + padding + width border + width search-button + width search-cancel
+			maxWidth = this._map._container.clientWidth;
+
+			// other side margin + padding + width border + width search-button + width search-cancel
 			maxWidth -= 10 + 20 + 1 + 30 + 22; 
 
 			this._input.style.maxWidth = maxWidth.toString() + 'px';
