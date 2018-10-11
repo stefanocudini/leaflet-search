@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v2.9.6 - 2018-09-24 
+ * Leaflet Control Search v2.9.7 - 2018-10-11 
  * 
  * Copyright 2018 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -303,6 +303,7 @@ L.Control.Search = L.Control.extend({
 	},
 
 	_createInput: function (text, className) {
+		var self = this;
 		var label = L.DomUtil.create('label', className, this._container);
 		var input = L.DomUtil.create('input', className, this._container);
 		input.type = 'text';
@@ -323,6 +324,11 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(input)
 			.on(input, 'keyup', this._handleKeypress, this)
+			.on(input, 'paste', function(e) {
+				setTimeout(function(e) {
+					self._handleKeypress(e);
+				},10,e);
+			}, this)
 			.on(input, 'blur', this.collapseDelayed, this)
 			.on(input, 'focus', this.collapseDelayedStop, this);
 		
@@ -686,9 +692,11 @@ L.Control.Search = L.Control.extend({
 				this.collapse();
 			break;
 			case 13://Enter
-				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0))
-          if(this._tooltip.currentSelection == -1)
-					  this._handleArrowSelect(1);
+				if(this._countertips == 1 || (this.options.firstTipSubmit && this._countertips > 0)) {
+          			if(this._tooltip.currentSelection == -1) {
+						this._handleArrowSelect(1);
+          			}
+				}
 				this._handleSubmit();	//do search
 			break;
 			case 38://Up
@@ -710,7 +718,6 @@ L.Control.Search = L.Control.extend({
 			case 36://Home
 			break;
 			default://All keys
-
 				if(this._input.value.length)
 					this._cancel.style.display = 'block';
 				else

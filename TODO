@@ -7,15 +7,15 @@ Tasks found in: src/leaflet-search.js
     [Line: 31] [low] //TODO here insert function  search inputText FIRST in _recordsCache keys and if not find results.. 
     [Line: 34] [low] //TODO change structure of _recordsCache
     [Line: 62] [low] 		//TODO implements uniq option 'sourceData' to recognizes source type: url,array,callback or layer				
-    [Line: 417] [low] 		//TODO use .filter or .map
-    [Line: 481] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 490] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 511] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 615] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 745] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-    [Line: 766] [low] 				//TODO refact!
-    [Line: 956] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 980] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 423] [low] 		//TODO use .filter or .map
+    [Line: 487] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 496] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 517] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 621] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 752] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 773] [low] 				//TODO refact!
+    [Line: 963] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 987] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
     [Line: 18] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
     [Line: 19] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 887] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!
+    [Line: 894] [med] 		//FIXME autoCollapse option hide self._markerSearch before visualized!!
