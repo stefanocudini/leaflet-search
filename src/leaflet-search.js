@@ -96,7 +96,7 @@ L.Control.Search = L.Control.extend({
 				stroke: true,
 				fill: false
 			}
-		}
+    }
 	},
 
 	_getPath: function(obj, prop) {
@@ -737,50 +737,48 @@ L.Control.Search = L.Control.extend({
 	},
 	
 	_fillRecordsCache: function() {
+		var self = this;
+    var inputText = this._input.value;
+    var records = {};
 
-		var self = this,
-			inputText = this._input.value, records;
-
-		if(this._curReq && this._curReq.abort)
+    //abort previous requests
+		if(this._curReq && this._curReq.abort) {
 			this._curReq.abort();
-		//abort previous requests
+    }
 
-		L.DomUtil.addClass(this._container, 'search-load');	
+		L.DomUtil.addClass(this._container, 'search-load');
 
-		if(this.options.layer)
-		{
-			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
-			this._recordsCache = this._recordsFromLayer();
-			
-			records = this._filterData( this._input.value, this._recordsCache );
+    if (this.options.layer) {
+      self._recordsCache = this._recordsFromLayer();
+      records = this._filterData( this._input.value, self._recordsCache );
+      
+      if (Object.keys(records).length) {
+        this.showTooltip(records);
+      }
+    }
+    
+    if (this.options.url) {
+      if (this.options.sourceData) {
+        this._retrieveData = this.options.sourceData;
+      } else if (this.options.url) {
+        //jsonp or ajax
+        this._retrieveData = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax;
+      }
+  
+      this._curReq = this._retrieveData.call(this, inputText, function(data) {
+        self._recordsCache = Object.assign(records, self._formatData.call(self, data));
+        //TODO refact!
+        if(self.options.sourceData) {
+          records = Object.assign(records, self._filterData(self._input.value, self._recordsCache));
+        } else {
+          records = Object.assign(records, self._recordsCache);
+        }
+  
+        self.showTooltip( records );
+      });
+    }
 
-			this.showTooltip( records );
-
-			L.DomUtil.removeClass(this._container, 'search-load');
-		}
-		else
-		{
-			if(this.options.sourceData)
-				this._retrieveData = this.options.sourceData;
-
-			else if(this.options.url)	//jsonp or ajax
-				this._retrieveData = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax;
-
-			this._curReq = this._retrieveData.call(this, inputText, function(data) {
-				
-				self._recordsCache = self._formatData.call(self, data);
-
-				//TODO refact!
-				if(self.options.sourceData)
-					records = self._filterData( self._input.value, self._recordsCache );
-				else
-					records = self._recordsCache;
-
-				self.showTooltip( records );
- 
-				L.DomUtil.removeClass(self._container, 'search-load');
-			});
-		}
+    L.DomUtil.removeClass(self._container, 'search-load');
 	},
 	
 	_handleAutoresize: function() {

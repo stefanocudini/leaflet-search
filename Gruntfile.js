@@ -44,6 +44,7 @@ grunt.initConfig({
 	},	
 	jshint: {
 		options: {
+      ignores: ['src/polyfills.js'],
 			globals: {
 				'no-console': true,
 				module: true
@@ -52,7 +53,7 @@ grunt.initConfig({
 			'-W033': true,
 			'-W044': true	//ignore regexp
 		},
-		files: ['src/*.js']
+    files: ['src/*.js']
 	},
 	concat: {
 		//TODO cut out SearchMarker
@@ -61,7 +62,7 @@ grunt.initConfig({
 		},
 		dist: {
 			files: {
-				'dist/leaflet-search.src.js': ['src/leaflet-search.js'],			
+				'dist/leaflet-search.src.js': ['src/polyfills.js', 'src/leaflet-search.js'],			
 				'dist/leaflet-search.src.css': ['src/leaflet-search.css'],
 				'dist/leaflet-search.mobile.src.css': ['src/leaflet-search.mobile.css']
 			}
