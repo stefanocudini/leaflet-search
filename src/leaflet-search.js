@@ -183,6 +183,11 @@ L.Control.Search = L.Control.extend({
 		// 		'layeradd': this._onLayerAddRemove,
 		// 		'layerremove': this._onLayerAddRemove
 		// 	}, this);
+		map.off({
+			// 		'layeradd': this._onLayerAddRemove,
+			// 		'layerremove': this._onLayerAddRemove
+			'resize': this._handleAutoresize
+			}, this);
 	},
 
 	// _onLayerAddRemove: function(e) {
