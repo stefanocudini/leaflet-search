@@ -124,3 +124,35 @@ Therefore the deployment require **npm** installed in your system.
 npm install
 grunt
 ```
+
+
+# Use Cases
+This list is intended to be of utility for all developers who are looking web mapping sample code to solve complex problems of integration with other systems using Leaflet Control Search.
+
+**Anyone can add the link of your website**
+
+*(spamming urls will be automatically deleted)*
+
+* [get-map](https://get-map.org/)
+* [Folium](https://github.com/python-visualization/folium)
+* [OpenTopoMap](https://opentopomap.org/)
+* [MapOSMatic](https://maposmatic.osm-baustelle.de/new/)
+* [BodabodaOnline](https://bodabodaonline.com)
+* [Falesia.it](https://www.falesia.it/it/map/169729/260158/2/FAL/title=Mondo.html)
+* [Leaflet Control Search (Official demos)](http://labs.easyblog.it/maps/leaflet-search/)
+* [FAO - Crowd Prices - Real time Price monitoring system](http://fenixapps2.fao.org/crowddata/)
+* [Parkowanie Gliwice](http://parkowaniegliwice.pl/lista-parkomatow/)
+* [Agenziauscite.Openstreetmap.it](http://agenziauscite.openstreetmap.it/compare.html)
+* [Modern Leaflet Toolbar](https://getbounds.com/blog/a-modern-leaflet-toolbar/)
+* [UnGiro.it](http://ungiro.it/percorsi/ciclomuro-street-art-bike-tour.htm)
+* [OpenBeerMap](http://openbeermap.github.io/)
+* [Spatial statistics for the city of Tampere, Finland](https://github.com/ernoma/GeoStatTampere)
+* [BALIMIO Bali photo guide](http://balimio.com/map)
+* [Flask Admin](https://github.com/flask-admin/flask-admin)
+* [LIVE-Map LiF:YO](http://lif-tools.com/)
+* [OpenTrailMap](http://michaelskaug.com/projects/OpenTrailMap/)
+* [Rutas Morelia](https://www.rutasmorelia.com/)
+* [mapsnigeriainitiative](https://mapsnigeriainitiative.com/searchplaces/search.html)
+* [EDSM - Galactic Map](https://www.edsm.net/en/galactic-mapping)
+* [The area of effect of the "MOAB" bomb in Afghanistan](https://www.dhkconsulting.com/moab/moab.html)
+* [Folium - a Leaflet wrapper for Python](https://github.com/python-visualization/folium)
