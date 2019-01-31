@@ -133,6 +133,7 @@ This list is intended to be of utility for all developers who are looking web ma
 
 *(spamming urls will be automatically deleted)*
 
+* [Pouemes](http://pouemes.free.fr)
 * [get-map](https://get-map.org/)
 * [Folium](https://github.com/python-visualization/folium)
 * [OpenTopoMap](https://opentopomap.org/)
