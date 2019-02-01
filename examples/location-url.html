@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+<link rel="stylesheet" href="../src/leaflet-search.css" />
+<link rel="stylesheet" href="style.css" />
+<style>
+.search-input {
+	font-family:Courier
+}
+.search-input,
+.leaflet-control-search {
+	max-width:400px;
+}
+</style>
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
+
+<h4>Location on remote page: <em>search locations name and open it in osm website</em></h4>
+<div id="map"></div>
+
+<div id="post-it">
+<b>Search values:</b><br />
+OpenStreetMap Data offer by <br />
+<small><a href="http://wiki.openstreetmap.org/wiki/Nominatim">nominatim.osm.org</a></small>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+<script src="../src/leaflet-search.js"></script>
+<script>
+
+	var map = L.map('map', {
+		zoom: 9,
+		center: L.latLng([41.575730,13.002411]),
+		layers: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+	});
+
+	L.control.search({
+		url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+		propertyName: 'display_name',
+		jsonpParam: 'json_callback',		
+		propertyLoc: ['lat','lon'],
+		autoCollapse: true,
+		autoType: false,
+		minLength: 2,
+		moveToLocation: function(latlng, title, map) {
+			//https://wiki.openstreetmap.org/wiki/Shortlink
+			var url = L.Util.template('http://osm.org/?mlat={lat}&amp;mlon={lon}#map={zoom}/{lat}/{lon}', {
+				lat: latlng.lat,
+				lon: latlng.lng,
+				zoom: map.getZoom()
+			});
+
+			location.href = url;
+		}
+	})
+	.addTo(map);
+
+</script>
+
+<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+
+<script type="text/javascript" src="/labs-common.js"></script>
+
+</body>
+</html>
