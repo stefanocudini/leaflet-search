@@ -542,7 +542,7 @@ L.Control.Search = L.Control.extend({
 
     if(layer instanceof L.Control.Search.Marker) return;
 
-    if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
+    if(layer instanceof L.Marker || layer instanceof L.CircleMarker || layer instanceof L.ShapeMarker)
     {
       if(self._getPath(layer.options,propName))
       {
