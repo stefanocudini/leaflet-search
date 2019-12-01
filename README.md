@@ -16,10 +16,10 @@ Tested in Leaflet 0.7.x and 1.3.x
 
 # Where
 
-**Demo:**  
+**Demo:**
 [labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
-**Source code:**  
+**Source code:**
 [Github](https://github.com/stefanocudini/leaflet-search)
 [NPM](https://npmjs.org/package/leaflet-search)
 
@@ -62,7 +62,7 @@ npm install --save leaflet-search
 | marker		  | {}	     | custom L.Marker or false for hide |
 | marker.icon	  | false	 | custom L.Icon for maker location or false for hide |
 | marker.animate  | true	 | animate a circle over location found |
-| marker.circle	  | L.CircleMarker options |	draw a circle in location found | 
+| marker.circle	  | L.CircleMarker options |	draw a circle in location found |
 
 # Events
 | Event			 | Data			  | Description                               |
