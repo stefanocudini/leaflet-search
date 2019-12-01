@@ -125,17 +125,12 @@ This list is intended to be of utility for all developers who are looking web ma
 
 *(spamming urls will be automatically deleted)*
 
-* [Mars Map](https://mkgrgis.github.io/mkgrgis/openPlanetWMS/MarsMap.html)
 * [NMEA Generator](https://nmeagen.org/)
 * [Pouemes](http://pouemes.free.fr)
-* [get-map](https://get-map.org/)
 * [Folium](https://github.com/python-visualization/folium)
 * [OpenTopoMap](https://opentopomap.org/)
-* [MapOSMatic](https://maposmatic.osm-baustelle.de/new/)
-* [BodabodaOnline](https://bodabodaonline.com)
 * [Falesia.it](https://www.falesia.it/it/map/169729/260158/2/FAL/title=Mondo.html)
 * [Leaflet Control Search (Official demos)](http://labs.easyblog.it/maps/leaflet-search/)
-* [FAO - Crowd Prices - Real time Price monitoring system](http://fenixapps2.fao.org/crowddata/)
 * [Parkowanie Gliwice](http://parkowaniegliwice.pl/lista-parkomatow/)
 * [Agenziauscite.Openstreetmap.it](http://agenziauscite.openstreetmap.it/compare.html)
 * [Modern Leaflet Toolbar](https://getbounds.com/blog/a-modern-leaflet-toolbar/)
@@ -147,7 +142,5 @@ This list is intended to be of utility for all developers who are looking web ma
 * [LIVE-Map LiF:YO](http://lif-tools.com/)
 * [OpenTrailMap](http://michaelskaug.com/projects/OpenTrailMap/)
 * [Rutas Morelia](https://www.rutasmorelia.com/)
-* [mapsnigeriainitiative](https://mapsnigeriainitiative.com/searchplaces/search.html)
 * [EDSM - Galactic Map](https://www.edsm.net/en/galactic-mapping)
 * [The area of effect of the "MOAB" bomb in Afghanistan](https://www.dhkconsulting.com/moab/moab.html)
-* [Folium - a Leaflet wrapper for Python](https://github.com/python-visualization/folium)
