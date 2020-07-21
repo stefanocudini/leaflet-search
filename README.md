@@ -16,10 +16,10 @@ Tested in Leaflet 0.7.x and 1.3.x
 
 # Where
 
-**Demo:**  
+**Demo:**
 [labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
 
-**Source code:**  
+**Source code:**
 [Github](https://github.com/stefanocudini/leaflet-search)
 [NPM](https://npmjs.org/package/leaflet-search)
 
@@ -62,7 +62,7 @@ npm install --save leaflet-search
 | marker		  | {}	     | custom L.Marker or false for hide |
 | marker.icon	  | false	 | custom L.Icon for maker location or false for hide |
 | marker.animate  | true	 | animate a circle over location found |
-| marker.circle	  | L.CircleMarker options |	draw a circle in location found | 
+| marker.circle	  | L.CircleMarker options |	draw a circle in location found |
 
 # Events
 | Event			 | Data			  | Description                               |
@@ -127,14 +127,10 @@ This list is intended to be of utility for all developers who are looking web ma
 
 * [NMEA Generator](https://nmeagen.org/)
 * [Pouemes](http://pouemes.free.fr)
-* [get-map](https://get-map.org/)
 * [Folium](https://github.com/python-visualization/folium)
 * [OpenTopoMap](https://opentopomap.org/)
-* [MapOSMatic](https://maposmatic.osm-baustelle.de/new/)
-* [BodabodaOnline](https://bodabodaonline.com)
 * [Falesia.it](https://www.falesia.it/it/map/169729/260158/2/FAL/title=Mondo.html)
 * [Leaflet Control Search (Official demos)](http://labs.easyblog.it/maps/leaflet-search/)
-* [FAO - Crowd Prices - Real time Price monitoring system](http://fenixapps2.fao.org/crowddata/)
 * [Parkowanie Gliwice](http://parkowaniegliwice.pl/lista-parkomatow/)
 * [Agenziauscite.Openstreetmap.it](http://agenziauscite.openstreetmap.it/compare.html)
 * [Modern Leaflet Toolbar](https://getbounds.com/blog/a-modern-leaflet-toolbar/)
@@ -146,7 +142,6 @@ This list is intended to be of utility for all developers who are looking web ma
 * [LIVE-Map LiF:YO](http://lif-tools.com/)
 * [OpenTrailMap](http://michaelskaug.com/projects/OpenTrailMap/)
 * [Rutas Morelia](https://www.rutasmorelia.com/)
-* [mapsnigeriainitiative](https://mapsnigeriainitiative.com/searchplaces/search.html)
 * [EDSM - Galactic Map](https://www.edsm.net/en/galactic-mapping)
 * [The area of effect of the "MOAB" bomb in Afghanistan](https://www.dhkconsulting.com/moab/moab.html)
-* [Folium - a Leaflet wrapper for Python](https://github.com/python-visualization/folium)
+* [Ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet)
