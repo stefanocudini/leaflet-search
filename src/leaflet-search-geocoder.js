@@ -27,18 +27,31 @@ L.Control.Search.include({
 		console.log('Geocoder',this.options)
 	},*/
 	geocoders: {
-/*		'google': {
-			url: "//maps.googleapis.com/maps/api/geocode/json?key={key}&address={text}"
-		},
-		'nominatim': {
-			    
+    /*
+        'google': {
+        	urlTmpl: "//maps.googleapis.com/maps/api/geocode/json?key={key}&address={text}"
+          //todo others
+        },
+        'here': {
+        	urlTmpl: https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey={apiKey}&searchtext={text}"
+          params: function(opts, text) {
+            
+            //opts is leaflet options input
+            //text is input text searched
 
-	      format: 'json',
-	      q: query,
-	    });
-
-    		"//nominatim.openstreetmap.org/search?"
-		}*/
+            return {
+              'apiKey': opts.apikey,
+              'format': 'json',
+              'q': text,
+        			'jsonp': 'herejsoncallback',
+            };
+          },
+          callback: function(resp) {
+              //TODO refact resp data
+          }
+        	
+        		"//nominatim.openstreetmap.org/search?"
+        }*/
 	}
 });
 
