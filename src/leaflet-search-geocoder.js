@@ -1,4 +1,15 @@
+/*
+this file is work in progress and represent an extension 
+of the main plugin to support programmatically most famous geocoder services
 
+the base idea is:
+- any geocoder services is identified by name passed to the plugin option
+- any geocoder sub module implemnt custom parameters anc a custom callback to extract resulta in leaflet search format result
+- any geocoder accept only two parameters, api key and user key, passed to remote service
+
+any contributions is welcome <3
+
+*/
 (function (factory) {
     if(typeof define === 'function' && define.amd) {
     //AMD
