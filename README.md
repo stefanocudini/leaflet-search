@@ -114,7 +114,7 @@ require(["leaflet", "leafletSearch"],function(L, LeafletSearch) {
 Therefore the deployment require **npm** installed in your system.
 ```bash
 npm install
-grunt
+npx grunt
 ```
 
 

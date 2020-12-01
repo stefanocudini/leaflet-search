@@ -1,7 +1,7 @@
 /* 
- * Leaflet Control Search v2.9.7 - 2019-01-14 
+ * Leaflet Control Search v2.9.9 - 2020-12-01 
  * 
- * Copyright 2019 Stefano Cudini 
+ * Copyright 2020 Stefano Cudini 
  * stefano.cudini@gmail.com 
  * http://labs.easyblog.it/ 
  * 
@@ -574,7 +574,7 @@ L.Control.Search = L.Control.extend({
       }
       else {
         //throw new Error("propertyName '"+propName+"' not found in marker"); 
-        console.warn("propertyName '"+propName+"' not found in marker"); 
+         
       }
     }
     else if(layer instanceof L.Path || layer instanceof L.Polyline || layer instanceof L.Polygon)
@@ -593,7 +593,7 @@ L.Control.Search = L.Control.extend({
       }
       else {
         //throw new Error("propertyName '"+propName+"' not found in shape"); 
-        console.warn("propertyName '"+propName+"' not found in shape"); 
+         
       }
     }
     else if(layer.hasOwnProperty('feature'))//GeoJSON
@@ -609,12 +609,12 @@ L.Control.Search = L.Control.extend({
           loc.layer = layer;			
           retRecords[ layer.feature.properties[propName] ] = loc;
         } else {
-          console.warn("Unknown type of Layer");
+          
         }
       }
       else {
         //throw new Error("propertyName '"+propName+"' not found in feature");
-        console.warn("propertyName '"+propName+"' not found in feature"); 
+         
       }
     }
     else if(layer instanceof L.LayerGroup)
@@ -768,7 +768,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomUtil.addClass(this._container, 'search-load');	
 
-		if(this.options.layer)
+		if(this._layer)
 		{
 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
 			this._recordsCache = this._recordsFromLayer();
