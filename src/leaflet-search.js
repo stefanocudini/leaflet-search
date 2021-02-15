@@ -809,7 +809,7 @@ L.Control.Search = L.Control.extend({
 	
 		var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
 			
-		for (i=0; i<searchTips.length; i++)
+		for (var i=0; i<searchTips.length; i++)
 			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
 		
 		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (searchTips.length - 1))) {// If at end of list.
