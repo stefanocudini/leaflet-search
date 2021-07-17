@@ -29,7 +29,7 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 
 	var map = new L.Map('map', {zoom: 5, center: new L.latLng([37.8, -96]) });
 
-	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 	var featuresLayer = new L.GeoJSON(data, {
 			style: function(feature) {
@@ -74,7 +74,7 @@ Alabama, Arizona, Colorado, Maryland, Michigan, North Carolina, Pennsylvania, Wy
 
 </script>
 
-<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+<div id="copy"><a href="https://opengeo.tech/">Website</a> &bull; <a rel="author" href="https://opengeo.tech/stefano-cudini/">Stefano Cudini</a></div>
 
 <script type="text/javascript" src="/labs-common.js"></script>
 

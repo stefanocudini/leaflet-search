@@ -8,7 +8,7 @@ Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
 *Licensed under the MIT license.*
 
-*Copyright [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)*
+*Copyright [Stefano Cudini](https://opengeo.tech/stefano-cudini/)*
 
 Tested in Leaflet 0.7.x and 1.3.x
 
@@ -17,7 +17,7 @@ Tested in Leaflet 0.7.x and 1.3.x
 # Where
 
 **Demo:**
-[labs.easyblog.it/maps/leaflet-search](http://labs.easyblog.it/maps/leaflet-search/)
+[opengeo.tech/maps/leaflet-search](https://opengeo.tech/maps/leaflet-search/)
 
 **Source code:**
 [Github](https://github.com/stefanocudini/leaflet-search)
@@ -130,7 +130,7 @@ This list is intended to be of utility for all developers who are looking web ma
 * [Folium](https://github.com/python-visualization/folium)
 * [OpenTopoMap](https://opentopomap.org/)
 * [Falesia.it](https://www.falesia.it/it/map/169729/260158/2/FAL/title=Mondo.html)
-* [Leaflet Control Search (Official demos)](http://labs.easyblog.it/maps/leaflet-search/)
+* [Leaflet Control Search (Official demos)](https://opengeo.tech/maps/leaflet-search/)
 * [Parkowanie Gliwice](http://parkowaniegliwice.pl/lista-parkomatow/)
 * [Agenziauscite.Openstreetmap.it](http://agenziauscite.openstreetmap.it/compare.html)
 * [Modern Leaflet Toolbar](https://getbounds.com/blog/a-modern-leaflet-toolbar/)

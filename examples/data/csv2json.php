@@ -2,9 +2,9 @@
 /*
  * Leaflet Search Plugin
  * https://github.com/stefanocudini/leaflet-search
- * http://labs.easyblog.it/maps/leaflet-search
+ * https://opengeo.tech/maps/leaflet-search
  *
- * Copyright 2013, Stefano Cudini - http://labs.easyblog.it/stefano-cudini/
+ * Copyright 2013, Stefano Cudini - https://opengeo.tech/stefano-cudini/
  * Licensed under the MIT license.
  
  What's:

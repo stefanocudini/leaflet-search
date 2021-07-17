@@ -25,14 +25,14 @@ aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, gr
 
 	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
 
-	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+	map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
 	map.addControl( new L.Control.Search({ url:'search.php?q={s}', jsonpParam:'callback', text:'Color...', markerLocation: true}) );
 	//view source of search.php for more details
 
 </script>
 
-<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+<div id="copy"><a href="https://opengeo.tech/">Website</a> &bull; <a rel="author" href="https://opengeo.tech/stefano-cudini/">Stefano Cudini</a></div>
 
 <script type="text/javascript" src="/labs-common.js"></script>
 

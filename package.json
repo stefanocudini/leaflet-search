@@ -6,11 +6,11 @@
     "type": "git",
     "url": "git@github.com:stefanocudini/leaflet-search.git"
   },
-  "homepage": "http://labs.easyblog.it/maps/leaflet-search/",
+  "homepage": "https://opengeo.tech/maps/leaflet-search/",
   "author": {
     "name": "Stefano Cudini",
     "email": "stefano.cudini@gmail.com",
-    "url": "http://labs.easyblog.it/"
+    "url": "https://opengeo.tech/"
   },
   "main": "dist/leaflet-search.src.js",
   "license": "MIT",

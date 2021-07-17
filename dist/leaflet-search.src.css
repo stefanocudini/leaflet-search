@@ -3,12 +3,12 @@
  * 
  * Copyright 2020 Stefano Cudini 
  * stefano.cudini@gmail.com 
- * http://labs.easyblog.it/ 
+ * https://opengeo.tech/ 
  * 
  * Licensed under the MIT license. 
  * 
  * Demo: 
- * http://labs.easyblog.it/maps/leaflet-search/ 
+ * https://opengeo.tech/maps/leaflet-search/ 
  * 
  * Source: 
  * git@github.com:stefanocudini/leaflet-search.git 
