@@ -125,7 +125,9 @@ This list is intended to be of utility for all developers who are looking web ma
 
 *(spamming urls will be automatically deleted)*
 
+* [demography colorado.gov](https://demography.dola.colorado.gov/CensusAPI_Map/?lat=39&lng=-104.8&z=9&s=50&v=mhi&sn=jenks&cs=mh1&cl=7)
 * [NMEA Generator](https://nmeagen.org/)
+* [Guihuayun maps](http://guihuayun.com/maps/map_frame.php)
 * [Pouemes](http://pouemes.free.fr)
 * [Folium](https://github.com/python-visualization/folium)
 * [OpenTopoMap](https://opentopomap.org/)
