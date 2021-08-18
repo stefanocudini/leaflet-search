@@ -752,7 +752,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomUtil.addClass(this._container, 'search-load');	
 
-		if(this._layer)
+		if(this.options.layer)
 		{
 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
 			this._recordsCache = this._recordsFromLayer();

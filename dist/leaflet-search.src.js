@@ -1,7 +1,7 @@
 /* 
- * Leaflet Control Search v2.9.9 - 2020-12-01 
+ * Leaflet Control Search v3.0.0 - 2021-08-18 
  * 
- * Copyright 2020 Stefano Cudini 
+ * Copyright 2021 Stefano Cudini 
  * stefano.cudini@gmail.com 
  * https://opengeo.tech/ 
  * 
@@ -768,7 +768,7 @@ L.Control.Search = L.Control.extend({
 
 		L.DomUtil.addClass(this._container, 'search-load');	
 
-		if(this._layer)
+		if(this.options.layer)
 		{
 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
 			this._recordsCache = this._recordsFromLayer();
