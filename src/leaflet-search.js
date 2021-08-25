@@ -426,7 +426,7 @@ L.Control.Search = L.Control.extend({
 		regSearch = new RegExp(I + text, icase);
 
 		//TODO use .filter or .map
-		for(var key in records) {
+		for (let key in records) {
 			if( regSearch.test(key) )
 				frecords[key]= records[key];
 		}
@@ -443,7 +443,7 @@ L.Control.Search = L.Control.extend({
 
 		if(this.options.tooltipLimit)
 		{
-			for(var key in records)//fill tooltip
+			for (let key in records)//fill tooltip
 			{
 				if(this._countertips === this.options.tooltipLimit)
 					break;
@@ -481,13 +481,13 @@ L.Control.Search = L.Control.extend({
 		var self = this,
 			propName = this.options.propertyName,
 			propLoc = this.options.propertyLoc,
-			i, jsonret = {};
+			jsonret = {};
 
 		if( L.Util.isArray(propLoc) )
-			for(i in json)
+			for (let i in json)
 				jsonret[ self._getPath(json[i],propName) ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
 		else
-			for(i in json)
+			for (let i in json)
 				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i],propLoc) );
 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
@@ -809,8 +809,9 @@ L.Control.Search = L.Control.extend({
 	
 		var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
 			
-		for (var i=0; i<searchTips.length; i++)
+		for (let i=0; i<searchTips.length; i++) {
 			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
+		}
 		
 		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (searchTips.length - 1))) {// If at end of list.
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
