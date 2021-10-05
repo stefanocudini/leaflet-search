@@ -148,3 +148,4 @@ This list is intended to be of utility for all developers who are looking web ma
 * [The area of effect of the "MOAB" bomb in Afghanistan](https://www.dhkconsulting.com/moab/moab.html)
 * [Ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet)
 * [Craft Ottawa](https://craftottawa.ca)
+* [Sea Florida Change](https://www.seaflchange.org/)
