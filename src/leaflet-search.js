@@ -1,3 +1,19 @@
+/* 
+ * Leaflet Control Search v3.0.0 - 2021-08-18 
+ * 
+ * Copyright 2021 Stefano Cudini 
+ * stefano.cudini@gmail.com 
+ * https://opengeo.tech/ 
+ * 
+ * Licensed under the MIT license. 
+ * 
+ * Demo: 
+ * https://opengeo.tech/maps/leaflet-search/ 
+ * 
+ * Source: 
+ * git@github.com:stefanocudini/leaflet-search.git 
+ * 
+ */
 /*
 	Name					Data passed			   Description
 
@@ -50,6 +66,7 @@
     }
 })(function (L) {
 
+	let firstIndex;
 
 L.Control.Search = L.Control.extend({
 	
@@ -786,6 +803,15 @@ L.Control.Search = L.Control.extend({
 				L.DomUtil.removeClass(self._container, 'search-load');
 			});
 		}
+
+		let recordsArray = document.querySelector(".leaflet-control-search").querySelector("ul").children;
+
+		if (recordsArray.length > 0) {
+			firstIndex = recordsArray[0].innerText;
+			console.log(firstIndex);
+		} else {
+			firstIndex = "";
+		}
 	},
 	
 	_handleAutoresize: function() {
@@ -855,8 +881,22 @@ L.Control.Search = L.Control.extend({
 			{
 				var loc = this._getLocation(this._input.value);
 				
-				if(loc===false)
-					this.showAlert();
+				if (loc === false) {
+					
+					var loc = this._getLocation(firstIndex);
+					if (loc === false)
+						this.showAlert();
+					else {
+						this.showLocation(loc, firstIndex);
+						this.fire('search:locationfound', {
+							latlng: loc,
+							text: firstIndex,
+							layer: loc.layer ? loc.layer : null
+						});
+
+						this.collapse();
+					}
+				}
 				else
 				{
 					this.showLocation(loc, this._input.value);
