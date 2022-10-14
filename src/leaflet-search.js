@@ -417,18 +417,19 @@ L.Control.Search = L.Control.extend({
 		var I, icase, regSearch, frecords = {};
 
 		text = text.replace(/[.*+?^${}()|[\]\\]/g, '');  //sanitize remove all special characters
-		if(text==='')
+		if(text==='') {
 			return [];
+		}
 
 		I = this.options.initial ? '^' : '';  //search only initial text
 		icase = !this.options.casesensitive ? 'i' : undefined;
 
 		regSearch = new RegExp(I + text, icase);
 
-		//TODO use .filter or .map
 		for (let key in records) {
-			if( regSearch.test(key) )
+			if( regSearch.test(key) ) {
 				frecords[key]= records[key];
+			}
 		}
 		
 		return frecords;
@@ -436,17 +437,17 @@ L.Control.Search = L.Control.extend({
 
 	showTooltip: function(records) {
 		
-
 		this._countertips = 0;
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		if(this.options.tooltipLimit)
 		{
-			for (let key in records)//fill tooltip
+			for (let key in records)	//fill tooltip
 			{
-				if(this._countertips === this.options.tooltipLimit)
+				if(this._countertips === this.options.tooltipLimit) {
 					break;
+				}
 				
 				this._countertips++;
 
@@ -458,13 +459,15 @@ L.Control.Search = L.Control.extend({
 		{
 			this._tooltip.style.display = 'block';
 			
-			if(this._autoTypeTmp)
+			if(this._autoTypeTmp) {
 				this._autoType();
+			}
 
 			this._autoTypeTmp = this.options.autoType;//reset default value
 		}
-		else
+		else {
 			this._hideTooltip();
+		}
 
 		this._tooltip.scrollTop = 0;
 
@@ -483,12 +486,16 @@ L.Control.Search = L.Control.extend({
 			propLoc = this.options.propertyLoc,
 			jsonret = {};
 
-		if( L.Util.isArray(propLoc) )
-			for (let i in json)
+		if( L.Util.isArray(propLoc) ) {
+			for (let i in json) {
 				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i], propLoc[0]), self._getPath(json[i], propLoc[1]) );
-		else
-			for (let i in json)
+			}
+		}
+		else {
+			for (let i in json) {
 				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i],propLoc) );
+			}
+		}
 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
 	},

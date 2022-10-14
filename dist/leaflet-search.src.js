@@ -1,7 +1,7 @@
 /* 
- * Leaflet Control Search v3.0.0 - 2021-08-18 
+ * Leaflet Control Search v3.0.3 - 2022-10-14 
  * 
- * Copyright 2021 Stefano Cudini 
+ * Copyright 2022 Stefano Cudini 
  * stefano.cudini@gmail.com 
  * https://opengeo.tech/ 
  * 
@@ -433,18 +433,19 @@ L.Control.Search = L.Control.extend({
 		var I, icase, regSearch, frecords = {};
 
 		text = text.replace(/[.*+?^${}()|[\]\\]/g, '');  //sanitize remove all special characters
-		if(text==='')
+		if(text==='') {
 			return [];
+		}
 
 		I = this.options.initial ? '^' : '';  //search only initial text
 		icase = !this.options.casesensitive ? 'i' : undefined;
 
 		regSearch = new RegExp(I + text, icase);
 
-		//TODO use .filter or .map
-		for(var key in records) {
-			if( regSearch.test(key) )
+		for (let key in records) {
+			if( regSearch.test(key) ) {
 				frecords[key]= records[key];
+			}
 		}
 		
 		return frecords;
@@ -452,17 +453,17 @@ L.Control.Search = L.Control.extend({
 
 	showTooltip: function(records) {
 		
-
 		this._countertips = 0;
 		this._tooltip.innerHTML = '';
 		this._tooltip.currentSelection = -1;  //inizialized for _handleArrowSelect()
 
 		if(this.options.tooltipLimit)
 		{
-			for(var key in records)//fill tooltip
+			for (let key in records)	//fill tooltip
 			{
-				if(this._countertips === this.options.tooltipLimit)
+				if(this._countertips === this.options.tooltipLimit) {
 					break;
+				}
 				
 				this._countertips++;
 
@@ -474,13 +475,15 @@ L.Control.Search = L.Control.extend({
 		{
 			this._tooltip.style.display = 'block';
 			
-			if(this._autoTypeTmp)
+			if(this._autoTypeTmp) {
 				this._autoType();
+			}
 
 			this._autoTypeTmp = this.options.autoType;//reset default value
 		}
-		else
+		else {
 			this._hideTooltip();
+		}
 
 		this._tooltip.scrollTop = 0;
 
@@ -497,14 +500,18 @@ L.Control.Search = L.Control.extend({
 		var self = this,
 			propName = this.options.propertyName,
 			propLoc = this.options.propertyLoc,
-			i, jsonret = {};
+			jsonret = {};
 
-		if( L.Util.isArray(propLoc) )
-			for(i in json)
-				jsonret[ self._getPath(json[i],propName) ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
-		else
-			for(i in json)
+		if( L.Util.isArray(propLoc) ) {
+			for (let i in json) {
+				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i], propLoc[0]), self._getPath(json[i], propLoc[1]) );
+			}
+		}
+		else {
+			for (let i in json) {
 				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i],propLoc) );
+			}
+		}
 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
 		return jsonret;
 	},
@@ -825,8 +832,9 @@ L.Control.Search = L.Control.extend({
 	
 		var searchTips = this._tooltip.hasChildNodes() ? this._tooltip.childNodes : [];
 			
-		for (var i=0; i<searchTips.length; i++)
+		for (let i=0; i<searchTips.length; i++) {
 			L.DomUtil.removeClass(searchTips[i], 'search-tip-select');
+		}
 		
 		if ((velocity == 1 ) && (this._tooltip.currentSelection >= (searchTips.length - 1))) {// If at end of list.
 			L.DomUtil.addClass(searchTips[this._tooltip.currentSelection], 'search-tip-select');
