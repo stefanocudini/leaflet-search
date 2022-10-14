@@ -485,7 +485,7 @@ L.Control.Search = L.Control.extend({
 
 		if( L.Util.isArray(propLoc) )
 			for (let i in json)
-				jsonret[ self._getPath(json[i],propName) ]= L.latLng( json[i][ propLoc[0] ], json[i][ propLoc[1] ] );
+				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i], propLoc[0]), self._getPath(json[i], propLoc[1]) );
 		else
 			for (let i in json)
 				jsonret[ self._getPath(json[i],propName) ]= L.latLng( self._getPath(json[i],propLoc) );
