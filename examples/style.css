@@ -4,7 +4,7 @@ body {
 	font-family:Arial;
 }
 body#home {
-	background:url('images/back.png') no-repeat top left #b5d0d0;
+	background:url('../images/back.png') no-repeat top left #b5d0d0;
 	margin-left:150px;
 }
 
@@ -35,7 +35,7 @@ h3 a:hover {
 	margin: 4px 0;
 	float:left;
 	width:600px;
-	height:400px;	
+	height:400px;
 }
 ul {
 	font-size:.85em;
@@ -64,7 +64,7 @@ li {
 	font-size:.85em;
 	padding:8px 8px 2px 8px;
 	background: #323b44;
-	border: 2px solid #737c85;		
+	border: 2px solid #737c85;
 	border-radius:.7em;
 	opacity: 0.9;
 	box-shadow:0 0 8px #5f7182;
@@ -85,7 +85,7 @@ li {
 	filter: alpha(opacity=80);
 	-khtml-opacity: .8;
 	-moz-opacity: .8;
-	opacity: .8;		
+	opacity: .8;
 }
 .contents {
 	float:left;
