@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v3.0.3 - 2022-10-14 
+ * Leaflet Control Search v3.0.3 - 2022-11-16 
  * 
  * Copyright 2022 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -430,17 +430,19 @@ L.Control.Search = L.Control.extend({
 
 	_defaultFilterData: function(text, records) {
 	
-		var I, icase, regSearch, frecords = {};
+		var init, icase, regSearch, frecords = {};
 
-		text = text.replace(/[.*+?^${}()|[\]\\]/g, '');  //sanitize remove all special characters
+		text = text.replace(/[.*+?^${}()|[\]\\]/g, '');
+		//sanitize remove all special characters
+
 		if(text==='') {
 			return [];
 		}
 
-		I = this.options.initial ? '^' : '';  //search only initial text
+		init = this.options.initial ? '^' : '';
 		icase = !this.options.casesensitive ? 'i' : undefined;
 
-		regSearch = new RegExp(I + text, icase);
+		regSearch = new RegExp(init + text, icase);
 
 		for (let key in records) {
 			if( regSearch.test(key) ) {
@@ -878,8 +880,9 @@ L.Control.Search = L.Control.extend({
 			{
 				var loc = this._getLocation(this._input.value);
 				
-				if(loc===false)
+				if(!loc) {
 					this.showAlert();
+				}
 				else
 				{
 					this.showLocation(loc, this._input.value);
