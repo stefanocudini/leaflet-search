@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v3.0.3 - 2022-11-16 
+ * Leaflet Control Search v3.0.5 - 2022-11-24 
  * 
  * Copyright 2022 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -375,7 +375,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(tool)
 			.on(tool, 'blur', this.collapseDelayed, this)
-			.on(tool, 'mousewheel', function(e) {
+			.on(tool, 'wheel', function(e) {
 				self.collapseDelayedStop();
 				L.DomEvent.stopPropagation(e);//disable zoom map
 			}, this)
