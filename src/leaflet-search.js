@@ -359,7 +359,7 @@ L.Control.Search = L.Control.extend({
 		L.DomEvent
 			.disableClickPropagation(tool)
 			.on(tool, 'blur', this.collapseDelayed, this)
-			.on(tool, 'mousewheel', function(e) {
+			.on(tool, 'wheel', function(e) {
 				self.collapseDelayedStop();
 				L.DomEvent.stopPropagation(e);//disable zoom map
 			}, this)
