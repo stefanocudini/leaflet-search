@@ -1,5 +1,5 @@
 /*
-this file is work in progress and represent an extension 
+this file is work in progress and represent an extension
 of the main plugin to support programmatically most famous geocoder services
 
 the base idea is:
@@ -11,33 +11,31 @@ any contributions is welcome <3
 
 */
 (function (factory) {
-    if(typeof define === 'function' && define.amd) {
-    //AMD
-        define(['leaflet'], factory);
-    } else if(typeof module !== 'undefined') {
+  if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['leaflet'], factory)
+  } else if (typeof module !== 'undefined') {
     // Node/CommonJS
-        module.exports = factory(require('leaflet'));
-    } else {
+    module.exports = factory(require('leaflet'))
+  } else {
     // Browser globals
-        if(typeof window.L === 'undefined')
-            throw 'Leaflet must be loaded first';
-        factory(window.L);
-    }
+    if (typeof window.L === 'undefined') { throw 'Leaflet must be loaded first' }
+    factory(window.L)
+  }
 })(function (L) {
-
-L.Control.Search.include({
-	options: {
-		geocoder: 'google',
-		markerLocation: true,
-		autoType: false,
-		autoCollapse: true,
-		minLength: 2
-	},
-/*	onAdd: function (map) {
+  L.Control.Search.include({
+    options: {
+      geocoder: 'google',
+      markerLocation: true,
+      autoType: false,
+      autoCollapse: true,
+      minLength: 2
+    },
+    /*	onAdd: function (map) {
 		L.Control.Search.prototype.onAdd.call(this, map);
 		console.log('Geocoder',this.options)
-	},*/
-	geocoders: {
+	}, */
+    geocoders: {
     /*
         'google': {
         	urlTmpl: "//maps.googleapis.com/maps/api/geocode/json?key={key}&address={text}"
@@ -46,7 +44,7 @@ L.Control.Search.include({
         'here': {
         	urlTmpl: https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey={apiKey}&searchtext={text}"
           params: function(opts, text) {
-            
+
             //opts is leaflet options input
             //text is input text searched
 
@@ -60,10 +58,9 @@ L.Control.Search.include({
           callback: function(resp) {
               //TODO refact resp data
           }
-        	
-        		"//nominatim.openstreetmap.org/search?"
-        }*/
-	}
-});
 
-});
+        		"//nominatim.openstreetmap.org/search?"
+        } */
+    }
+  })
+})

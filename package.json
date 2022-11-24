@@ -33,6 +33,7 @@
     "grunt-contrib-uglify": "^4.0.0",
     "grunt-contrib-watch": "^0.5.3",
     "grunt-remove-logging": "^0.2.0",
-    "grunt-todos": "^0.2.0"
+    "grunt-todos": "^0.2.0",
+    "standard": "^17.0.0"
   }
 }
