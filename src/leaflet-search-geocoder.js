@@ -19,7 +19,7 @@ any contributions is welcome <3
     module.exports = factory(require('leaflet'))
   } else {
     // Browser globals
-    if (typeof window.L === 'undefined') { throw 'Leaflet must be loaded first' }
+    if (typeof window.L === 'undefined') { throw new Error('Leaflet must be loaded first') }
     factory(window.L)
   }
 })(function (L) {
@@ -31,36 +31,36 @@ any contributions is welcome <3
       autoCollapse: true,
       minLength: 2
     },
-    /*	onAdd: function (map) {
-		L.Control.Search.prototype.onAdd.call(this, map);
-		console.log('Geocoder',this.options)
-	}, */
+    /* onAdd: function (map) {
+    L.Control.Search.prototype.onAdd.call(this, map);
+    console.log('Geocoder',this.options)
+  }, */
     geocoders: {
-    /*
-        'google': {
-        	urlTmpl: "//maps.googleapis.com/maps/api/geocode/json?key={key}&address={text}"
-          //todo others
-        },
-        'here': {
-        	urlTmpl: https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey={apiKey}&searchtext={text}"
-          params: function(opts, text) {
-
-            //opts is leaflet options input
-            //text is input text searched
-
-            return {
-              'apiKey': opts.apikey,
-              'format': 'json',
-              'q': text,
-        			'jsonp': 'herejsoncallback',
-            };
+      /*
+          'google': {
+            urlTmpl: "//maps.googleapis.com/maps/api/geocode/json?key={key}&address={text}"
+            //todo others
           },
-          callback: function(resp) {
-              //TODO refact resp data
-          }
+          'here': {
+            urlTmpl: https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey={apiKey}&searchtext={text}"
+            params: function(opts, text) {
 
-        		"//nominatim.openstreetmap.org/search?"
-        } */
+              //opts is leaflet options input
+              //text is input text searched
+
+              return {
+                'apiKey': opts.apikey,
+                'format': 'json',
+                'q': text,
+                'jsonp': 'herejsoncallback',
+              };
+            },
+            callback: function(resp) {
+                //TODO refact resp data
+            }
+
+              "//nominatim.openstreetmap.org/search?"
+          } */
     }
   })
 })
