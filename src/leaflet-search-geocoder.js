@@ -11,8 +11,10 @@ any contributions is welcome <3
 
 */
 (function (factory) {
+  // eslint-disable-next-line
   if (typeof define === 'function' && define.amd) {
     // AMD
+    // eslint-disable-next-line
     define(['leaflet'], factory)
   } else if (typeof module !== 'undefined') {
     // Node/CommonJS

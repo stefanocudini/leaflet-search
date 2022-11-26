@@ -36,8 +36,10 @@
 //  in this way every record can have a free structure of attributes, only 'loc' is required
 
 (function (factory) {
+  // eslint-disable-next-line
   if (typeof define === 'function' && define.amd) {
     // AMD
+    // eslint-disable-next-line
     define(['leaflet'], factory)
   } else if (typeof module !== 'undefined') {
     // Node/CommonJS
