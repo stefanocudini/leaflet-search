@@ -703,7 +703,7 @@ L.Control.Search = L.Control.extend({
 			case 40://Down
 				this._handleArrowSelect(1);
 			break;
-			case  8://Backspace
+			// case  8://Backspace
 			case 45://Insert
 			case 46://Delete
 				this._autoTypeTmp = false;//disable temporarily autoType
