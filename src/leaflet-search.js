@@ -400,7 +400,7 @@
     _defaultFilterData: function (text, records) {
       const frecords = {}
 
-      text = text.replace(/[.*+?^${}()|[\]\\]/g, '')
+      text = text.replace(new RegExp('[.*+?^${}()|[\]\\]','g'), '')
       // sanitize remove all special characters
 
       if (text === '') {
@@ -551,8 +551,7 @@
           loc.layer = layer
           retRecords[self._getPath(layer.feature.properties, propName)] = loc
         } else {
-          // throw new Error("propertyName '"+propName+"' not found in marker");
-          console.warn("propertyName '" + propName + "' not found in marker")
+          console.warn(`propertyName '${propName}' not found in marker`);
         }
       } else if (layer instanceof L.Path || layer instanceof L.Polyline || layer instanceof L.Polygon) {
         if (self._getPath(layer.options, propName)) {
@@ -564,8 +563,7 @@
           loc.layer = layer
           retRecords[self._getPath(layer.feature.properties, propName)] = loc
         } else {
-          // throw new Error("propertyName '"+propName+"' not found in shape");
-          console.warn("propertyName '" + propName + "' not found in shape")
+          console.warn(`propertyName '${propName}' not found in shape`);
         }
       } else if (Object.prototype.hasOwnProperty.call(layer, 'feature')) { // GeoJSON
         if (Object.prototype.hasOwnProperty.call(layer.feature.properties, propName)) {
@@ -578,11 +576,10 @@
             loc.layer = layer
             retRecords[layer.feature.properties[propName]] = loc
           } else {
-            console.warn('Unknown type of Layer')
+            console.warn(`Unknown type of Layer`);
           }
         } else {
-          // throw new Error("propertyName '"+propName+"' not found in feature");
-          console.warn("propertyName '" + propName + "' not found in feature")
+          console.warn(`propertyName '${propName}' not found in feature`);
         }
       } else if (layer instanceof L.LayerGroup) {
         layer.eachLayer(function (layer) {
@@ -652,10 +649,10 @@
       const self = this
 
       switch (e.keyCode) {
-        case 27:// Esc
+        case 27:  /* Esc */
           this.collapse()
           break
-        case 13:// Enter
+        case 13:  /* Enter */
           if (this._countertips === 1 || (this.options.firstTipSubmit && this._countertips > 0)) {
             if (this._tooltip.currentSelection === -1) {
               this._handleArrowSelect(1)
@@ -663,26 +660,30 @@
           }
           this._handleSubmit() // do search
           break
-        case 38:// Up
+        case 38:  /* Up */
           this._handleArrowSelect(-1)
           break
-        case 40:// Down
+        case 40:  /* Down */
           this._handleArrowSelect(1)
           break
-        case 8:// Backspace
-        case 45:// Insert
-        case 46:// Delete
+        case 45:  /* Insert */
+        case 46:  /* Delete */
           this._autoTypeTmp = false// disable temporarily autoType
           break
-        case 37:// Left
-        case 39:// Right
-        case 16:// Shift
-        case 17:// Ctrl
-        case 35:// End
-        case 36:// Home
+        case 37:  /* Left */
+        case 39:  /* Right */
+        case 16:  /* Shift */
+        case 17:  /* Ctrl */
+        case 35:  /* End */
+        case 36:  /* Home */
           break
-        default:// All keys
-          if (this._input.value.length) { this._cancel.style.display = 'block' } else { this._cancel.style.display = 'none' }
+        default:  /* All keys */
+          if (this._input.value.length) {
+            this._cancel.style.display = 'block'
+          }
+          else {
+            this._cancel.style.display = 'none'
+          }
 
           if (this._input.value.length >= this.options.minLength) {
             clearTimeout(this.timerKeypress) // cancel last search request while type in

@@ -44,6 +44,7 @@ grunt.initConfig({
 	},	
 	jshint: {
 		options: {
+      esversion: 6,
 			globals: {
 				'no-console': true,
 				module: true
@@ -56,7 +57,6 @@ grunt.initConfig({
 		files: ['src/*.js']
 	},
 	concat: {
-		//TODO cut out SearchMarker
 		options: {
 			banner: '<%= meta.banner %>'
 		},
@@ -69,9 +69,6 @@ grunt.initConfig({
 		}
 	},
 	uglify: {
-		options: {
-			banner: '<%= meta.banner %>'
-		},
 		dist: {
 			files: {
 				'dist/leaflet-search.min.js': ['dist/leaflet-search.src.js']
@@ -97,10 +94,6 @@ grunt.initConfig({
 			}
 		}
 	},
-	todos: {
-		options: { verbose: false },
-		TODO: ['src/*.js'],
-	},	
 	watch: {
 		dist: {
 			options: { livereload: true },
@@ -116,8 +109,7 @@ grunt.registerTask('default', [
 	'cssmin',
 	'removelogging',	
 	'jshint',
-	'uglify',
-	'todos'
+	'uglify'
 ]);
 
 };
