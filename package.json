@@ -20,6 +20,9 @@
     "map",
     "leaflet"
   ],
+  "scripts": {
+    "preversion": "grunt"
+  },
   "dependencies": {
     "leaflet": "*"
   },
