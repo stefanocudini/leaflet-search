@@ -21,7 +21,7 @@
     "leaflet"
   ],
   "scripts": {
-    "version": "grunt"
+    "preversion": "npx grunt"
   },
   "dependencies": {
     "leaflet": "*"
