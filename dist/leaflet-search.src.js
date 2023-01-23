@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v3.0.5 - 2023-01-23 
+ * Leaflet Control Search v3.0.7 - 2023-01-23 
  * 
  * Copyright 2023 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -694,7 +694,12 @@
         case 36:  /* Home */
           break
         default:  /* All keys */
-          if (this._input.value.length) { this._cancel.style.display = 'block' } else { this._cancel.style.display = 'none' }
+          if (this._input.value.length) {
+            this._cancel.style.display = 'block'
+          }
+          else {
+            this._cancel.style.display = 'none'
+          }
 
           if (this._input.value.length >= this.options.minLength) {
             clearTimeout(this.timerKeypress) // cancel last search request while type in
