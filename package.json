@@ -1,6 +1,6 @@
 {
   "name": "leaflet-search",
-  "version": "3.0.10",
+  "version": "3.0.9",
   "description": "Leaflet Control for searching markers/features by attribute on map or remote searching in jsonp/ajax",
   "repository": {
     "type": "git",
@@ -21,7 +21,6 @@
     "leaflet"
   ],
   "scripts": {
-    "preversion": "npx grunt"
   },
   "dependencies": {
     "leaflet": "*"
