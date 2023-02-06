@@ -727,6 +727,9 @@ L.Control.Search = L.Control.extend({
 					this.timerKeypress = setTimeout(function() {	//delay before request, for limit jsonp/ajax request
 
 						self._fillRecordsCache();
+						if(!self._countertips){
+							self.showAlert();
+						}
 					
 					}, this.options.delayType);
 				}
