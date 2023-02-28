@@ -10,6 +10,8 @@ Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
 *Copyright [Stefano Cudini](https://opengeo.tech/stefano-cudini/)*
 
+If this project helped your work help me to keep this alive by [Paypal **DONATION &#10084;**](https://www.paypal.me/stefanocudini)
+
 Tested in Leaflet 0.7.x and 1.3.x
 
 ![Image](https://raw.githubusercontent.com/stefanocudini/leaflet-search/master/images/leaflet-search.jpg)
