@@ -536,7 +536,7 @@
       return request
     },
 
-    _searchInLayer: function (layer, retRecords, propName) {
+    _searchInLayer: function (layer, retRecords, propName, baseProp = 'options') {
       const self = this; let loc
 
       if (layer instanceof L.Control.Search.Marker) return

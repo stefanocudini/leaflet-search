@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+<link rel="stylesheet" href="../src/leaflet-search.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
+
+<h4>Multiple Layers Example: <em>search markers in multiple layers</em></h4>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+<script src="../src/leaflet-search.js"></script>
+<script src="data/restaurant500.geojson.js"></script>
+<script>
+
+	var map = L.map('map', {
+			zoom: 14,
+			center: new L.latLng(41.8990, 12.4977),
+			layers: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+		});
+
+	const markers = restaurant500.features
+	.filter(f => {
+		//get only data having street
+		return f.properties['addr:street']
+	})
+	.map(f => {
+			return L.marker(f.geometry.coordinates.reverse(), {
+				title: f.properties.name
+			}).bindPopup(f.properties['addr:street']);
+	});
+
+	markers.forEach(m => {
+		m.options.popupText = m._popup._content
+	});
+
+	var poiLayers = L.layerGroup(markers).addTo(map);
+
+	L.control.search({
+		layer: poiLayers,
+		initial: false,
+		propertyName: 'popupText'
+	})
+	.addTo(map);
+
+
+</script>
+
+<div id="copy"><a href="https://opengeo.tech/">Website</a> &bull; <a rel="author" href="https://opengeo.tech/stefano-cudini/">Stefano Cudini</a></div>
+
+<script type="text/javascript" src="/labs-common.js"></script>
+
+</body>
+</html>
