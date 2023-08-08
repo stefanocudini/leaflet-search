@@ -732,7 +732,7 @@
           this._retrieveData = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax
         }
 
-        this._curReq = this._retrieveData(this, inputText, function (data) {
+        this._curReq = this._retrieveData.call(this, inputText, function (data) {
           self._recordsCache = self._formatData(self, data)
 
           // TODO refact!
