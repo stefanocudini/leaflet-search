@@ -97,7 +97,7 @@
 	border-radius:.25em;
 	text-decoration:none;	
 	white-space:nowrap;
-	vertical-align:center;
+	vertical-align:middle;
 }
 .leaflet-control-search .search-button:hover {
 	background-color: #f4f4f4;

@@ -1,5 +1,5 @@
 /* 
- * Leaflet Control Search v3.0.9 - 2023-01-23 
+ * Leaflet Control Search v3.0.10 - 2023-08-08 
  * 
  * Copyright 2023 Stefano Cudini 
  * stefano.cudini@gmail.com 
@@ -552,7 +552,7 @@
       return request
     },
 
-    _searchInLayer: function (layer, retRecords, propName) {
+    _searchInLayer: function (layer, retRecords, propName, baseProp = 'options') {
       const self = this; let loc
 
       if (layer instanceof L.Control.Search.Marker) return
@@ -748,7 +748,7 @@
           this._retrieveData = this.options.jsonpParam ? this._recordsFromJsonp : this._recordsFromAjax
         }
 
-        this._curReq = this._retrieveData(this, inputText, function (data) {
+        this._curReq = this._retrieveData.call(this, inputText, function (data) {
           self._recordsCache = self._formatData(self, data)
 
           // TODO refact!
