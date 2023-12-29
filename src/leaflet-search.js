@@ -733,7 +733,7 @@
         }
 
         this._curReq = this._retrieveData.call(this, inputText, function (data) {
-          self._recordsCache = self._formatData(self, data)
+          self._recordsCache = self._formatData.call(self, data)
 
           // TODO refact!
           if (self.options.sourceData) { records = self._filterData(self._input.value, self._recordsCache) } else { records = self._recordsCache }
